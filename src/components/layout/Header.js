@@ -1,6 +1,7 @@
 import App from '@/core/App.js';
 import store from '@/core/store.js';
 import '@/components/ui/Link.js';
+import '@/components/ui/Button.js';
 
 /**
  * 📌 App Header Component
@@ -12,13 +13,37 @@ class Header extends App {
   unsubscribe = null;
 
   connectedCallback() {
-    super.connectedCallback();
+  super.connectedCallback();
 
-    // Subscribe to global state (e.g., for future auth UI)
-    this.unsubscribe = store.subscribe((newState) => {
-      this.set('isAuthenticated', newState.isAuthenticated);
+  this.unsubscribe = store.subscribe((newState) => {
+    this.set('isAuthenticated', newState.isAuthenticated);
+  });
+
+  setTimeout(() => {
+    const navItems = this.querySelectorAll('.nav-item');
+
+    const activate = (el) => {
+      navItems.forEach((item) => {
+        item.classList.remove('text-yellow-400');
+        item.querySelector('.indicator')?.classList.add('hidden');
+      });
+
+      el.classList.add('text-yellow-400');
+      el.querySelector('.indicator')?.classList.remove('hidden');
+    };
+
+    // Initialize first item
+    activate(navItems[0]);
+
+    navItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        activate(item);
+      });
     });
-  }
+  }, 0);
+}
+
+ 
 
   disconnectedCallback() {
     // Prevent memory leaks
@@ -29,42 +54,36 @@ class Header extends App {
 
   render() {
     return `
-      <header class="fixed top-0 left-0 right-0 z-50">
-        <div class="flex items-center justify-between h-16 backdrop-blur-sm bg-white/30 px-4 border-b border-gray-200">
+        <header class="fixed top-0 left-0 right-0 z-50 py-10 px-[10ch] bg-white/70 backdrop-blur">
+      <nav class='flex justify-between items-center'>
+        <ul class="flex space-x-[10ch] text-lg font-medium text-gray-700" id="nav-list">
+  <li class="nav-item cursor-pointer relative flex flex-col items-center">
+    <span>Home</span>
+    <div class="indicator hidden h-[2px] w-full bg-yellow-400 transition-all duration-300 ease-in-out"></div>
+  </li>
+  <li class="nav-item cursor-pointer relative flex flex-col items-center">
+    <span>Services & Events</span>
+    <div class="indicator hidden h-[2px] w-full bg-yellow-400 transition-all duration-300 ease-in-out"></div>
+  </li>
+  <li class="nav-item cursor-pointer relative flex flex-col items-center">
+    <span>Ministries</span>
+    <div class="indicator hidden h-[2px] w-full bg-yellow-400 transition-all duration-300 ease-in-out"></div>
+  </li>
+  <li class="nav-item cursor-pointer relative flex flex-col items-center">
+    <span>Life Groups</span>
+    <div class="indicator hidden h-[2px] w-full bg-yellow-400 transition-all duration-300 ease-in-out"></div>
+  </li>
+  <li class="nav-item cursor-pointer relative flex flex-col items-center">
+    <span>Give</span>
+    <div class="indicator hidden h-[2px] w-full bg-yellow-400 transition-all duration-300 ease-in-out"></div>
+  </li>
+</ul>
 
-          <!-- Logo + Brand Name -->
-          <ui-link href="/" class="flex items-center gap-2 no-underline hover:opacity-90 transition-opacity">
-            <img class="size-10 rounded-full shadow-sm" src="/src/assets/logo.png" alt="UPO UI Logo" />
-            <div class="flex flex-col leading-tight">
-              <span class="text-xl font-extrabold text-gray-800 tracking-tight">UPO UI</span>
-              <span class="text-xs text-gray-500 font-semibold tracking-wide">Version 1.0.0</span>
-            </div>
-          </ui-link>
-
-          <!-- Navigation -->
-          <nav class="flex items-center space-x-4">
-            <!-- Docs Link -->
-            <ui-link
-              href="https://github.com/upovibe/upoUI"
-              class="text-gray-700 hover:text-blue-600 font-medium transition-colors no-underline flex items-center space-x-2 p-2 rounded-md hover:bg-white/50"
-            >
-              <i class="fas fa-cubes text-xl"></i>
-              <span class="hidden md:inline">Docs</span>
-            </ui-link>
-
-            <!-- GitHub Link -->
-            <ui-link
-              href="https://github.com/upovibe/upoUI"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-gray-700 hover:text-gray-900 transition-colors no-underline flex items-center space-x-2 p-2 rounded-md hover:bg-white/50"
-            >
-              <i class="fab fa-github text-xl"></i>
-              <span class="hidden md:inline">GitHub</span>
-            </ui-link>
-          </nav>
+        <div>
+          <button class='rounded-full px-4 py-2 border border-black'>Contact Us</button>
         </div>
-      </header>
+      </nav>
+    </header>
     `;
   }
 }

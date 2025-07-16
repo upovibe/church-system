@@ -2,6 +2,7 @@ import App from '@/core/App.js';
 import '@/components/ui/Box.js';
 import '@/components/layout/CounterLayout.js';
 
+
 /**
  * Root Page Component (/)
  * 
@@ -17,7 +18,7 @@ class RootPage extends App {
     render() {
         return `
             <div class="flex justify-center items-center">
-                <counter-layout></counter-layout>
+                    <counter-layout></counter-layout>          
             </div>
         `;
     }
