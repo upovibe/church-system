@@ -1,18 +1,18 @@
-import App from '@/core/App.js';
+import App from "@/core/App.js";
 
 /**
  * Staff Dashboard Page Component (/dashboard/staff)
- * 
+ *
  * Simple staff dashboard with basic content.
  */
 class StaffDashboardPage extends App {
-    connectedCallback() {
-        super.connectedCallback();
-        document.title = 'Staff Dashboard | School System';
-    }
+  connectedCallback() {
+    super.connectedCallback();
+    document.title = "Staff Dashboard | School System";
+  }
 
-    render() {
-        return `
+  render() {
+    return `
             <div class="space-y-6">
                 <div class="bg-white shadow rounded-lg p-6">
                     <h1 class="text-2xl font-bold text-gray-900 mb-4">
@@ -41,8 +41,8 @@ class StaffDashboardPage extends App {
                 </div>
             </div>
         `;
-    }
+  }
 }
 
-customElements.define('app-staff-dashboard-page', StaffDashboardPage);
-export default StaffDashboardPage; 
+customElements.define("app-staff-dashboard-page", StaffDashboardPage);
+export default StaffDashboardPage;

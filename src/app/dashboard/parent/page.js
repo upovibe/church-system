@@ -1,18 +1,18 @@
-import App from '@/core/App.js';
+import App from "@/core/App.js";
 
 /**
  * Parent Dashboard Page Component (/dashboard/parent)
- * 
+ *
  * Simple parent dashboard with basic content.
  */
 class ParentDashboardPage extends App {
-    connectedCallback() {
-        super.connectedCallback();
-        document.title = 'Parent Dashboard | School System';
-    }
+  connectedCallback() {
+    super.connectedCallback();
+    document.title = "Parent Dashboard | School System";
+  }
 
-    render() {
-        return `
+  render() {
+    return `
             <div class="space-y-6">
                 <div class="bg-white shadow rounded-lg p-6">
                     <h1 class="text-2xl font-bold text-gray-900 mb-4">
@@ -41,8 +41,8 @@ class ParentDashboardPage extends App {
                 </div>
             </div>
         `;
-    }
+  }
 }
 
-customElements.define('app-parent-dashboard-page', ParentDashboardPage);
-export default ParentDashboardPage; 
+customElements.define("app-parent-dashboard-page", ParentDashboardPage);
+export default ParentDashboardPage;

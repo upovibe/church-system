@@ -2,12 +2,12 @@ import App from '@/core/App.js';
 
 /**
  * App Footer Component
- * 
+ *
  * A simple, consistent footer for all pages.
  */
 class Footer extends App {
-    render() {
-        return `
+  render() {
+    return `
             <footer class="bg-white border-t">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <div class="text-center text-sm text-gray-500">
@@ -19,8 +19,8 @@ class Footer extends App {
                 </div>
             </footer>
         `;
-    }
+  }
 }
 
 customElements.define('app-footer', Footer);
-export default Footer; 
+export default Footer;

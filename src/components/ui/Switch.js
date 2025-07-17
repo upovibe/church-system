@@ -1,9 +1,9 @@
 /**
  * Switch Component
- * 
+ *
  * A toggle switch component for binary states with smooth animations and accessibility features.
  * Supports multiple sizes, color variants, and can include labels and descriptions.
- * 
+ *
  * Attributes:
  * - checked: boolean - Whether the switch is in the checked state (default: false)
  * - disabled: boolean - Disable the switch interaction (default: false)
@@ -11,16 +11,16 @@
  * - variant: 'default' | 'primary' | 'success' | 'warning' | 'error' - Color variant (default: 'default')
  * - label: string - Label text displayed next to the switch
  * - description: string - Additional description text below the switch
- * 
+ *
  * Events:
  * - switch-change: Fired when switch state changes (detail: { checked: boolean })
- * 
+ *
  * Usage:
  * <ui-switch></ui-switch>
  * <ui-switch checked="true" label="Enable notifications"></ui-switch>
  * <ui-switch size="lg" variant="success" label="Dark mode" description="Switch between light and dark themes"></ui-switch>
  * <ui-switch disabled="true" label="Disabled switch"></ui-switch>
- * 
+ *
  * Accessibility:
  * - Supports keyboard navigation (Space/Enter keys)
  * - Proper ARIA attributes (role="switch", aria-checked, aria-disabled)
@@ -28,37 +28,37 @@
  * - Screen reader friendly
  */
 class Switch extends HTMLElement {
-    static get observedAttributes() {
-        return ['checked', 'disabled', 'size', 'variant', 'label', 'description'];
-    }
+  static get observedAttributes() {
+    return ["checked", "disabled", "size", "variant", "label", "description"];
+  }
 
-    constructor() {
-        super();
-        
-        // Initialize with attribute values if they exist
-        this.checked = this.hasAttribute('checked');
-        this.disabled = this.hasAttribute('disabled');
-        this.size = this.getAttribute('size') || 'md';
-        this.variant = this.getAttribute('variant') || 'default';
-        this.label = this.getAttribute('label') || '';
-        this.description = this.getAttribute('description') || '';
-        
-        // Flag to prevent attributeChangedCallback from interfering with programmatic changes
-        this.isUpdating = false;
-        
-        // Add default styles
-        this.addDefaultStyles();
-    }
+  constructor() {
+    super();
 
-    /**
-     * Add default CSS styles to document if not already added
-     * Creates a unique style element with all switch styles
-     */
-    addDefaultStyles() {
-        if (!document.getElementById('upo-ui-switch-styles')) {
-            const style = document.createElement('style');
-            style.id = 'upo-ui-switch-styles';
-            style.textContent = `
+    // Initialize with attribute values if they exist
+    this.checked = this.hasAttribute("checked");
+    this.disabled = this.hasAttribute("disabled");
+    this.size = this.getAttribute("size") || "md";
+    this.variant = this.getAttribute("variant") || "default";
+    this.label = this.getAttribute("label") || "";
+    this.description = this.getAttribute("description") || "";
+
+    // Flag to prevent attributeChangedCallback from interfering with programmatic changes
+    this.isUpdating = false;
+
+    // Add default styles
+    this.addDefaultStyles();
+  }
+
+  /**
+   * Add default CSS styles to document if not already added
+   * Creates a unique style element with all switch styles
+   */
+  addDefaultStyles() {
+    if (!document.getElementById("upo-ui-switch-styles")) {
+      const style = document.createElement("style");
+      style.id = "upo-ui-switch-styles";
+      style.textContent = `
                 .upo-switch {
                     display: inline-flex;
                     align-items: center;
@@ -212,144 +212,148 @@ class Switch extends HTMLElement {
                     color: #9ca3af;
                 }
             `;
-            document.head.appendChild(style);
-        }
+      document.head.appendChild(style);
+    }
+  }
+
+  /**
+   * Called when the element is connected to the DOM
+   * Sets up event listeners and initial state
+   */
+  connectedCallback() {
+    this.addEventListener("click", this.handleClick.bind(this));
+    this.addEventListener("keydown", this.handleKeydown.bind(this));
+    this.setAttribute("role", "switch");
+    this.setAttribute("tabindex", "0");
+    this.updateAccessibility();
+    this.render();
+  }
+
+  /**
+   * Called when attributes are changed
+   * Updates the component state and re-renders
+   * @param {string} name - The name of the changed attribute
+   * @param {string} oldValue - The previous value
+   * @param {string} newValue - The new value
+   */
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue && !this.isUpdating) {
+      // Handle boolean attributes
+      if (name === "checked" || name === "disabled") {
+        this[name] = this.hasAttribute(name);
+      } else {
+        this[name] = newValue;
+      }
+      this.render();
+      this.updateAccessibility();
+    }
+  }
+
+  /**
+   * Handle click events on the switch
+   * Toggles the switch state if not disabled
+   * @param {Event} event - The click event
+   */
+  handleClick(event) {
+    if (this.disabled) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.toggle();
+  }
+
+  /**
+   * Handle keyboard events for accessibility
+   * Supports Space and Enter keys for toggling
+   * @param {KeyboardEvent} event - The keyboard event
+   */
+  handleKeydown(event) {
+    if (this.disabled) return;
+
+    if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toggle();
+    }
+  }
+
+  /**
+   * Toggle the switch state
+   * Updates the checked state, re-renders, and dispatches change event
+   */
+  toggle() {
+    // Set flag to prevent attributeChangedCallback from interfering
+    this.isUpdating = true;
+
+    // Toggle the boolean state
+    this.checked = !this.checked;
+
+    // Update the attribute to match the state
+    if (this.checked) {
+      this.setAttribute("checked", "");
+    } else {
+      this.removeAttribute("checked");
     }
 
-    /**
-     * Called when the element is connected to the DOM
-     * Sets up event listeners and initial state
-     */
-    connectedCallback() {
-        this.addEventListener('click', this.handleClick.bind(this));
-        this.addEventListener('keydown', this.handleKeydown.bind(this));
-        this.setAttribute('role', 'switch');
-        this.setAttribute('tabindex', '0');
-        this.updateAccessibility();
-        this.render();
+    // Re-render and dispatch event
+    this.render();
+    this.updateAccessibility();
+
+    this.dispatchEvent(
+      new CustomEvent("switch-change", {
+        detail: { checked: this.checked },
+        bubbles: true,
+      }),
+    );
+
+    // Reset flag
+    this.isUpdating = false;
+  }
+
+  /**
+   * Update accessibility attributes
+   * Sets ARIA attributes for screen readers
+   */
+  updateAccessibility() {
+    this.setAttribute("aria-checked", this.checked.toString());
+    this.setAttribute("aria-disabled", this.disabled.toString());
+
+    if (this.label) {
+      this.setAttribute("aria-label", this.label);
     }
+  }
 
-    /**
-     * Called when attributes are changed
-     * Updates the component state and re-renders
-     * @param {string} name - The name of the changed attribute
-     * @param {string} oldValue - The previous value
-     * @param {string} newValue - The new value
-     */
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue && !this.isUpdating) {
-            // Handle boolean attributes
-            if (name === 'checked' || name === 'disabled') {
-                this[name] = this.hasAttribute(name);
-            } else {
-                this[name] = newValue;
-            }
-            this.render();
-            this.updateAccessibility();
-        }
-    }
+  /**
+   * Render the switch component
+   * Creates the HTML structure with appropriate CSS classes
+   */
+  render() {
+    const sizeClass = `upo-switch-${this.size}`;
+    const variantClass = `upo-switch-${this.variant}`;
+    const checkedClass = this.checked ? "upo-switch-checked" : "";
+    const disabledClass = this.disabled ? "upo-switch-disabled" : "";
 
-    /**
-     * Handle click events on the switch
-     * Toggles the switch state if not disabled
-     * @param {Event} event - The click event
-     */
-    handleClick(event) {
-        if (this.disabled) return;
-        
-        event.preventDefault();
-        event.stopPropagation();
-        this.toggle();
-    }
+    const containerClasses = [
+      "upo-switch",
+      sizeClass,
+      variantClass,
+      checkedClass,
+      disabledClass,
+    ]
+      .filter(Boolean)
+      .join(" ");
 
-    /**
-     * Handle keyboard events for accessibility
-     * Supports Space and Enter keys for toggling
-     * @param {KeyboardEvent} event - The keyboard event
-     */
-    handleKeydown(event) {
-        if (this.disabled) return;
-
-        if (event.key === ' ' || event.key === 'Enter') {
-            event.preventDefault();
-            event.stopPropagation();
-            this.toggle();
-        }
-    }
-
-    /**
-     * Toggle the switch state
-     * Updates the checked state, re-renders, and dispatches change event
-     */
-    toggle() {
-        // Set flag to prevent attributeChangedCallback from interfering
-        this.isUpdating = true;
-        
-        // Toggle the boolean state
-        this.checked = !this.checked;
-        
-        // Update the attribute to match the state
-        if (this.checked) {
-            this.setAttribute('checked', '');
-        } else {
-            this.removeAttribute('checked');
-        }
-        
-        // Re-render and dispatch event
-        this.render();
-        this.updateAccessibility();
-        
-        this.dispatchEvent(new CustomEvent('switch-change', {
-            detail: { checked: this.checked },
-            bubbles: true
-        }));
-        
-        // Reset flag
-        this.isUpdating = false;
-    }
-
-    /**
-     * Update accessibility attributes
-     * Sets ARIA attributes for screen readers
-     */
-    updateAccessibility() {
-        this.setAttribute('aria-checked', this.checked.toString());
-        this.setAttribute('aria-disabled', this.disabled.toString());
-        
-        if (this.label) {
-            this.setAttribute('aria-label', this.label);
-        }
-    }
-
-    /**
-     * Render the switch component
-     * Creates the HTML structure with appropriate CSS classes
-     */
-    render() {
-        const sizeClass = `upo-switch-${this.size}`;
-        const variantClass = `upo-switch-${this.variant}`;
-        const checkedClass = this.checked ? 'upo-switch-checked' : '';
-        const disabledClass = this.disabled ? 'upo-switch-disabled' : '';
-        
-        const containerClasses = [
-            'upo-switch',
-            sizeClass,
-            variantClass,
-            checkedClass,
-            disabledClass
-        ].filter(Boolean).join(' ');
-
-        this.innerHTML = `
+    this.innerHTML = `
             <div class="${containerClasses}">
                 <div class="upo-switch-track" tabindex="0">
                     <div class="upo-switch-thumb"></div>
                 </div>
-                ${this.label ? `<span class="upo-switch-label">${this.label}</span>` : ''}
+                ${this.label ? `<span class="upo-switch-label">${this.label}</span>` : ""}
             </div>
-            ${this.description ? `<div class="upo-switch-description">${this.description}</div>` : ''}
+            ${this.description ? `<div class="upo-switch-description">${this.description}</div>` : ""}
         `;
-    }
+  }
 }
 
-customElements.define('ui-switch', Switch);
-export default Switch; 
+customElements.define("ui-switch", Switch);
+export default Switch;

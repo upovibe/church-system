@@ -1,8 +1,8 @@
 /**
  * Pagination Component
- * 
+ *
  * A flexible pagination component with page numbers, navigation buttons, and various display options.
- * 
+ *
  * Attributes:
  * - current-page: number (default: 1) - current active page
  * - total-pages: number (default: 1) - total number of pages
@@ -10,92 +10,101 @@
  * - show-first-last: boolean (default: false) - show first/last buttons
  * - max-visible: number (default: 5) - maximum visible page numbers
  * - variant: string (default: "default") - style variant: "default", "primary", "secondary"
- * 
+ *
  * Events:
  * - page-change: Fired when page changes (detail: { page: number })
- * 
+ *
  * Usage:
  * <ui-pagination current-page="3" total-pages="10" max-visible="5"></ui-pagination>
  */
 class Pagination extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.currentPage = parseInt(this.getAttribute('current-page')) || 1;
-        this.totalPages = parseInt(this.getAttribute('total-pages')) || 1;
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.currentPage = parseInt(this.getAttribute("current-page")) || 1;
+    this.totalPages = parseInt(this.getAttribute("total-pages")) || 1;
+  }
 
-    static get observedAttributes() {
-        return ['current-page', 'total-pages', 'show-prev-next', 'show-first-last', 'max-visible', 'variant'];
-    }
+  static get observedAttributes() {
+    return [
+      "current-page",
+      "total-pages",
+      "show-prev-next",
+      "show-first-last",
+      "max-visible",
+      "variant",
+    ];
+  }
 
-    connectedCallback() {
-        this.render();
-        this.setupEventListeners();
-    }
+  connectedCallback() {
+    this.render();
+    this.setupEventListeners();
+  }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue) {
-            this.currentPage = parseInt(this.getAttribute('current-page')) || 1;
-            this.totalPages = parseInt(this.getAttribute('total-pages')) || 1;
-            this.render();
-            this.setupEventListeners();
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      this.currentPage = parseInt(this.getAttribute("current-page")) || 1;
+      this.totalPages = parseInt(this.getAttribute("total-pages")) || 1;
+      this.render();
+      this.setupEventListeners();
+    }
+  }
+
+  setupEventListeners() {
+    this.shadowRoot.addEventListener("click", (e) => {
+      if (e.target.classList.contains("pagination-item")) {
+        e.preventDefault();
+        const page = parseInt(e.target.dataset.page);
+        if (page && page !== this.currentPage) {
+          this.goToPage(page);
         }
+      }
+    });
+  }
+
+  goToPage(page) {
+    if (page < 1 || page > this.totalPages) return;
+
+    this.currentPage = page;
+    this.setAttribute("current-page", page.toString());
+
+    // Dispatch page change event
+    this.dispatchEvent(
+      new CustomEvent("page-change", {
+        detail: { page: page },
+      }),
+    );
+  }
+
+  getVisiblePages() {
+    const maxVisible = parseInt(this.getAttribute("max-visible")) || 5;
+    const current = this.currentPage;
+    const total = this.totalPages;
+
+    if (total <= maxVisible) {
+      return Array.from({ length: total }, (_, i) => i + 1);
     }
 
-    setupEventListeners() {
-        this.shadowRoot.addEventListener('click', (e) => {
-            if (e.target.classList.contains('pagination-item')) {
-                e.preventDefault();
-                const page = parseInt(e.target.dataset.page);
-                if (page && page !== this.currentPage) {
-                    this.goToPage(page);
-                }
-            }
-        });
+    const half = Math.floor(maxVisible / 2);
+    let start = Math.max(1, current - half);
+    let end = Math.min(total, start + maxVisible - 1);
+
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
     }
 
-    goToPage(page) {
-        if (page < 1 || page > this.totalPages) return;
-        
-        this.currentPage = page;
-        this.setAttribute('current-page', page.toString());
-        
-        // Dispatch page change event
-        this.dispatchEvent(new CustomEvent('page-change', {
-            detail: { page: page }
-        }));
-    }
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  }
 
-    getVisiblePages() {
-        const maxVisible = parseInt(this.getAttribute('max-visible')) || 5;
-        const current = this.currentPage;
-        const total = this.totalPages;
-        
-        if (total <= maxVisible) {
-            return Array.from({ length: total }, (_, i) => i + 1);
-        }
-        
-        const half = Math.floor(maxVisible / 2);
-        let start = Math.max(1, current - half);
-        let end = Math.min(total, start + maxVisible - 1);
-        
-        if (end - start + 1 < maxVisible) {
-            start = Math.max(1, end - maxVisible + 1);
-        }
-        
-        return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-    }
+  render() {
+    const currentPage = this.currentPage;
+    const totalPages = this.totalPages;
+    const showPrevNext = this.getAttribute("show-prev-next") !== "false";
+    const showFirstLast = this.getAttribute("show-first-last") === "true";
+    const variant = this.getAttribute("variant") || "default";
+    const visiblePages = this.getVisiblePages();
 
-    render() {
-        const currentPage = this.currentPage;
-        const totalPages = this.totalPages;
-        const showPrevNext = this.getAttribute('show-prev-next') !== 'false';
-        const showFirstLast = this.getAttribute('show-first-last') === 'true';
-        const variant = this.getAttribute('variant') || 'default';
-        const visiblePages = this.getVisiblePages();
-
-        this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
             <style>
                 :host {
                     display: inline-flex;
@@ -225,7 +234,9 @@ class Pagination extends HTMLElement {
 
             <nav aria-label="Pagination">
                 <ul class="pagination">
-                    ${showFirstLast && currentPage > 1 ? `
+                    ${
+                      showFirstLast && currentPage > 1
+                        ? `
                         <li>
                             <button class="pagination-item variant-${variant}" data-page="1" aria-label="Go to first page">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -234,58 +245,82 @@ class Pagination extends HTMLElement {
                                 </svg>
                             </button>
                         </li>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                     
-                    ${showPrevNext ? `
+                    ${
+                      showPrevNext
+                        ? `
                         <li>
-                            <button class="pagination-item variant-${variant} ${currentPage <= 1 ? 'disabled' : ''}" 
+                            <button class="pagination-item variant-${variant} ${currentPage <= 1 ? "disabled" : ""}" 
                                     data-page="${currentPage - 1}" 
                                     aria-label="Go to previous page"
-                                    ${currentPage <= 1 ? 'disabled' : ''}>
+                                    ${currentPage <= 1 ? "disabled" : ""}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="15,18 9,12 15,6"></polyline>
                                 </svg>
                             </button>
                         </li>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                     
-                    ${visiblePages[0] > 1 ? `
+                    ${
+                      visiblePages[0] > 1
+                        ? `
                         <li>
                             <span class="pagination-ellipsis">...</span>
                         </li>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                     
-                    ${visiblePages.map(page => `
+                    ${visiblePages
+                      .map(
+                        (page) => `
                         <li>
-                            <button class="pagination-item variant-${variant} ${page === currentPage ? 'active' : ''}" 
+                            <button class="pagination-item variant-${variant} ${page === currentPage ? "active" : ""}" 
                                     data-page="${page}" 
                                     aria-label="Go to page ${page}"
-                                    ${page === currentPage ? 'aria-current="page"' : ''}>
+                                    ${page === currentPage ? 'aria-current="page"' : ""}>
                                 ${page}
                             </button>
                         </li>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                     
-                    ${visiblePages[visiblePages.length - 1] < totalPages ? `
+                    ${
+                      visiblePages[visiblePages.length - 1] < totalPages
+                        ? `
                         <li>
                             <span class="pagination-ellipsis">...</span>
                         </li>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                     
-                    ${showPrevNext ? `
+                    ${
+                      showPrevNext
+                        ? `
                         <li>
-                            <button class="pagination-item variant-${variant} ${currentPage >= totalPages ? 'disabled' : ''}" 
+                            <button class="pagination-item variant-${variant} ${currentPage >= totalPages ? "disabled" : ""}" 
                                     data-page="${currentPage + 1}" 
                                     aria-label="Go to next page"
-                                    ${currentPage >= totalPages ? 'disabled' : ''}>
+                                    ${currentPage >= totalPages ? "disabled" : ""}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="9,18 15,12 9,6"></polyline>
                                 </svg>
                             </button>
                         </li>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                     
-                    ${showFirstLast && currentPage < totalPages ? `
+                    ${
+                      showFirstLast && currentPage < totalPages
+                        ? `
                         <li>
                             <button class="pagination-item variant-${variant}" data-page="${totalPages}" aria-label="Go to last page">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -294,12 +329,14 @@ class Pagination extends HTMLElement {
                                 </svg>
                             </button>
                         </li>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                 </ul>
             </nav>
         `;
-    }
+  }
 }
 
-customElements.define('ui-pagination', Pagination);
-export default Pagination; 
+customElements.define("ui-pagination", Pagination);
+export default Pagination;

@@ -1,108 +1,118 @@
-import '@/components/ui/Modal.js';
-import '@/components/ui/Toast.js';
-import '@/components/ui/Input.js';
-import '@/components/ui/Textarea.js';
-import '@/components/ui/Dropdown.js';
-import '@/components/ui/RadioGroup.js';
-import '@/components/ui/Switch.js';
-import '@/components/ui/FileUpload.js';
-import api from '@/services/api.js';
+import "@/components/ui/Modal.js";
+import "@/components/ui/Toast.js";
+import "@/components/ui/Input.js";
+import "@/components/ui/Textarea.js";
+import "@/components/ui/Dropdown.js";
+import "@/components/ui/RadioGroup.js";
+import "@/components/ui/Switch.js";
+import "@/components/ui/FileUpload.js";
+import api from "@/services/api.js";
 
 /**
  * System Update Modal Component
- * 
+ *
  * A modal component for editing existing system settings in the admin panel
- * 
+ *
  * Attributes:
  * - open: boolean - controls modal visibility
- * 
+ *
  * Events:
  * - setting-updated: Fired when a setting is successfully updated
  * - modal-closed: Fired when modal is closed
  */
 class SystemUpdateModal extends HTMLElement {
-    constructor() {
-        super();
-        this.settingData = null;
-    }
+  constructor() {
+    super();
+    this.settingData = null;
+  }
 
-    static get observedAttributes() {
-        return ['open'];
-    }
+  static get observedAttributes() {
+    return ["open"];
+  }
 
-    connectedCallback() {
-        this.render();
-        this.setupEventListeners();
-    }
+  connectedCallback() {
+    this.render();
+    this.setupEventListeners();
+  }
 
-    setupEventListeners() {
-        // Listen for confirm button click (Update)
-        this.addEventListener('confirm', () => {
-            this.updateSetting();
-        });
-        
-        // Listen for cancel button click
-        this.addEventListener('cancel', () => {
-            this.close();
-        });
+  setupEventListeners() {
+    // Listen for confirm button click (Update)
+    this.addEventListener("confirm", () => {
+      this.updateSetting();
+    });
 
-        // Listen for setting type dropdown change
-        this.addEventListener('change', (event) => {
-            if (event.target.matches('ui-dropdown[data-field="setting_type"]')) {
-                // Store current value before changing type
-                const currentValueInput = this.querySelector('[data-value-input] input, [data-value-input] ui-input, [data-value-input] ui-textarea, [data-value-input] ui-radio-group');
-                if (currentValueInput) {
-                    this.settingData.setting_value = currentValueInput.value || currentValueInput.getAttribute('value') || '';
-                }
-                
-                this.settingData.setting_type = event.target.value;
-                this.updateValueInput();
-            }
-        });
-    }
+    // Listen for cancel button click
+    this.addEventListener("cancel", () => {
+      this.close();
+    });
 
-    open() {
-        this.setAttribute('open', '');
-    }
-
-    close() {
-        this.removeAttribute('open');
-        this.settingData = null;
-    }
-
-    // Set setting data for editing
-    setSettingData(settingData) {
-        this.settingData = settingData;
-        // Re-render the modal with the new data
-        this.render();
-        
-        // Set the file upload value after render (like PageUpdateModal)
-        setTimeout(() => {
-            if (settingData.setting_type === 'file' || settingData.setting_type === 'image') {
-                const fileUpload = this.querySelector('ui-file-upload[name="setting_value"]');
-                if (fileUpload && settingData.setting_value) {
-                    fileUpload.setValue(settingData.setting_value);
-                }
-            }
-        }, 0);
-    }
-
-    // Update the value input based on selected type
-    updateValueInput() {
-        const valueInputContainer = this.querySelector('[data-value-input]');
-        if (valueInputContainer) {
-            valueInputContainer.innerHTML = this.renderValueInput();
+    // Listen for setting type dropdown change
+    this.addEventListener("change", (event) => {
+      if (event.target.matches('ui-dropdown[data-field="setting_type"]')) {
+        // Store current value before changing type
+        const currentValueInput = this.querySelector(
+          "[data-value-input] input, [data-value-input] ui-input, [data-value-input] ui-textarea, [data-value-input] ui-radio-group",
+        );
+        if (currentValueInput) {
+          this.settingData.setting_value =
+            currentValueInput.value ||
+            currentValueInput.getAttribute("value") ||
+            "";
         }
+
+        this.settingData.setting_type = event.target.value;
+        this.updateValueInput();
+      }
+    });
+  }
+
+  open() {
+    this.setAttribute("open", "");
+  }
+
+  close() {
+    this.removeAttribute("open");
+    this.settingData = null;
+  }
+
+  // Set setting data for editing
+  setSettingData(settingData) {
+    this.settingData = settingData;
+    // Re-render the modal with the new data
+    this.render();
+
+    // Set the file upload value after render (like PageUpdateModal)
+    setTimeout(() => {
+      if (
+        settingData.setting_type === "file" ||
+        settingData.setting_type === "image"
+      ) {
+        const fileUpload = this.querySelector(
+          'ui-file-upload[name="setting_value"]',
+        );
+        if (fileUpload && settingData.setting_value) {
+          fileUpload.setValue(settingData.setting_value);
+        }
+      }
+    }, 0);
+  }
+
+  // Update the value input based on selected type
+  updateValueInput() {
+    const valueInputContainer = this.querySelector("[data-value-input]");
+    if (valueInputContainer) {
+      valueInputContainer.innerHTML = this.renderValueInput();
     }
+  }
 
-    // Render the appropriate input component based on setting type
-    renderValueInput() {
-        const settingType = this.settingData?.setting_type || 'text';
-        const currentValue = this.settingData?.setting_value || '';
+  // Render the appropriate input component based on setting type
+  renderValueInput() {
+    const settingType = this.settingData?.setting_type || "text";
+    const currentValue = this.settingData?.setting_value || "";
 
-        switch (settingType) {
-            case 'text':
-                return `
+    switch (settingType) {
+      case "text":
+        return `
                     <ui-input 
                         name="setting_value"
                         type="text" 
@@ -111,9 +121,9 @@ class SystemUpdateModal extends HTMLElement {
                         class="w-full">
                     </ui-input>
                 `;
-            
-            case 'number':
-                return `
+
+      case "number":
+        return `
                     <ui-input 
                         name="setting_value"
                         type="number" 
@@ -122,30 +132,30 @@ class SystemUpdateModal extends HTMLElement {
                         class="w-full">
                     </ui-input>
                 `;
-            
-            case 'boolean':
-                return `
+
+      case "boolean":
+        return `
                     <ui-radio-group 
                         name="setting_value"
-                        value="${currentValue === '1' || currentValue === 'true' ? 'true' : 'false'}"
+                        value="${currentValue === "1" || currentValue === "true" ? "true" : "false"}"
                         layout="horizontal"
                         class="w-full">
                         <ui-radio-option value="true" label="True"></ui-radio-option>
                         <ui-radio-option value="false" label="False"></ui-radio-option>
                     </ui-radio-group>
                 `;
-            
-            case 'color':
-                return `
+
+      case "color":
+        return `
                     <input 
                         name="setting_value"
                         type="color" 
-                        value="${currentValue || '#000000'}"
+                        value="${currentValue || "#000000"}"
                         class="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 `;
-            
-            case 'file':
-                return `
+
+      case "file":
+        return `
                     <ui-file-upload 
                         name="setting_value"
                         accept="*/*"
@@ -154,9 +164,9 @@ class SystemUpdateModal extends HTMLElement {
                         class="w-full">
                     </ui-file-upload>
                 `;
-            
-            case 'image':
-                return `
+
+      case "image":
+        return `
                     <ui-file-upload 
                         name="setting_value"
                         accept="image/*"
@@ -165,9 +175,9 @@ class SystemUpdateModal extends HTMLElement {
                         class="w-full">
                     </ui-file-upload>
                 `;
-            
-            case 'textarea':
-                return `
+
+      case "textarea":
+        return `
                     <ui-textarea 
                         name="setting_value"
                         placeholder="Enter text value"
@@ -176,10 +186,10 @@ class SystemUpdateModal extends HTMLElement {
                         class="w-full">
                     </ui-textarea>
                 `;
-            
-            case 'select':
-                // For select type, we'll use a textarea to allow multiple options
-                return `
+
+      case "select":
+        // For select type, we'll use a textarea to allow multiple options
+        return `
                     <ui-textarea 
                         name="setting_value"
                         placeholder="Enter select options (one per line or comma separated)"
@@ -188,9 +198,9 @@ class SystemUpdateModal extends HTMLElement {
                         class="w-full">
                     </ui-textarea>
                 `;
-            
-            default:
-                return `
+
+      default:
+        return `
                     <ui-input 
                         name="setting_value"
                         type="text" 
@@ -199,166 +209,189 @@ class SystemUpdateModal extends HTMLElement {
                         class="w-full">
                     </ui-input>
                 `;
-        }
     }
+  }
 
-    // Update the setting
-    async updateSetting() {
-        try {
-            // Small delay to ensure components are initialized
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
-            // Get values from custom UI components
-            const allInputs = this.querySelectorAll('ui-input');
-            const keyInput = allInputs[0]; // First ui-input is the setting key
-            const settingValueInput = allInputs[1]; // Second ui-input is the setting value
-            const typeDropdown = this.querySelector('ui-dropdown[data-field="setting_type"]');
-            const categoryDropdown = this.querySelector('ui-dropdown[data-field="category"]');
-            const descriptionTextarea = this.querySelector('ui-textarea[name="description"]');
-            const statusSwitch = this.querySelector('ui-switch[name="is_active"]');
+  // Update the setting
+  async updateSetting() {
+    try {
+      // Small delay to ensure components are initialized
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
-            // Get value based on the type
-            let valueInput;
-            let fileUpload = null; // Declare fileUpload variable
-            const settingType = typeDropdown ? typeDropdown.value : 'text';
-            
-            switch (settingType) {
-                case 'boolean':
-                    const radioGroup = this.querySelector('ui-radio-group[name="setting_value"]');
-                    valueInput = radioGroup ? radioGroup.value : 'false';
-                    break;
-                case 'textarea':
-                case 'select':
-                    const textarea = this.querySelector('ui-textarea[name="setting_value"]');
-                    valueInput = textarea ? textarea.value : '';
-                    break;
-                case 'file':
-                case 'image':
-                    fileUpload = this.querySelector('ui-file-upload[name="setting_value"]');
-                    valueInput = fileUpload ? fileUpload.value : '';
-                    break;
-                case 'color':
-                    const colorInput = this.querySelector('input[name="setting_value"]');
-                    valueInput = colorInput ? colorInput.value : '#000000';
-                    break;
-                default:
-                    // For text and number types, use the settingValueInput directly
-                    valueInput = settingValueInput ? settingValueInput.value : '';
-                    break;
-            }
+      // Get values from custom UI components
+      const allInputs = this.querySelectorAll("ui-input");
+      const keyInput = allInputs[0]; // First ui-input is the setting key
+      const settingValueInput = allInputs[1]; // Second ui-input is the setting value
+      const typeDropdown = this.querySelector(
+        'ui-dropdown[data-field="setting_type"]',
+      );
+      const categoryDropdown = this.querySelector(
+        'ui-dropdown[data-field="category"]',
+      );
+      const descriptionTextarea = this.querySelector(
+        'ui-textarea[name="description"]',
+      );
+      const statusSwitch = this.querySelector('ui-switch[name="is_active"]');
 
-            // Fallback: Try to get value from the input element directly if component isn't initialized
-            let settingKey = '';
-            if (keyInput) {
-                settingKey = keyInput.value || keyInput.getAttribute('value') || '';
-            } else {
-                // Try to find the actual input element inside the component
-                const actualInput = this.querySelector('ui-input[name="setting_key"] input');
-                if (actualInput) {
-                    settingKey = actualInput.value || '';
-                } else {
-                    // Try to get from the setting data directly
-                    settingKey = this.settingData?.setting_key || '';
-                }
-            }
-            
-            // Fallback for setting value if not found
-            if (!valueInput && (settingType === 'text' || settingType === 'number')) {
-                // Try to get from the setting data directly
-                valueInput = this.settingData?.setting_value || '';
-            }
+      // Get value based on the type
+      let valueInput;
+      let fileUpload = null; // Declare fileUpload variable
+      const settingType = typeDropdown ? typeDropdown.value : "text";
 
-            const settingData = {
-                setting_key: settingKey,
-                setting_value: valueInput,
-                setting_type: settingType,
-                category: categoryDropdown ? categoryDropdown.value : 'general',
-                description: descriptionTextarea ? descriptionTextarea.value : '',
-                is_active: statusSwitch ? statusSwitch.checked : true
-            };
+      switch (settingType) {
+        case "boolean":
+          const radioGroup = this.querySelector(
+            'ui-radio-group[name="setting_value"]',
+          );
+          valueInput = radioGroup ? radioGroup.value : "false";
+          break;
+        case "textarea":
+        case "select":
+          const textarea = this.querySelector(
+            'ui-textarea[name="setting_value"]',
+          );
+          valueInput = textarea ? textarea.value : "";
+          break;
+        case "file":
+        case "image":
+          fileUpload = this.querySelector(
+            'ui-file-upload[name="setting_value"]',
+          );
+          valueInput = fileUpload ? fileUpload.value : "";
+          break;
+        case "color":
+          const colorInput = this.querySelector('input[name="setting_value"]');
+          valueInput = colorInput ? colorInput.value : "#000000";
+          break;
+        default:
+          // For text and number types, use the settingValueInput directly
+          valueInput = settingValueInput ? settingValueInput.value : "";
+          break;
+      }
 
-            // Validate required fields
-            if (!settingData.setting_key) {
-                Toast.show({
-                    title: 'Validation Error',
-                    message: 'Setting key is required',
-                    variant: 'error',
-                    duration: 3000
-                });
-                return;
-            }
-
-            // Get the auth token
-            const token = localStorage.getItem('token');
-            if (!token) {
-                Toast.show({
-                    title: 'Authentication Error',
-                    message: 'Please log in to update settings',
-                    variant: 'error',
-                    duration: 3000
-                });
-                return;
-            }
-
-            // Handle file upload for file/image types
-            let response;
-            if ((settingType === 'file' || settingType === 'image') && fileUpload && fileUpload.getFiles().length > 0) {
-                // Prepare form data for multipart request
-                const formData = new FormData();
-                
-                // Add all form fields
-                Object.keys(settingData).forEach(key => {
-                    formData.append(key, settingData[key]);
-                });
-                
-                // Add file if selected
-                const file = fileUpload.getFiles()[0];
-                formData.append('setting_value', file);
-                
-                // Update the setting with multipart data
-                response = await api.withToken(token).put(`/settings/${this.settingData.id}`, formData);
-            } else {
-                // Update the setting with JSON data
-                response = await api.withToken(token).put(`/settings/${this.settingData.id}`, settingData);
-            }
-            
-            Toast.show({
-                title: 'Success',
-                message: 'Setting updated successfully',
-                variant: 'success',
-                duration: 3000
-            });
-
-            // Construct the updated setting data from response
-            const updatedSetting = {
-                ...this.settingData, // Keep existing fields like id, created_at
-                ...settingData,
-                updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
-            };
-
-            // Close modal and dispatch event
-            this.close();
-            this.dispatchEvent(new CustomEvent('setting-updated', {
-                detail: { setting: updatedSetting },
-                bubbles: true,
-                composed: true
-            }));
-
-        } catch (error) {
-            console.error('❌ Error updating setting:', error);
-            Toast.show({
-                title: 'Error',
-                message: error.response?.data?.message || 'Failed to update setting',
-                variant: 'error',
-                duration: 3000
-            });
+      // Fallback: Try to get value from the input element directly if component isn't initialized
+      let settingKey = "";
+      if (keyInput) {
+        settingKey = keyInput.value || keyInput.getAttribute("value") || "";
+      } else {
+        // Try to find the actual input element inside the component
+        const actualInput = this.querySelector(
+          'ui-input[name="setting_key"] input',
+        );
+        if (actualInput) {
+          settingKey = actualInput.value || "";
+        } else {
+          // Try to get from the setting data directly
+          settingKey = this.settingData?.setting_key || "";
         }
-    }
+      }
 
-    render() {
-        this.innerHTML = `
+      // Fallback for setting value if not found
+      if (!valueInput && (settingType === "text" || settingType === "number")) {
+        // Try to get from the setting data directly
+        valueInput = this.settingData?.setting_value || "";
+      }
+
+      const settingData = {
+        setting_key: settingKey,
+        setting_value: valueInput,
+        setting_type: settingType,
+        category: categoryDropdown ? categoryDropdown.value : "general",
+        description: descriptionTextarea ? descriptionTextarea.value : "",
+        is_active: statusSwitch ? statusSwitch.checked : true,
+      };
+
+      // Validate required fields
+      if (!settingData.setting_key) {
+        Toast.show({
+          title: "Validation Error",
+          message: "Setting key is required",
+          variant: "error",
+          duration: 3000,
+        });
+        return;
+      }
+
+      // Get the auth token
+      const token = localStorage.getItem("token");
+      if (!token) {
+        Toast.show({
+          title: "Authentication Error",
+          message: "Please log in to update settings",
+          variant: "error",
+          duration: 3000,
+        });
+        return;
+      }
+
+      // Handle file upload for file/image types
+      let response;
+      if (
+        (settingType === "file" || settingType === "image") &&
+        fileUpload &&
+        fileUpload.getFiles().length > 0
+      ) {
+        // Prepare form data for multipart request
+        const formData = new FormData();
+
+        // Add all form fields
+        Object.keys(settingData).forEach((key) => {
+          formData.append(key, settingData[key]);
+        });
+
+        // Add file if selected
+        const file = fileUpload.getFiles()[0];
+        formData.append("setting_value", file);
+
+        // Update the setting with multipart data
+        response = await api
+          .withToken(token)
+          .put(`/settings/${this.settingData.id}`, formData);
+      } else {
+        // Update the setting with JSON data
+        response = await api
+          .withToken(token)
+          .put(`/settings/${this.settingData.id}`, settingData);
+      }
+
+      Toast.show({
+        title: "Success",
+        message: "Setting updated successfully",
+        variant: "success",
+        duration: 3000,
+      });
+
+      // Construct the updated setting data from response
+      const updatedSetting = {
+        ...this.settingData, // Keep existing fields like id, created_at
+        ...settingData,
+        updated_at: new Date().toISOString().slice(0, 19).replace("T", " "),
+      };
+
+      // Close modal and dispatch event
+      this.close();
+      this.dispatchEvent(
+        new CustomEvent("setting-updated", {
+          detail: { setting: updatedSetting },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    } catch (error) {
+      console.error("❌ Error updating setting:", error);
+      Toast.show({
+        title: "Error",
+        message: error.response?.data?.message || "Failed to update setting",
+        variant: "error",
+        duration: 3000,
+      });
+    }
+  }
+
+  render() {
+    this.innerHTML = `
             <ui-modal 
-                ${this.hasAttribute('open') ? 'open' : ''} 
+                ${this.hasAttribute("open") ? "open" : ""} 
                 position="right" 
                 close-button="true">
                 <div slot="title">Update System Setting</div>
@@ -370,7 +403,7 @@ class SystemUpdateModal extends HTMLElement {
                             name="setting_key"
                             type="text" 
                             placeholder="Enter setting key"
-                            value="${this.settingData?.setting_key || ''}"
+                            value="${this.settingData?.setting_key || ""}"
                             class="w-full">
                         </ui-input>
                     </div>
@@ -380,7 +413,7 @@ class SystemUpdateModal extends HTMLElement {
                         <ui-dropdown 
                             data-field="setting_type"
                             placeholder="Select type"
-                            value="${this.settingData?.setting_type || 'text'}"
+                            value="${this.settingData?.setting_type || "text"}"
                             class="w-full">
                             <ui-option value="text">Text</ui-option>
                             <ui-option value="number">Number</ui-option>
@@ -405,7 +438,7 @@ class SystemUpdateModal extends HTMLElement {
                         <ui-dropdown 
                             data-field="category"
                             placeholder="Select category"
-                            value="${this.settingData?.category || 'general'}"
+                            value="${this.settingData?.category || "general"}"
                             class="w-full">
                             <ui-option value="general">General</ui-option>
                             <ui-option value="theme">Theme</ui-option>
@@ -423,7 +456,7 @@ class SystemUpdateModal extends HTMLElement {
                             name="description"
                             placeholder="Briefly describe this setting"
                             rows="2"
-                            value="${this.settingData?.description || ''}"
+                            value="${this.settingData?.description || ""}"
                             class="w-full">
                         </ui-textarea>
                     </div>
@@ -432,7 +465,7 @@ class SystemUpdateModal extends HTMLElement {
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <ui-switch 
                             name="is_active"
-                            ${this.settingData?.is_active ? 'checked' : ''}
+                            ${this.settingData?.is_active ? "checked" : ""}
                             class="w-full">
                             <span slot="label">Active</span>
                         </ui-switch>
@@ -440,8 +473,8 @@ class SystemUpdateModal extends HTMLElement {
                 </form>
             </ui-modal>
         `;
-    }
+  }
 }
 
-customElements.define('system-update-modal', SystemUpdateModal);
+customElements.define("system-update-modal", SystemUpdateModal);
 export default SystemUpdateModal;

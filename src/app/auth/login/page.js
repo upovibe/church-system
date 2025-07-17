@@ -1,152 +1,155 @@
-import App from '@/core/App.js';
-import '@/components/ui/Card.js';
-import '@/components/ui/Input.js';
-import '@/components/ui/Button.js';
-import '@/components/ui/Checkbox.js';
-import '@/components/ui/Toast.js';
-import api from '@/services/api.js';
+import App from "@/core/App.js";
+import "@/components/ui/Card.js";
+import "@/components/ui/Input.js";
+import "@/components/ui/Button.js";
+import "@/components/ui/Checkbox.js";
+import "@/components/ui/Toast.js";
+import api from "@/services/api.js";
 
 /**
  * Login Page Component (/auth/login)
- * 
+ *
  * Login form with email and password fields.
  */
 class LoginPage extends App {
-    constructor() {
-        super();
-        this.formData = {
-            email: '',
-            password: '',
-            rememberMe: false
-        };
+  constructor() {
+    super();
+    this.formData = {
+      email: "",
+      password: "",
+      rememberMe: false,
+    };
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    document.title = "Login | School System";
+  }
+
+  handleInputChange(field, value) {
+    this.formData[field] = value;
+  }
+
+  async handleSubmit() {
+    const { email, password, rememberMe } = this.formData;
+
+    if (!email || !password) {
+      Toast.show({
+        title: "Validation Error",
+        message: "Please fill in all fields",
+        variant: "error",
+        duration: 3000,
+      });
+      return;
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        document.title = 'Login | School System';
+    try {
+      // Call the actual API
+      await this.authenticateUser(email, password);
+    } catch (error) {
+      Toast.show({
+        title: "Login Failed",
+        message:
+          error.response?.data?.error || "An error occurred during login",
+        variant: "error",
+        duration: 3000,
+      });
     }
+  }
 
-    handleInputChange(field, value) {
-        this.formData[field] = value;
+  async authenticateUser(email, password) {
+    try {
+      // Make API call to authenticate
+      const response = await api.post("/auth/login", {
+        email: email,
+        password: password,
+      });
+
+      const { user, requires_password_change } = response.data;
+
+      // Map role_id to role name (temporary solution)
+      const roleMap = {
+        1: "admin",
+        2: "teacher",
+        3: "student",
+        4: "parent",
+        5: "staff",
+      };
+
+      const roleName = roleMap[user.role_id] || "admin";
+
+      // Store user data and token
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: roleName,
+        }),
+      );
+      localStorage.setItem("token", user.token);
+
+      // Check if user needs to change password
+      if (requires_password_change) {
+        // Set flag in localStorage
+        localStorage.setItem("requiresPasswordChange", "true");
+
+        Toast.show({
+          title: "Password Change Required",
+          message: "You must change your password on first login",
+          variant: "warning",
+          duration: 5000,
+        });
+
+        // Redirect to password change page
+        setTimeout(() => {
+          window.location.href = "/auth/change-password";
+        }, 2000);
+        return;
+      }
+
+      // Clear the flag if user doesn't need to change password
+      localStorage.removeItem("requiresPasswordChange");
+
+      Toast.show({
+        title: "Login Successful",
+        message: `Welcome back, ${user.name}!`,
+        variant: "success",
+        duration: 2000,
+      });
+
+      // Redirect to appropriate dashboard based on role
+      setTimeout(() => {
+        this.redirectToDashboard(roleName);
+      }, 2000);
+    } catch (error) {
+      // Handle specific API errors
+      if (error.response?.status === 401) {
+        throw new Error("Invalid email or password");
+      } else if (error.response?.status === 422) {
+        throw new Error("Please check your input and try again");
+      } else {
+        throw new Error("Network error. Please try again.");
+      }
     }
+  }
 
-    async handleSubmit() {
-        const { email, password, rememberMe } = this.formData;
-        
-        if (!email || !password) {
-            Toast.show({
-                title: 'Validation Error',
-                message: 'Please fill in all fields',
-                variant: 'error',
-                duration: 3000
-            });
-            return;
-        }
+  redirectToDashboard(role) {
+    const dashboardRoutes = {
+      admin: "/dashboard/admin",
+      teacher: "/dashboard/teacher",
+      student: "/dashboard/student",
+      parent: "/dashboard/parent",
+      staff: "/dashboard/staff",
+    };
 
-        try {
-            // Call the actual API
-            await this.authenticateUser(email, password);
-        } catch (error) {
-            Toast.show({
-                title: 'Login Failed',
-                message: error.response?.data?.error || 'An error occurred during login',
-                variant: 'error',
-                duration: 3000
-            });
-        }
-    }
+    const route = dashboardRoutes[role] || "/dashboard/admin";
+    window.location.href = route;
+  }
 
-    async authenticateUser(email, password) {
-        try {
-            // Make API call to authenticate
-            const response = await api.post('/auth/login', {
-                email: email,
-                password: password
-            });
-
-            const { user, requires_password_change } = response.data;
-            
-            // Map role_id to role name (temporary solution)
-            const roleMap = {
-                1: 'admin',
-                2: 'teacher', 
-                3: 'student',
-                4: 'parent',
-                5: 'staff'
-            };
-
-            const roleName = roleMap[user.role_id] || 'admin';
-
-            // Store user data and token
-            localStorage.setItem('userData', JSON.stringify({
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: roleName
-            }));
-            localStorage.setItem('token', user.token);
-
-            // Check if user needs to change password
-            if (requires_password_change) {
-                // Set flag in localStorage
-                localStorage.setItem('requiresPasswordChange', 'true');
-                
-                Toast.show({
-                    title: 'Password Change Required',
-                    message: 'You must change your password on first login',
-                    variant: 'warning',
-                    duration: 5000
-                });
-                
-                // Redirect to password change page
-                setTimeout(() => {
-                    window.location.href = '/auth/change-password';
-                }, 2000);
-                return;
-            }
-
-            // Clear the flag if user doesn't need to change password
-            localStorage.removeItem('requiresPasswordChange');
-
-            Toast.show({
-                title: 'Login Successful',
-                message: `Welcome back, ${user.name}!`,
-                variant: 'success',
-                duration: 2000
-            });
-
-            // Redirect to appropriate dashboard based on role
-            setTimeout(() => {
-                this.redirectToDashboard(roleName);
-            }, 2000);
-
-        } catch (error) {
-            // Handle specific API errors
-            if (error.response?.status === 401) {
-                throw new Error('Invalid email or password');
-            } else if (error.response?.status === 422) {
-                throw new Error('Please check your input and try again');
-            } else {
-                throw new Error('Network error. Please try again.');
-            }
-        }
-    }
-
-    redirectToDashboard(role) {
-        const dashboardRoutes = {
-            'admin': '/dashboard/admin',
-            'teacher': '/dashboard/teacher',
-            'student': '/dashboard/student',
-            'parent': '/dashboard/parent',
-            'staff': '/dashboard/staff'
-        };
-
-        const route = dashboardRoutes[role] || '/dashboard/admin';
-        window.location.href = route;
-    }
-
-    render() {
-        return `
+  render() {
+    return `
             <div class="flex items-center justify-center min-h-screen p-5">
                     <ui-card class="p-8 shadow-2xl rounded-2xl border-0 bg-white/95 backdrop-blur-sm">
                         <!-- Logo/Icon Section -->
@@ -220,8 +223,8 @@ class LoginPage extends App {
                     </ui-card>
             </div>
         `;
-    }
+  }
 }
 
-customElements.define('app-login-page', LoginPage);
+customElements.define("app-login-page", LoginPage);
 export default LoginPage;

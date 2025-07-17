@@ -1,15 +1,15 @@
 /**
  * Dialog Component
- * 
+ *
  * A modal dialog component with header, content, and footer sections.
- * 
+ *
  * Attributes:
  * - open: boolean (default: false) - controls dialog visibility
  * - title: string - sets the header title
  * - position: string (default: "center") - dialog position: "top", "bottom", "left", "right", "center"
  * - variant: string (default: "default") - button variant: "default", "danger" for delete confirmations
  * - no-footer: boolean - hides default footer buttons when custom footer is provided
- * 
+ *
  * Usage:
  * <ui-dialog open title="My Dialog" position="top">
  *   <div slot="content">Dialog content goes here</div>
@@ -17,24 +17,24 @@
  * </ui-dialog>
  */
 class Dialog extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.isOpen = this.hasAttribute('open');
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.isOpen = this.hasAttribute("open");
+  }
 
-    connectedCallback() {
-        this.render();
-        this.setupEventListeners();
-    }
+  connectedCallback() {
+    this.render();
+    this.setupEventListeners();
+  }
 
-    render() {
-        const title = this.getAttribute('title') || 'Dialog';
-        const position = this.getAttribute('position') || 'center';
-        const variant = this.getAttribute('variant') || 'default';
-        const noFooter = this.hasAttribute('no-footer');
-        
-        this.shadowRoot.innerHTML = `
+  render() {
+    const title = this.getAttribute("title") || "Dialog";
+    const position = this.getAttribute("position") || "center";
+    const variant = this.getAttribute("variant") || "default";
+    const noFooter = this.hasAttribute("no-footer");
+
+    this.shadowRoot.innerHTML = `
             <style>
                 :host {
                     display: block;
@@ -220,7 +220,7 @@ class Dialog extends HTMLElement {
                 }
             </style>
             
-            <div class="dialog-overlay position-${position} ${this.isOpen ? 'open' : ''}">
+            <div class="dialog-overlay position-${position} ${this.isOpen ? "open" : ""}">
                 <div class="dialog">
                     <div class="dialog-header">
                         <h2 class="dialog-title">${title}</h2>
@@ -239,128 +239,139 @@ class Dialog extends HTMLElement {
                     
                     <div class="dialog-footer">
                         <slot name="footer">
-                            ${noFooter ? '' : `
+                            ${
+                              noFooter
+                                ? ""
+                                : `
                                 <button class="secondary" id="cancel-btn">Cancel</button>
-                                <button class="${variant === 'danger' ? 'danger' : 'primary'}" id="confirm-btn">
-                                    ${variant === 'danger' ? 'Delete' : 'Confirm'}
+                                <button class="${variant === "danger" ? "danger" : "primary"}" id="confirm-btn">
+                                    ${variant === "danger" ? "Delete" : "Confirm"}
                                 </button>
-                            `}
+                            `
+                            }
                         </slot>
                     </div>
                 </div>
             </div>
         `;
+  }
+
+  setupEventListeners() {
+    const overlay = this.shadowRoot.querySelector(".dialog-overlay");
+    const closeBtn = this.shadowRoot.getElementById("close-dialog");
+    const cancelBtn = this.shadowRoot.getElementById("cancel-btn");
+    const confirmBtn = this.shadowRoot.getElementById("confirm-btn");
+
+    // Overlay click
+    if (overlay) {
+      overlay.onclick = (e) => {
+        if (e.target === overlay) {
+          this.close();
+        }
+      };
     }
 
-    setupEventListeners() {
-        const overlay = this.shadowRoot.querySelector('.dialog-overlay');
-        const closeBtn = this.shadowRoot.getElementById('close-dialog');
-        const cancelBtn = this.shadowRoot.getElementById('cancel-btn');
-        const confirmBtn = this.shadowRoot.getElementById('confirm-btn');
-
-        // Overlay click
-        if (overlay) {
-            overlay.onclick = (e) => {
-                if (e.target === overlay) {
-                    this.close();
-                }
-            };
-        }
-
-        // Close button - using direct onclick like Modal
-        if (closeBtn) {
-            closeBtn.onclick = (e) => {
-                e.stopPropagation();
-                this.close();
-            };
-        }
-
-        // Cancel button
-        if (cancelBtn) {
-            cancelBtn.onclick = (e) => {
-                e.stopPropagation();
-                this.dispatchEvent(new CustomEvent('cancel', { bubbles: true }));
-                this.close();
-            };
-        }
-
-        // Confirm button
-        if (confirmBtn) {
-            confirmBtn.onclick = (e) => {
-                e.stopPropagation();
-                this.dispatchEvent(new CustomEvent('confirm', { bubbles: true }));
-                this.close();
-            };
-        }
-
-        // Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isOpen) {
-                this.close();
-            }
-        });
+    // Close button - using direct onclick like Modal
+    if (closeBtn) {
+      closeBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.close();
+      };
     }
 
-    open() {
-        if (this.isOpen) return;
+    // Cancel button
+    if (cancelBtn) {
+      cancelBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.dispatchEvent(new CustomEvent("cancel", { bubbles: true }));
+        this.close();
+      };
+    }
+
+    // Confirm button
+    if (confirmBtn) {
+      confirmBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.dispatchEvent(new CustomEvent("confirm", { bubbles: true }));
+        this.close();
+      };
+    }
+
+    // Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && this.isOpen) {
+        this.close();
+      }
+    });
+  }
+
+  open() {
+    if (this.isOpen) return;
+    this.isOpen = true;
+    this.setAttribute("open", "");
+
+    // Update visual state
+    const overlay = this.shadowRoot.querySelector(".dialog-overlay");
+    if (overlay) {
+      overlay.classList.add("open");
+    }
+
+    // Dispatch open event
+    this.dispatchEvent(new CustomEvent("dialog-open", { bubbles: true }));
+  }
+
+  close() {
+    if (!this.isOpen) return;
+    this.isOpen = false;
+    this.removeAttribute("open");
+
+    // Update visual state
+    const overlay = this.shadowRoot.querySelector(".dialog-overlay");
+    if (overlay) {
+      overlay.classList.remove("open");
+    }
+
+    // Dispatch close event
+    this.dispatchEvent(new CustomEvent("dialog-close", { bubbles: true }));
+  }
+
+  static get observedAttributes() {
+    return ["open", "title", "position", "variant", "no-footer"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "open") {
+      const shouldBeOpen = this.hasAttribute("open");
+      if (shouldBeOpen && !this.isOpen) {
         this.isOpen = true;
-        this.setAttribute('open', '');
-        
-        // Update visual state
-        const overlay = this.shadowRoot.querySelector('.dialog-overlay');
-        if (overlay) {
-            overlay.classList.add('open');
-        }
-        
-        // Dispatch open event
-        this.dispatchEvent(new CustomEvent('dialog-open', { bubbles: true }));
-    }
-
-    close() {
-        if (!this.isOpen) return;
+        this.shadowRoot.querySelector(".dialog-overlay").classList.add("open");
+        this.dispatchEvent(new CustomEvent("dialog-open", { bubbles: true }));
+      } else if (!shouldBeOpen && this.isOpen) {
         this.isOpen = false;
-        this.removeAttribute('open');
-        
-        // Update visual state
-        const overlay = this.shadowRoot.querySelector('.dialog-overlay');
-        if (overlay) {
-            overlay.classList.remove('open');
-        }
-        
-        // Dispatch close event
-        this.dispatchEvent(new CustomEvent('dialog-close', { bubbles: true }));
+        this.shadowRoot
+          .querySelector(".dialog-overlay")
+          .classList.remove("open");
+        this.dispatchEvent(new CustomEvent("dialog-close", { bubbles: true }));
+      }
+    } else if (
+      name === "title" ||
+      name === "position" ||
+      name === "variant" ||
+      name === "no-footer"
+    ) {
+      this.render();
+      this.setupEventListeners();
     }
+  }
 
-    static get observedAttributes() {
-        return ['open', 'title', 'position', 'variant', 'no-footer'];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'open') {
-            const shouldBeOpen = this.hasAttribute('open');
-            if (shouldBeOpen && !this.isOpen) {
-                this.isOpen = true;
-                this.shadowRoot.querySelector('.dialog-overlay').classList.add('open');
-                this.dispatchEvent(new CustomEvent('dialog-open', { bubbles: true }));
-            } else if (!shouldBeOpen && this.isOpen) {
-                this.isOpen = false;
-                this.shadowRoot.querySelector('.dialog-overlay').classList.remove('open');
-                this.dispatchEvent(new CustomEvent('dialog-close', { bubbles: true }));
-            }
-        } else if (name === 'title' || name === 'position' || name === 'variant' || name === 'no-footer') {
-            this.render();
-            this.setupEventListeners();
-        }
-    }
-
-    // Method to ensure event listeners are set up after render
-    ensureEventListeners() {
-        // Use setTimeout to ensure DOM is ready
-        setTimeout(() => {
-            this.setupEventListeners();
-        }, 0);
-    }
+  // Method to ensure event listeners are set up after render
+  ensureEventListeners() {
+    // Use setTimeout to ensure DOM is ready
+    setTimeout(() => {
+      this.setupEventListeners();
+    }, 0);
+  }
 }
 
-customElements.define('ui-dialog', Dialog);
-export default Dialog; 
+customElements.define("ui-dialog", Dialog);
+export default Dialog;

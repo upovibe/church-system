@@ -1,8 +1,8 @@
 /**
  * WYSIWYG Editor Component
- * 
+ *
  * A rich text editor component using Quill.js from CDN
- * 
+ *
  * Attributes:
  * - placeholder: string (default: 'Start writing...') - placeholder text
  * - value: string (default: '') - initial content
@@ -10,188 +10,185 @@
  * - theme: string (default: 'snow') - editor theme
  * - height: string (default: '300px') - editor height
  * - toolbar: string (default: 'full') - toolbar configuration: 'full', 'basic', 'minimal', 'custom'
- * 
+ *
  * Events:
  * - change: Fired when content changes (detail: { html: string, text: string, delta: object })
  * - focus: Fired when editor gains focus
  * - blur: Fired when editor loses focus
- * 
+ *
  * Usage:
  * <ui-wysiwyg placeholder="Write your content here..."></ui-wysiwyg>
  * <ui-wysiwyg toolbar="basic" height="200px"></ui-wysiwyg>
  * <ui-wysiwyg readonly value="<p>Read-only content</p>"></ui-wysiwyg>
  */
 class Wysiwyg extends HTMLElement {
-    constructor() {
-        super();
-        this.editor = null;
-        this.quillLoaded = false;
-        this.initialized = false;
+  constructor() {
+    super();
+    this.editor = null;
+    this.quillLoaded = false;
+    this.initialized = false;
+  }
+
+  static get observedAttributes() {
+    return ["placeholder", "value", "readonly", "theme", "height", "toolbar"];
+  }
+
+  connectedCallback() {
+    this.loadQuill();
+  }
+
+  disconnectedCallback() {
+    if (this.editor) {
+      this.editor = null;
+    }
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue && this.editor) {
+      switch (name) {
+        case "placeholder":
+          this.editor.root.setAttribute("data-placeholder", newValue);
+          break;
+        case "value":
+          this.editor.root.innerHTML = newValue;
+          break;
+        case "readonly":
+          this.editor.enable(!this.hasAttribute("readonly"));
+          break;
+        case "height":
+          this.editor.root.style.height = newValue;
+          break;
+      }
+    }
+  }
+
+  async loadQuill() {
+    // Check if Quill is already loaded
+    if (window.Quill) {
+      this.initializeEditor();
+      return;
     }
 
-    static get observedAttributes() {
-        return ['placeholder', 'value', 'readonly', 'theme', 'height', 'toolbar'];
+    // Load Quill CSS
+    if (!document.querySelector('link[href*="quill"]')) {
+      const link = document.createElement("link");
+      link.href = "https://cdn.quilljs.com/1.3.6/quill.snow.css";
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
     }
 
-    connectedCallback() {
-        this.loadQuill();
-    }
-
-    disconnectedCallback() {
-        if (this.editor) {
-            this.editor = null;
-        }
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue && this.editor) {
-            switch (name) {
-                case 'placeholder':
-                    this.editor.root.setAttribute('data-placeholder', newValue);
-                    break;
-                case 'value':
-                    this.editor.root.innerHTML = newValue;
-                    break;
-                case 'readonly':
-                    this.editor.enable(!this.hasAttribute('readonly'));
-                    break;
-                case 'height':
-                    this.editor.root.style.height = newValue;
-                    break;
-            }
-        }
-    }
-
-    async loadQuill() {
-        // Check if Quill is already loaded
+    // Load Quill JS
+    if (!document.querySelector('script[src*="quill"]')) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.quilljs.com/1.3.6/quill.min.js";
+      script.onload = () => {
+        this.initializeEditor();
+      };
+      document.head.appendChild(script);
+    } else {
+      // If script is already loading, wait for it
+      const checkQuill = setInterval(() => {
         if (window.Quill) {
-            this.initializeEditor();
-            return;
+          clearInterval(checkQuill);
+          this.initializeEditor();
         }
+      }, 100);
+    }
+  }
 
-        // Load Quill CSS
-        if (!document.querySelector('link[href*="quill"]')) {
-            const link = document.createElement('link');
-            link.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css';
-            link.rel = 'stylesheet';
-            document.head.appendChild(link);
-        }
+  initializeEditor() {
+    if (this.initialized || !window.Quill) return;
 
-        // Load Quill JS
-        if (!document.querySelector('script[src*="quill"]')) {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.quilljs.com/1.3.6/quill.min.js';
-            script.onload = () => {
-                this.initializeEditor();
-            };
-            document.head.appendChild(script);
-        } else {
-            // If script is already loading, wait for it
-            const checkQuill = setInterval(() => {
-                if (window.Quill) {
-                    clearInterval(checkQuill);
-                    this.initializeEditor();
-                }
-            }, 100);
-        }
+    this.initialized = true;
+
+    // Create editor container
+    const container = document.createElement("div");
+    container.className = "wysiwyg-container";
+    this.appendChild(container);
+
+    // Get configuration
+    const placeholder = this.getAttribute("placeholder") || "Start writing...";
+    const theme = this.getAttribute("theme") || "snow";
+    const height = this.getAttribute("height") || "300px";
+    const toolbar = this.getAttribute("toolbar") || "full";
+    const readonly = this.hasAttribute("readonly");
+
+    // Configure toolbar based on attribute
+    let toolbarConfig;
+    switch (toolbar) {
+      case "basic":
+        toolbarConfig = [
+          ["bold", "italic", "underline"],
+          ["link", "blockquote"],
+          [{ list: "ordered" }, { list: "bullet" }],
+        ];
+        break;
+      case "minimal":
+        toolbarConfig = [["bold", "italic"], ["link"]];
+        break;
+      case "custom":
+        toolbarConfig = [
+          ["bold", "italic", "underline", "strike"],
+          ["blockquote", "code-block"],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ script: "sub" }, { script: "super" }],
+          [{ indent: "-1" }, { indent: "+1" }],
+          [{ direction: "rtl" }],
+          [{ size: ["small", false, "large", "huge"] }],
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          [{ color: [] }, { background: [] }],
+          [{ font: [] }],
+          [{ align: [] }],
+          ["clean"],
+          ["link", "image", "video"],
+        ];
+        break;
+      default: // 'full'
+        toolbarConfig = [
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          ["bold", "italic", "underline", "strike"],
+          [{ color: [] }, { background: [] }],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ indent: "-1" }, { indent: "+1" }],
+          [{ align: [] }],
+          ["blockquote", "code-block"],
+          ["link", "image"],
+          ["clean"],
+        ];
     }
 
-    initializeEditor() {
-        if (this.initialized || !window.Quill) return;
+    // Initialize Quill
+    this.editor = new window.Quill(container, {
+      theme: theme,
+      placeholder: placeholder,
+      readOnly: readonly,
+      modules: {
+        toolbar: toolbarConfig,
+      },
+    });
 
-        this.initialized = true;
-        
-        // Create editor container
-        const container = document.createElement('div');
-        container.className = 'wysiwyg-container';
-        this.appendChild(container);
-
-        // Get configuration
-        const placeholder = this.getAttribute('placeholder') || 'Start writing...';
-        const theme = this.getAttribute('theme') || 'snow';
-        const height = this.getAttribute('height') || '300px';
-        const toolbar = this.getAttribute('toolbar') || 'full';
-        const readonly = this.hasAttribute('readonly');
-
-        // Configure toolbar based on attribute
-        let toolbarConfig;
-        switch (toolbar) {
-            case 'basic':
-                toolbarConfig = [
-                    ['bold', 'italic', 'underline'],
-                    ['link', 'blockquote'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }]
-                ];
-                break;
-            case 'minimal':
-                toolbarConfig = [
-                    ['bold', 'italic'],
-                    ['link']
-                ];
-                break;
-            case 'custom':
-                toolbarConfig = [
-                    ['bold', 'italic', 'underline', 'strike'],
-                    ['blockquote', 'code-block'],
-                    [{ 'header': 1 }, { 'header': 2 }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'script': 'sub'}, { 'script': 'super' }],
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                    [{ 'direction': 'rtl' }],
-                    [{ 'size': ['small', false, 'large', 'huge'] }],
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'font': [] }],
-                    [{ 'align': [] }],
-                    ['clean'],
-                    ['link', 'image', 'video']
-                ];
-                break;
-            default: // 'full'
-                toolbarConfig = [
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                    [{ 'align': [] }],
-                    ['blockquote', 'code-block'],
-                    ['link', 'image'],
-                    ['clean']
-                ];
-        }
-
-        // Initialize Quill
-        this.editor = new window.Quill(container, {
-            theme: theme,
-            placeholder: placeholder,
-            readOnly: readonly,
-            modules: {
-                toolbar: toolbarConfig
-            }
-        });
-
-        // Set initial content
-        const initialValue = this.getAttribute('value');
-        if (initialValue) {
-            this.editor.root.innerHTML = initialValue;
-        }
-
-        // Set height
-        this.editor.root.style.height = height;
-
-        // Add custom styles
-        this.addCustomStyles();
-
-        // Set up event listeners
-        this.setupEventListeners();
+    // Set initial content
+    const initialValue = this.getAttribute("value");
+    if (initialValue) {
+      this.editor.root.innerHTML = initialValue;
     }
 
-    addCustomStyles() {
-        if (!document.getElementById('upo-ui-wysiwyg-styles')) {
-            const style = document.createElement('style');
-            style.id = 'upo-ui-wysiwyg-styles';
-            style.textContent = `
+    // Set height
+    this.editor.root.style.height = height;
+
+    // Add custom styles
+    this.addCustomStyles();
+
+    // Set up event listeners
+    this.setupEventListeners();
+  }
+
+  addCustomStyles() {
+    if (!document.getElementById("upo-ui-wysiwyg-styles")) {
+      const style = document.createElement("style");
+      style.id = "upo-ui-wysiwyg-styles";
+      style.textContent = `
                 .wysiwyg-container {
                     border: 1px solid #d1d5db;
                     border-radius:0 0 0.375rem 0.375rem;
@@ -339,103 +336,105 @@ class Wysiwyg extends HTMLElement {
                     }
                 }
             `;
-            document.head.appendChild(style);
-        }
+      document.head.appendChild(style);
     }
+  }
 
-    setupEventListeners() {
-        if (!this.editor) return;
+  setupEventListeners() {
+    if (!this.editor) return;
 
-        // Content change event
-        this.editor.on('text-change', (delta, oldDelta, source) => {
-            if (source === 'user') {
-                const html = this.editor.root.innerHTML;
-                const text = this.editor.getText();
-                
-                this.dispatchEvent(new CustomEvent('change', {
-                    detail: {
-                        html: html,
-                        text: text,
-                        delta: delta
-                    },
-                    bubbles: true
-                }));
-            }
-        });
+    // Content change event
+    this.editor.on("text-change", (delta, oldDelta, source) => {
+      if (source === "user") {
+        const html = this.editor.root.innerHTML;
+        const text = this.editor.getText();
 
-        // Focus event
-        this.editor.on('focus', () => {
-            this.dispatchEvent(new CustomEvent('focus', { bubbles: true }));
-        });
+        this.dispatchEvent(
+          new CustomEvent("change", {
+            detail: {
+              html: html,
+              text: text,
+              delta: delta,
+            },
+            bubbles: true,
+          }),
+        );
+      }
+    });
 
-        // Blur event
-        this.editor.on('blur', () => {
-            this.dispatchEvent(new CustomEvent('blur', { bubbles: true }));
-        });
+    // Focus event
+    this.editor.on("focus", () => {
+      this.dispatchEvent(new CustomEvent("focus", { bubbles: true }));
+    });
+
+    // Blur event
+    this.editor.on("blur", () => {
+      this.dispatchEvent(new CustomEvent("blur", { bubbles: true }));
+    });
+  }
+
+  // Public methods
+  getValue() {
+    return this.editor ? this.editor.root.innerHTML : "";
+  }
+
+  setValue(html) {
+    if (this.editor) {
+      this.editor.root.innerHTML = html;
     }
+  }
 
-    // Public methods
-    getValue() {
-        return this.editor ? this.editor.root.innerHTML : '';
-    }
+  getText() {
+    return this.editor ? this.editor.getText() : "";
+  }
 
-    setValue(html) {
-        if (this.editor) {
-            this.editor.root.innerHTML = html;
-        }
+  setText(text) {
+    if (this.editor) {
+      this.editor.setText(text);
     }
+  }
 
-    getText() {
-        return this.editor ? this.editor.getText() : '';
+  enable() {
+    if (this.editor) {
+      this.editor.enable();
     }
+  }
 
-    setText(text) {
-        if (this.editor) {
-            this.editor.setText(text);
-        }
+  disable() {
+    if (this.editor) {
+      this.editor.disable();
     }
+  }
 
-    enable() {
-        if (this.editor) {
-            this.editor.enable();
-        }
+  focus() {
+    if (this.editor) {
+      this.editor.focus();
     }
+  }
 
-    disable() {
-        if (this.editor) {
-            this.editor.disable();
-        }
+  blur() {
+    if (this.editor) {
+      this.editor.blur();
     }
+  }
 
-    focus() {
-        if (this.editor) {
-            this.editor.focus();
-        }
-    }
+  // Getters and setters for attributes
+  get value() {
+    return this.getValue();
+  }
 
-    blur() {
-        if (this.editor) {
-            this.editor.blur();
-        }
-    }
+  set value(val) {
+    this.setValue(val);
+  }
 
-    // Getters and setters for attributes
-    get value() {
-        return this.getValue();
-    }
+  get placeholder() {
+    return this.getAttribute("placeholder") || "Start writing...";
+  }
 
-    set value(val) {
-        this.setValue(val);
-    }
-
-    get placeholder() {
-        return this.getAttribute('placeholder') || 'Start writing...';
-    }
-
-    set placeholder(val) {
-        this.setAttribute('placeholder', val);
-    }
+  set placeholder(val) {
+    this.setAttribute("placeholder", val);
+  }
 }
 
-customElements.define('ui-wysiwyg', Wysiwyg);
-export default Wysiwyg; 
+customElements.define("ui-wysiwyg", Wysiwyg);
+export default Wysiwyg;

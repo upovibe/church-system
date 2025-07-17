@@ -1,21 +1,21 @@
 /**
  * Radio Group Component
- * 
+ *
  * Creates a group of radio buttons with labels. Supports:
  * - Multiple radio options
  * - Selected state management
  * - Accessibility features
  * - Vertical and horizontal layouts
- * 
+ *
  * Attributes:
  * - name: string - name for the radio group (required)
  * - value: string - currently selected value
  * - layout: string - "vertical" or "horizontal" (default: "vertical")
  * - disabled: boolean - disable the entire group
- * 
+ *
  * Events:
  * - change: Fired when selection changes (detail: { value: string, name: string })
- * 
+ *
  * Usage:
  * <ui-radio-group name="favorite-color" value="blue">
  *   <ui-radio-option value="red" label="Red"></ui-radio-option>
@@ -24,25 +24,25 @@
  * </ui-radio-group>
  */
 class RadioGroup extends HTMLElement {
-    constructor() {
-        super();
-        
-        // Create the radio group container
-        this.container = document.createElement('div');
-        this.appendChild(this.container);
-        
-        // Add default styles
-        this.addDefaultStyles();
-        
-        // Bind event handlers
-        this._onRadioChange = this._onRadioChange.bind(this);
-    }
+  constructor() {
+    super();
 
-    addDefaultStyles() {
-        if (!document.getElementById('upo-ui-radio-group-styles')) {
-            const style = document.createElement('style');
-            style.id = 'upo-ui-radio-group-styles';
-            style.textContent = `
+    // Create the radio group container
+    this.container = document.createElement("div");
+    this.appendChild(this.container);
+
+    // Add default styles
+    this.addDefaultStyles();
+
+    // Bind event handlers
+    this._onRadioChange = this._onRadioChange.bind(this);
+  }
+
+  addDefaultStyles() {
+    if (!document.getElementById("upo-ui-radio-group-styles")) {
+      const style = document.createElement("style");
+      style.id = "upo-ui-radio-group-styles";
+      style.textContent = `
                 .upo-radio-group {
                     display: flex;
                     flex-direction: column;
@@ -147,260 +147,262 @@ class RadioGroup extends HTMLElement {
                     }
                 }
             `;
-            document.head.appendChild(style);
-        }
+      document.head.appendChild(style);
+    }
+  }
+
+  connectedCallback() {
+    this.updateLayout();
+    this.updateDisabledState();
+    this.setupEventListeners();
+
+    // Wait for child radio options to be created before setting the selected value
+    setTimeout(() => {
+      this.updateSelectedValue();
+    }, 0);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  static get observedAttributes() {
+    return ["name", "value", "layout", "disabled"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      switch (name) {
+        case "layout":
+          this.updateLayout();
+          break;
+        case "disabled":
+          this.updateDisabledState();
+          break;
+        case "value":
+          this.updateSelectedValue();
+          break;
+      }
+    }
+  }
+
+  updateLayout() {
+    const layout = this.getAttribute("layout") || "vertical";
+    this.container.className = `upo-radio-group ${layout === "horizontal" ? "horizontal" : ""}`;
+  }
+
+  updateDisabledState() {
+    const disabled = this.hasAttribute("disabled");
+    if (disabled) {
+      this.container.classList.add("disabled");
+    } else {
+      this.container.classList.remove("disabled");
     }
 
-    connectedCallback() {
-        this.updateLayout();
-        this.updateDisabledState();
-        this.setupEventListeners();
-        
-        // Wait for child radio options to be created before setting the selected value
-        setTimeout(() => {
-            this.updateSelectedValue();
-        }, 0);
-    }
+    // Update all radio inputs
+    const radioInputs = this.querySelectorAll(".upo-radio-input");
+    radioInputs.forEach((input) => {
+      if (disabled) {
+        input.disabled = true;
+        input.closest(".upo-radio-option").classList.add("disabled");
+      } else {
+        input.disabled = false;
+        input.closest(".upo-radio-option").classList.remove("disabled");
+      }
+    });
+  }
 
-    disconnectedCallback() {
-        this.removeEventListeners();
-    }
+  setupEventListeners() {
+    this.removeEventListeners();
+    this.addEventListener("change", this._onRadioChange);
+  }
 
-    static get observedAttributes() {
-        return ['name', 'value', 'layout', 'disabled'];
-    }
+  removeEventListeners() {
+    this.removeEventListener("change", this._onRadioChange);
+  }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue) {
-            switch (name) {
-                case 'layout':
-                    this.updateLayout();
-                    break;
-                case 'disabled':
-                    this.updateDisabledState();
-                    break;
-                case 'value':
-                    this.updateSelectedValue();
-                    break;
-            }
-        }
-    }
+  updateSelectedValue() {
+    const selectedValue = this.getAttribute("value");
+    const radioInputs = this.querySelectorAll(".upo-radio-input");
 
-    updateLayout() {
-        const layout = this.getAttribute('layout') || 'vertical';
-        this.container.className = `upo-radio-group ${layout === 'horizontal' ? 'horizontal' : ''}`;
-    }
+    radioInputs.forEach((input) => {
+      input.checked = input.value === selectedValue;
+    });
+  }
 
-    updateDisabledState() {
-        const disabled = this.hasAttribute('disabled');
-        if (disabled) {
-            this.container.classList.add('disabled');
-        } else {
-            this.container.classList.remove('disabled');
-        }
-        
-        // Update all radio inputs
-        const radioInputs = this.querySelectorAll('.upo-radio-input');
-        radioInputs.forEach(input => {
-            if (disabled) {
-                input.disabled = true;
-                input.closest('.upo-radio-option').classList.add('disabled');
-            } else {
-                input.disabled = false;
-                input.closest('.upo-radio-option').classList.remove('disabled');
-            }
-        });
-    }
+  _onRadioChange(event) {
+    if (event.target.type === "radio" && event.target.checked) {
+      const newValue = event.target.value;
+      const name = this.getAttribute("name");
 
-    setupEventListeners() {
-        this.removeEventListeners();
-        this.addEventListener('change', this._onRadioChange);
-    }
+      // Update the value attribute
+      this.setAttribute("value", newValue);
 
-    removeEventListeners() {
-        this.removeEventListener('change', this._onRadioChange);
+      // Dispatch change event
+      this.dispatchEvent(
+        new CustomEvent("change", {
+          detail: {
+            value: newValue,
+            name: name,
+          },
+        }),
+      );
     }
+  }
 
-    updateSelectedValue() {
-        const selectedValue = this.getAttribute('value');
-        const radioInputs = this.querySelectorAll('.upo-radio-input');
-        
-        radioInputs.forEach(input => {
-            input.checked = input.value === selectedValue;
-        });
-    }
+  // Public method to get selected value
+  getValue() {
+    return this.getAttribute("value");
+  }
 
-    _onRadioChange(event) {
-        if (event.target.type === 'radio' && event.target.checked) {
-            const newValue = event.target.value;
-            const name = this.getAttribute('name');
-            
-            // Update the value attribute
-            this.setAttribute('value', newValue);
-            
-            // Dispatch change event
-            this.dispatchEvent(new CustomEvent('change', {
-                detail: {
-                    value: newValue,
-                    name: name
-                }
-            }));
-        }
-    }
+  // Public method to set selected value
+  setValue(value) {
+    this.setAttribute("value", value);
+    this.updateSelectedValue();
+  }
 
-    // Public method to get selected value
-    getValue() {
-        return this.getAttribute('value');
-    }
-
-    // Public method to set selected value
-    setValue(value) {
-        this.setAttribute('value', value);
-        this.updateSelectedValue();
-    }
-
-    // Public method to get all options
-    getOptions() {
-        const options = [];
-        const radioInputs = this.querySelectorAll('.upo-radio-input');
-        radioInputs.forEach(input => {
-            const label = input.nextElementSibling?.textContent || '';
-            options.push({
-                value: input.value,
-                label: label,
-                checked: input.checked
-            });
-        });
-        return options;
-    }
+  // Public method to get all options
+  getOptions() {
+    const options = [];
+    const radioInputs = this.querySelectorAll(".upo-radio-input");
+    radioInputs.forEach((input) => {
+      const label = input.nextElementSibling?.textContent || "";
+      options.push({
+        value: input.value,
+        label: label,
+        checked: input.checked,
+      });
+    });
+    return options;
+  }
 }
 
 /**
  * Radio Option Component
- * 
+ *
  * Individual radio button option for use within RadioGroup
- * 
+ *
  * Attributes:
  * - value: string - value for this option (required)
  * - label: string - label text for this option
  * - disabled: boolean - disable this specific option
- * 
+ *
  * Usage:
  * <ui-radio-option value="option1" label="Option 1"></ui-radio-option>
  */
 class RadioOption extends HTMLElement {
-    constructor() {
-        super();
-        
-        // Create the radio option elements
-        this.radio = document.createElement('input');
-        this.label = document.createElement('label');
-        this.wrapper = document.createElement('div');
-        
-        // Add elements to the component
-        this.wrapper.appendChild(this.radio);
-        this.wrapper.appendChild(this.label);
-        this.appendChild(this.wrapper);
-        
-        // Set up the radio input
-        this.radio.type = 'radio';
-        this.radio.className = 'upo-radio-input';
-        
-        // Set up the wrapper
-        this.wrapper.className = 'upo-radio-option';
-        
-        // Set up the label
-        this.label.className = 'upo-radio-label';
-        
-        // Bind event handlers
-        this._onRadioChange = this._onRadioChange.bind(this);
-        this._onWrapperClick = this._onWrapperClick.bind(this);
-        this._onLabelClick = this._onLabelClick.bind(this);
+  constructor() {
+    super();
+
+    // Create the radio option elements
+    this.radio = document.createElement("input");
+    this.label = document.createElement("label");
+    this.wrapper = document.createElement("div");
+
+    // Add elements to the component
+    this.wrapper.appendChild(this.radio);
+    this.wrapper.appendChild(this.label);
+    this.appendChild(this.wrapper);
+
+    // Set up the radio input
+    this.radio.type = "radio";
+    this.radio.className = "upo-radio-input";
+
+    // Set up the wrapper
+    this.wrapper.className = "upo-radio-option";
+
+    // Set up the label
+    this.label.className = "upo-radio-label";
+
+    // Bind event handlers
+    this._onRadioChange = this._onRadioChange.bind(this);
+    this._onWrapperClick = this._onWrapperClick.bind(this);
+    this._onLabelClick = this._onLabelClick.bind(this);
+  }
+
+  connectedCallback() {
+    this.updateAttributes();
+    this.setupEventListeners();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners();
+  }
+
+  static get observedAttributes() {
+    return ["value", "label", "disabled"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      this.updateAttributes();
+    }
+  }
+
+  updateAttributes() {
+    const value = this.getAttribute("value");
+    const label = this.getAttribute("label");
+    const disabled = this.hasAttribute("disabled");
+
+    if (value) {
+      this.radio.value = value;
     }
 
-    connectedCallback() {
-        this.updateAttributes();
-        this.setupEventListeners();
+    if (label) {
+      this.label.textContent = label;
     }
 
-    disconnectedCallback() {
-        this.removeEventListeners();
+    if (disabled) {
+      this.radio.disabled = true;
+      this.wrapper.classList.add("disabled");
+    } else {
+      this.radio.disabled = false;
+      this.wrapper.classList.remove("disabled");
     }
 
-    static get observedAttributes() {
-        return ['value', 'label', 'disabled'];
+    // Set the name from parent radio group
+    const radioGroup = this.closest("ui-radio-group");
+    if (radioGroup) {
+      const groupName = radioGroup.getAttribute("name");
+      if (groupName) {
+        this.radio.name = groupName;
+      }
     }
+  }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue) {
-            this.updateAttributes();
-        }
-    }
+  setupEventListeners() {
+    this.removeEventListeners();
+    this.radio.addEventListener("change", this._onRadioChange);
+    this.wrapper.addEventListener("click", this._onWrapperClick);
+    this.label.addEventListener("click", this._onLabelClick);
+  }
 
-    updateAttributes() {
-        const value = this.getAttribute('value');
-        const label = this.getAttribute('label');
-        const disabled = this.hasAttribute('disabled');
-        
-        if (value) {
-            this.radio.value = value;
-        }
-        
-        if (label) {
-            this.label.textContent = label;
-        }
-        
-        if (disabled) {
-            this.radio.disabled = true;
-            this.wrapper.classList.add('disabled');
-        } else {
-            this.radio.disabled = false;
-            this.wrapper.classList.remove('disabled');
-        }
-        
-        // Set the name from parent radio group
-        const radioGroup = this.closest('ui-radio-group');
-        if (radioGroup) {
-            const groupName = radioGroup.getAttribute('name');
-            if (groupName) {
-                this.radio.name = groupName;
-            }
-        }
-    }
+  removeEventListeners() {
+    this.radio.removeEventListener("change", this._onRadioChange);
+    this.wrapper.removeEventListener("click", this._onWrapperClick);
+    this.label.removeEventListener("click", this._onLabelClick);
+  }
 
-    setupEventListeners() {
-        this.removeEventListeners();
-        this.radio.addEventListener('change', this._onRadioChange);
-        this.wrapper.addEventListener('click', this._onWrapperClick);
-        this.label.addEventListener('click', this._onLabelClick);
-    }
+  _onRadioChange() {
+    // Let the parent radio group handle the change
+    this.dispatchEvent(new Event("change", { bubbles: true }));
+  }
 
-    removeEventListeners() {
-        this.radio.removeEventListener('change', this._onRadioChange);
-        this.wrapper.removeEventListener('click', this._onWrapperClick);
-        this.label.removeEventListener('click', this._onLabelClick);
+  _onWrapperClick(e) {
+    if (e.target === this.wrapper || e.target === this.label) {
+      e.preventDefault();
+      this.radio.click();
     }
+  }
 
-    _onRadioChange() {
-        // Let the parent radio group handle the change
-        this.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    _onWrapperClick(e) {
-        if (e.target === this.wrapper || e.target === this.label) {
-            e.preventDefault();
-            this.radio.click();
-        }
-    }
-
-    _onLabelClick(e) {
-        e.preventDefault();
-        this.radio.click();
-    }
+  _onLabelClick(e) {
+    e.preventDefault();
+    this.radio.click();
+  }
 }
 
 // Register the components
-customElements.define('ui-radio-group', RadioGroup);
-customElements.define('ui-radio-option', RadioOption);
+customElements.define("ui-radio-group", RadioGroup);
+customElements.define("ui-radio-option", RadioOption);
 
-export default RadioGroup; 
+export default RadioGroup;

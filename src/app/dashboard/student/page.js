@@ -1,18 +1,18 @@
-import App from '@/core/App.js';
+import App from "@/core/App.js";
 
 /**
  * Student Dashboard Page Component (/dashboard/student)
- * 
+ *
  * Simple student dashboard with basic content.
  */
 class StudentDashboardPage extends App {
-    connectedCallback() {
-        super.connectedCallback();
-        document.title = 'Student Dashboard | School System';
-    }
+  connectedCallback() {
+    super.connectedCallback();
+    document.title = "Student Dashboard | School System";
+  }
 
-    render() {
-        return `
+  render() {
+    return `
             <div class="space-y-6">
                 <div class="bg-white shadow rounded-lg p-6">
                     <h1 class="text-2xl font-bold text-gray-900 mb-4">
@@ -41,8 +41,8 @@ class StudentDashboardPage extends App {
                 </div>
             </div>
         `;
-    }
+  }
 }
 
-customElements.define('app-student-dashboard-page', StudentDashboardPage);
-export default StudentDashboardPage; 
+customElements.define("app-student-dashboard-page", StudentDashboardPage);
+export default StudentDashboardPage;

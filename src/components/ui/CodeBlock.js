@@ -1,66 +1,66 @@
 class CodeBlock extends HTMLElement {
-    constructor() {
-        super();
-        this.container = document.createElement('div');
-        this.container.className = 'upo-codeblock-container';
-        this.pre = document.createElement('pre');
-        this.code = document.createElement('code');
-        this.pre.appendChild(this.code);
-        this.container.appendChild(this.pre);
-        this.addDefaultStyles();
-        // Add copy button with smaller SVG icon and glassy background
-        this.copyButton = document.createElement('button');
-        this.copyButton.innerHTML = `
+  constructor() {
+    super();
+    this.container = document.createElement("div");
+    this.container.className = "upo-codeblock-container";
+    this.pre = document.createElement("pre");
+    this.code = document.createElement("code");
+    this.pre.appendChild(this.code);
+    this.container.appendChild(this.pre);
+    this.addDefaultStyles();
+    // Add copy button with smaller SVG icon and glassy background
+    this.copyButton = document.createElement("button");
+    this.copyButton.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <rect x="9" y="9" width="13" height="13" rx="2" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
                 <rect x="3" y="3" width="13" height="13" rx="2" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
             </svg>
         `;
-        this.copyButton.setAttribute('aria-label', 'Copy code');
-        this.copyButton.className = 'upo-codeblock-copy-btn';
-        this.copyButton.onclick = () => this.copyCode();
-        this.container.appendChild(this.copyButton);
-        this.appendChild(this.container);
-    }
+    this.copyButton.setAttribute("aria-label", "Copy code");
+    this.copyButton.className = "upo-codeblock-copy-btn";
+    this.copyButton.onclick = () => this.copyCode();
+    this.container.appendChild(this.copyButton);
+    this.appendChild(this.container);
+  }
 
-    connectedCallback() {
-        // Use the 'code' attribute if present, otherwise use innerHTML/textContent
-        let codeText = this.getAttribute('code');
-        if (codeText === null) {
-            // Use textContent to preserve newlines and spacing
-            codeText = this.textContent;
-        }
-        this.code.textContent = codeText.trim();
-        // Optionally, set language class for syntax highlighting
-        if (this.hasAttribute('language')) {
-            this.code.className = `language-${this.getAttribute('language')}`;
-        }
+  connectedCallback() {
+    // Use the 'code' attribute if present, otherwise use innerHTML/textContent
+    let codeText = this.getAttribute("code");
+    if (codeText === null) {
+      // Use textContent to preserve newlines and spacing
+      codeText = this.textContent;
     }
+    this.code.textContent = codeText.trim();
+    // Optionally, set language class for syntax highlighting
+    if (this.hasAttribute("language")) {
+      this.code.className = `language-${this.getAttribute("language")}`;
+    }
+  }
 
-    copyCode() {
-        const codeText = this.code.textContent;
-        navigator.clipboard.writeText(codeText).then(() => {
-            this.copyButton.innerHTML = `
+  copyCode() {
+    const codeText = this.code.textContent;
+    navigator.clipboard.writeText(codeText).then(() => {
+      this.copyButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke="#22c55e" stroke-width="2" d="M5 13l4 4L19 7" fill="none"/>
                 </svg>
             `;
-            setTimeout(() => {
-                this.copyButton.innerHTML = `
+      setTimeout(() => {
+        this.copyButton.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <rect x="9" y="9" width="13" height="13" rx="2" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
                         <rect x="3" y="3" width="13" height="13" rx="2" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
                     </svg>
                 `;
-            }, 1200);
-        });
-    }
+      }, 1200);
+    });
+  }
 
-    addDefaultStyles() {
-        if (!document.getElementById('upo-ui-codeblock-styles')) {
-            const style = document.createElement('style');
-            style.id = 'upo-ui-codeblock-styles';
-            style.textContent = `
+  addDefaultStyles() {
+    if (!document.getElementById("upo-ui-codeblock-styles")) {
+      const style = document.createElement("style");
+      style.id = "upo-ui-codeblock-styles";
+      style.textContent = `
                 .upo-codeblock-container {
                     position: relative;
                     margin: 1em 0;
@@ -125,10 +125,10 @@ class CodeBlock extends HTMLElement {
                     display: block;
                 }
             `;
-            document.head.appendChild(style);
-        }
+      document.head.appendChild(style);
     }
+  }
 }
 
-    customElements.define('ui-codeblock', CodeBlock);
-export default CodeBlock; 
+customElements.define("ui-codeblock", CodeBlock);
+export default CodeBlock;

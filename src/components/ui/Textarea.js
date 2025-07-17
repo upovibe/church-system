@@ -1,8 +1,8 @@
 /**
  * Textarea Component
- * 
+ *
  * A flexible textarea component with validation, styling options, and accessibility features.
- * 
+ *
  * Features:
  * - Multiple variants (default, primary, secondary, success, warning, error)
  * - Different sizes (sm, md, lg)
@@ -12,7 +12,7 @@
  * - Floating label animation (same as Input component)
  * - Disabled and readonly states
  * - Auto-resize functionality
- * 
+ *
  * Usage:
  * <ui-textarea placeholder="Enter your message"></ui-textarea>
  * <ui-textarea variant="error" error="This field is required"></ui-textarea>
@@ -21,86 +21,96 @@
  */
 
 class Textarea extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-        this.value = '';
-        this.maxLength = null;
-        this.showCount = false;
-        this.autoResize = false;
-        this.hasFloatingLabel = false;
-    }
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.value = "";
+    this.maxLength = null;
+    this.showCount = false;
+    this.autoResize = false;
+    this.hasFloatingLabel = false;
+  }
 
-    connectedCallback() {
-        this.render();
-        this.setupEventListeners();
-        this.updateCharacterCount();
-        if (this.autoResize) {
+  connectedCallback() {
+    this.render();
+    this.setupEventListeners();
+    this.updateCharacterCount();
+    if (this.autoResize) {
+      this.adjustHeight();
+    }
+    this.updateFloatingLabel();
+  }
+
+  static get observedAttributes() {
+    return [
+      "placeholder",
+      "value",
+      "disabled",
+      "readonly",
+      "maxlength",
+      "variant",
+      "size",
+      "error",
+      "label",
+      "floating-label",
+      "show-count",
+      "auto-resize",
+    ];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      switch (name) {
+        case "value":
+          this.value = newValue || "";
+          this.updateTextareaValue();
+          this.updateCharacterCount();
+          this.updateFloatingLabel();
+          break;
+        case "error":
+          this.updateErrorState();
+          break;
+        case "variant":
+        case "size":
+          this.updateStyling();
+          break;
+        case "show-count":
+          this.showCount = this.hasAttribute("show-count");
+          this.updateCharacterCount();
+          break;
+        case "auto-resize":
+          this.autoResize = this.hasAttribute("auto-resize");
+          if (this.autoResize) {
             this.adjustHeight();
-        }
-        this.updateFloatingLabel();
+          }
+          break;
+        case "maxlength":
+          this.maxLength = newValue ? parseInt(newValue) : null;
+          this.updateCharacterCount();
+          break;
+        case "floating-label":
+          this.hasFloatingLabel = !!newValue;
+          this.updateFloatingLabel();
+          break;
+      }
     }
+  }
 
-    static get observedAttributes() {
-        return [
-            'placeholder', 'value', 'disabled', 'readonly', 'maxlength',
-            'variant', 'size', 'error', 'label', 'floating-label', 'show-count', 'auto-resize'
-        ];
-    }
+  render() {
+    const placeholder = this.getAttribute("placeholder") || "";
+    const value = this.getAttribute("value") || "";
+    const disabled = this.hasAttribute("disabled");
+    const readonly = this.hasAttribute("readonly");
+    const maxlength = this.getAttribute("maxlength");
+    const variant = this.getAttribute("variant") || "default";
+    const size = this.getAttribute("size") || "md";
+    const error = this.getAttribute("error");
+    const label = this.getAttribute("label");
+    const floatingLabel = this.hasAttribute("floating-label");
+    const showCount = this.hasAttribute("show-count");
+    const autoResize = this.hasAttribute("auto-resize");
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue !== newValue) {
-            switch (name) {
-                case 'value':
-                    this.value = newValue || '';
-                    this.updateTextareaValue();
-                    this.updateCharacterCount();
-                    this.updateFloatingLabel();
-                    break;
-                case 'error':
-                    this.updateErrorState();
-                    break;
-                case 'variant':
-                case 'size':
-                    this.updateStyling();
-                    break;
-                case 'show-count':
-                    this.showCount = this.hasAttribute('show-count');
-                    this.updateCharacterCount();
-                    break;
-                case 'auto-resize':
-                    this.autoResize = this.hasAttribute('auto-resize');
-                    if (this.autoResize) {
-                        this.adjustHeight();
-                    }
-                    break;
-                case 'maxlength':
-                    this.maxLength = newValue ? parseInt(newValue) : null;
-                    this.updateCharacterCount();
-                    break;
-                case 'floating-label':
-                    this.hasFloatingLabel = !!newValue;
-                    this.updateFloatingLabel();
-                    break;
-            }
-        }
-    }
-
-    render() {
-        const placeholder = this.getAttribute('placeholder') || '';
-        const value = this.getAttribute('value') || '';
-        const disabled = this.hasAttribute('disabled');
-        const readonly = this.hasAttribute('readonly');
-        const maxlength = this.getAttribute('maxlength');
-        const variant = this.getAttribute('variant') || 'default';
-        const size = this.getAttribute('size') || 'md';
-        const error = this.getAttribute('error');
-        const label = this.getAttribute('label');
-        const floatingLabel = this.hasAttribute('floating-label');
-        const showCount = this.hasAttribute('show-count');
-        const autoResize = this.hasAttribute('auto-resize');
-
-        this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
             <style>
                 :host {
                     display: block;
@@ -293,176 +303,195 @@ class Textarea extends HTMLElement {
             </style>
 
             <div class="textarea-container">
-                ${label && !floatingLabel ? `<label class="textarea-label">${label}</label>` : ''}
+                ${label && !floatingLabel ? `<label class="textarea-label">${label}</label>` : ""}
                 <div class="textarea-wrapper">
-                    ${floatingLabel ? `
+                    ${
+                      floatingLabel
+                        ? `
                         <div class="textarea-floating">
                             <div class="textarea-floating-label">${placeholder}</div>
                             <textarea 
-                                class="textarea textarea--${size} textarea--${variant}${autoResize ? ' textarea--auto-resize' : ''}"
+                                class="textarea textarea--${size} textarea--${variant}${autoResize ? " textarea--auto-resize" : ""}"
                                 placeholder=""
-                                ${disabled ? 'disabled' : ''}
-                                ${readonly ? 'readonly' : ''}
-                                ${maxlength ? `maxlength="${maxlength}"` : ''}
+                                ${disabled ? "disabled" : ""}
+                                ${readonly ? "readonly" : ""}
+                                ${maxlength ? `maxlength="${maxlength}"` : ""}
                             >${value}</textarea>
                         </div>
-                    ` : `
+                    `
+                        : `
                         <textarea 
-                            class="textarea textarea--${size} textarea--${variant}${autoResize ? ' textarea--auto-resize' : ''}"
+                            class="textarea textarea--${size} textarea--${variant}${autoResize ? " textarea--auto-resize" : ""}"
                             placeholder="${placeholder}"
-                            ${disabled ? 'disabled' : ''}
-                            ${readonly ? 'readonly' : ''}
-                            ${maxlength ? `maxlength="${maxlength}"` : ''}
+                            ${disabled ? "disabled" : ""}
+                            ${readonly ? "readonly" : ""}
+                            ${maxlength ? `maxlength="${maxlength}"` : ""}
                         >${value}</textarea>
-                    `}
+                    `
+                    }
                 </div>
-                ${error ? `<div class="error-message">${error}</div>` : ''}
-                ${showCount ? `<div class="character-count" id="char-count"></div>` : ''}
+                ${error ? `<div class="error-message">${error}</div>` : ""}
+                ${showCount ? `<div class="character-count" id="char-count"></div>` : ""}
             </div>
         `;
+  }
+
+  setupEventListeners() {
+    const textarea = this.shadowRoot.querySelector("textarea");
+    const floatingContainer =
+      this.shadowRoot.querySelector(".textarea-floating");
+
+    textarea.addEventListener("input", (e) => {
+      this.value = e.target.value;
+      this.updateCharacterCount();
+      this.updateFloatingLabel();
+      if (this.autoResize) {
+        this.adjustHeight();
+      }
+      this.dispatchEvent(
+        new CustomEvent("input", { detail: { value: this.value } }),
+      );
+    });
+
+    textarea.addEventListener("change", (e) => {
+      this.dispatchEvent(
+        new CustomEvent("change", { detail: { value: this.value } }),
+      );
+    });
+
+    textarea.addEventListener("focus", () => {
+      this.updateFloatingLabel();
+      this.dispatchEvent(new CustomEvent("focus"));
+    });
+
+    textarea.addEventListener("blur", () => {
+      this.updateFloatingLabel();
+      this.dispatchEvent(new CustomEvent("blur"));
+    });
+  }
+
+  updateTextareaValue() {
+    const textarea = this.shadowRoot.querySelector("textarea");
+    if (textarea) {
+      textarea.value = this.value;
+    }
+  }
+
+  updateCharacterCount() {
+    const charCount = this.shadowRoot.querySelector("#char-count");
+    if (charCount && this.showCount) {
+      const currentLength = this.value.length;
+      const maxLength = this.maxLength;
+
+      if (maxLength) {
+        charCount.textContent = `${currentLength}/${maxLength}`;
+        charCount.classList.toggle(
+          "character-count--error",
+          currentLength > maxLength,
+        );
+      } else {
+        charCount.textContent = `${currentLength} characters`;
+      }
+    }
+  }
+
+  updateFloatingLabel() {
+    const floatingContainer =
+      this.shadowRoot.querySelector(".textarea-floating");
+    const textarea = this.shadowRoot.querySelector("textarea");
+
+    if (floatingContainer && textarea) {
+      const hasValue = this.value.length > 0;
+      const isFocused = textarea.matches(":focus");
+
+      // Remove has-value class
+      floatingContainer.classList.remove("has-value");
+
+      // Add has-value class if has value or is focused
+      if (hasValue || isFocused) {
+        floatingContainer.classList.add("has-value");
+      }
+    }
+  }
+
+  updateErrorState() {
+    const error = this.getAttribute("error");
+    const textarea = this.shadowRoot.querySelector("textarea");
+    const errorMessage = this.shadowRoot.querySelector(".error-message");
+
+    if (textarea) {
+      textarea.classList.toggle("textarea--error", !!error);
     }
 
-    setupEventListeners() {
-        const textarea = this.shadowRoot.querySelector('textarea');
-        const floatingContainer = this.shadowRoot.querySelector('.textarea-floating');
-        
-        textarea.addEventListener('input', (e) => {
-            this.value = e.target.value;
-            this.updateCharacterCount();
-            this.updateFloatingLabel();
-            if (this.autoResize) {
-                this.adjustHeight();
-            }
-            this.dispatchEvent(new CustomEvent('input', { detail: { value: this.value } }));
-        });
-
-        textarea.addEventListener('change', (e) => {
-            this.dispatchEvent(new CustomEvent('change', { detail: { value: this.value } }));
-        });
-
-        textarea.addEventListener('focus', () => {
-            this.updateFloatingLabel();
-            this.dispatchEvent(new CustomEvent('focus'));
-        });
-
-        textarea.addEventListener('blur', () => {
-            this.updateFloatingLabel();
-            this.dispatchEvent(new CustomEvent('blur'));
-        });
+    if (errorMessage) {
+      errorMessage.textContent = error || "";
     }
+  }
 
-    updateTextareaValue() {
-        const textarea = this.shadowRoot.querySelector('textarea');
-        if (textarea) {
-            textarea.value = this.value;
-        }
-    }
+  updateStyling() {
+    const textarea = this.shadowRoot.querySelector("textarea");
+    if (textarea) {
+      const variant = this.getAttribute("variant") || "default";
+      const size = this.getAttribute("size") || "md";
 
-    updateCharacterCount() {
-        const charCount = this.shadowRoot.querySelector('#char-count');
-        if (charCount && this.showCount) {
-            const currentLength = this.value.length;
-            const maxLength = this.maxLength;
-            
-            if (maxLength) {
-                charCount.textContent = `${currentLength}/${maxLength}`;
-                charCount.classList.toggle('character-count--error', currentLength > maxLength);
-            } else {
-                charCount.textContent = `${currentLength} characters`;
-            }
-        }
-    }
+      // Remove all variant and size classes
+      textarea.className = textarea.className.replace(
+        /textarea--(default|primary|secondary|success|warning|error)/g,
+        "",
+      );
+      textarea.className = textarea.className.replace(
+        /textarea--(sm|md|lg)/g,
+        "",
+      );
 
-    updateFloatingLabel() {
-        const floatingContainer = this.shadowRoot.querySelector('.textarea-floating');
-        const textarea = this.shadowRoot.querySelector('textarea');
-        
-        if (floatingContainer && textarea) {
-            const hasValue = this.value.length > 0;
-            const isFocused = textarea.matches(':focus');
-            
-            // Remove has-value class
-            floatingContainer.classList.remove('has-value');
-            
-            // Add has-value class if has value or is focused
-            if (hasValue || isFocused) {
-                floatingContainer.classList.add('has-value');
-            }
-        }
+      // Add new classes
+      textarea.classList.add(`textarea--${variant}`, `textarea--${size}`);
     }
+  }
 
-    updateErrorState() {
-        const error = this.getAttribute('error');
-        const textarea = this.shadowRoot.querySelector('textarea');
-        const errorMessage = this.shadowRoot.querySelector('.error-message');
-        
-        if (textarea) {
-            textarea.classList.toggle('textarea--error', !!error);
-        }
-        
-        if (errorMessage) {
-            errorMessage.textContent = error || '';
-        }
+  adjustHeight() {
+    const textarea = this.shadowRoot.querySelector("textarea");
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
     }
+  }
 
-    updateStyling() {
-        const textarea = this.shadowRoot.querySelector('textarea');
-        if (textarea) {
-            const variant = this.getAttribute('variant') || 'default';
-            const size = this.getAttribute('size') || 'md';
-            
-            // Remove all variant and size classes
-            textarea.className = textarea.className.replace(/textarea--(default|primary|secondary|success|warning|error)/g, '');
-            textarea.className = textarea.className.replace(/textarea--(sm|md|lg)/g, '');
-            
-            // Add new classes
-            textarea.classList.add(`textarea--${variant}`, `textarea--${size}`);
-        }
-    }
+  // Public methods
+  getValue() {
+    return this.value;
+  }
 
-    adjustHeight() {
-        const textarea = this.shadowRoot.querySelector('textarea');
-        if (textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        }
-    }
+  setValue(value) {
+    this.value = value;
+    this.setAttribute("value", value);
+    this.updateTextareaValue();
+    this.updateCharacterCount();
+    this.updateFloatingLabel();
+  }
 
-    // Public methods
-    getValue() {
-        return this.value;
+  focus() {
+    const textarea = this.shadowRoot.querySelector("textarea");
+    if (textarea) {
+      textarea.focus();
     }
+  }
 
-    setValue(value) {
-        this.value = value;
-        this.setAttribute('value', value);
-        this.updateTextareaValue();
-        this.updateCharacterCount();
-        this.updateFloatingLabel();
+  blur() {
+    const textarea = this.shadowRoot.querySelector("textarea");
+    if (textarea) {
+      textarea.blur();
     }
+  }
 
-    focus() {
-        const textarea = this.shadowRoot.querySelector('textarea');
-        if (textarea) {
-            textarea.focus();
-        }
-    }
+  setError(message) {
+    this.setAttribute("error", message);
+  }
 
-    blur() {
-        const textarea = this.shadowRoot.querySelector('textarea');
-        if (textarea) {
-            textarea.blur();
-        }
-    }
-
-    setError(message) {
-        this.setAttribute('error', message);
-    }
-
-    clearError() {
-        this.removeAttribute('error');
-    }
+  clearError() {
+    this.removeAttribute("error");
+  }
 }
 
-customElements.define('ui-textarea', Textarea);
-export default Textarea; 
+customElements.define("ui-textarea", Textarea);
+export default Textarea;

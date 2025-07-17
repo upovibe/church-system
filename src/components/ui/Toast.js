@@ -1,16 +1,16 @@
 /**
  * Toast Component
- * 
+ *
  * Displays toast notifications with different variants and positions.
  * Supports different types: success, error, warning, info, default
- * 
+ *
  * Attributes:
  * - variant: 'success' | 'error' | 'warning' | 'info' | 'default'
  * - position: 'top-right' | 'top-left' | 'top' | 'bottom-right' | 'bottom-left' | 'bottom'
  * - duration: number (milliseconds, 0 = no auto-hide)
  * - message: string
  * - title: string (optional)
- * 
+ *
  * Usage:
  * <ui-toast message="Hello World!" variant="success"></ui-toast>
  * Toast.show({ message: "Success!", variant: "success" });
@@ -18,7 +18,7 @@
 class Toast extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
     this.isVisible = false;
     this.timeoutId = null;
   }
@@ -29,7 +29,7 @@ class Toast extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['variant', 'position', 'duration', 'message', 'title'];
+    return ["variant", "position", "duration", "message", "title"];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -39,7 +39,7 @@ class Toast extends HTMLElement {
   }
 
   setupStyles() {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       :host {
         display: block;
@@ -274,27 +274,27 @@ class Toast extends HTMLElement {
       </svg>`,
       default: `<svg class="icon ${variant}" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-      </svg>`
+      </svg>`,
     };
     return icons[variant] || icons.default;
   }
 
   render() {
-    const variant = this.getAttribute('variant') || 'default';
-    const position = this.getAttribute('position') || 'top-right';
-    const title = this.getAttribute('title') || '';
-    const message = this.getAttribute('message') || '';
-    const duration = parseInt(this.getAttribute('duration')) || 5000;
+    const variant = this.getAttribute("variant") || "default";
+    const position = this.getAttribute("position") || "top-right";
+    const title = this.getAttribute("title") || "";
+    const message = this.getAttribute("message") || "";
+    const duration = parseInt(this.getAttribute("duration")) || 5000;
 
-    this.setAttribute('position', position);
+    this.setAttribute("position", position);
 
     this.shadowRoot.innerHTML = `
       <div class="toast" variant="${variant}">
         <div class="toast-content">
           ${this.getIcon(variant)}
           <div class="content">
-            ${title ? `<div class="title">${title}</div>` : ''}
-            ${message ? `<div class="message">${message}</div>` : ''}
+            ${title ? `<div class="title">${title}</div>` : ""}
+            ${message ? `<div class="message">${message}</div>` : ""}
           </div>
           <button class="close-btn" aria-label="Close toast">
             <svg fill="currentColor" viewBox="0 0 20 20">
@@ -313,48 +313,48 @@ class Toast extends HTMLElement {
   }
 
   setupEventListeners() {
-    const closeBtn = this.shadowRoot.querySelector('.close-btn');
+    const closeBtn = this.shadowRoot.querySelector(".close-btn");
     if (closeBtn) {
       // Remove any existing listeners to prevent duplicates
-      closeBtn.removeEventListener('click', this.handleClose);
-      closeBtn.removeEventListener('mousedown', this.handleClose);
-      
+      closeBtn.removeEventListener("click", this.handleClose);
+      closeBtn.removeEventListener("mousedown", this.handleClose);
+
       // Add click listener
-      closeBtn.addEventListener('click', this.handleClose.bind(this));
-      
+      closeBtn.addEventListener("click", this.handleClose.bind(this));
+
       // Also add mousedown for better responsiveness
-      closeBtn.addEventListener('mousedown', this.handleClose.bind(this));
+      closeBtn.addEventListener("mousedown", this.handleClose.bind(this));
     }
   }
 
   handleClose(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log('Close button clicked');
+    console.log("Close button clicked");
     this.hide();
   }
 
   startProgress(duration) {
-    const progressFill = this.shadowRoot.querySelector('.progress-fill');
+    const progressFill = this.shadowRoot.querySelector(".progress-fill");
     if (progressFill && duration > 0) {
       progressFill.style.transition = `width ${duration}ms linear`;
       setTimeout(() => {
-        progressFill.style.width = '0%';
+        progressFill.style.width = "0%";
       }, 100);
     }
   }
 
   show() {
     this.isVisible = true;
-    this.setAttribute('visible', '');
-    this.dispatchEvent(new CustomEvent('toast-show'));
+    this.setAttribute("visible", "");
+    this.dispatchEvent(new CustomEvent("toast-show"));
   }
 
   hide() {
     this.isVisible = false;
-    this.removeAttribute('visible');
-    this.dispatchEvent(new CustomEvent('toast-hide'));
-    
+    this.removeAttribute("visible");
+    this.dispatchEvent(new CustomEvent("toast-hide"));
+
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
       this.timeoutId = null;
@@ -364,22 +364,22 @@ class Toast extends HTMLElement {
   // Static method to create and show a toast
   static show(options = {}) {
     const {
-      message = '',
-      title = '',
-      variant = 'default',
-      position = 'top-right',
-      duration = 5000
+      message = "",
+      title = "",
+      variant = "default",
+      position = "top-right",
+      duration = 5000,
     } = options;
 
-    const toast = document.createElement('ui-toast');
-    toast.setAttribute('message', message);
-    toast.setAttribute('title', title);
-    toast.setAttribute('variant', variant);
-    toast.setAttribute('position', position);
-    toast.setAttribute('duration', duration.toString());
+    const toast = document.createElement("ui-toast");
+    toast.setAttribute("message", message);
+    toast.setAttribute("title", title);
+    toast.setAttribute("variant", variant);
+    toast.setAttribute("position", position);
+    toast.setAttribute("duration", duration.toString());
 
     document.body.appendChild(toast);
-    
+
     // Show after a brief delay to ensure rendering
     setTimeout(() => toast.show(), 10);
 
@@ -393,16 +393,16 @@ class Toast extends HTMLElement {
 }
 
 // Register the component
-customElements.define('ui-toast', Toast);
+customElements.define("ui-toast", Toast);
 
 // Make Toast available globally immediately
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.Toast = Toast;
 }
 
 // Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = Toast;
 }
 
-export default Toast; 
+export default Toast;

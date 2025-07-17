@@ -1,44 +1,44 @@
 /**
  * Checkbox Component
- * 
+ *
  * Creates a checkbox with a label. Supports:
  * - Checked and unchecked states
  * - Accessibility features
  * - Custom colors
- * 
+ *
  * Usage:
  * <ui-checkbox label="Accept Terms" checked></ui-checkbox>
  * <ui-checkbox label="Warning" color="red"></ui-checkbox>
  * <ui-checkbox label="Success" color="#10b981"></ui-checkbox>
  */
 class Checkbox extends HTMLElement {
-    constructor() {
-        super();
-        
-        // Create the checkbox elements
-        this.checkbox = document.createElement('input');
-        this.label = document.createElement('label');
-        this.wrapper = document.createElement('div');
-        
-        // Add elements to the component
-        this.wrapper.appendChild(this.checkbox);
-        this.wrapper.appendChild(this.label);
-        this.appendChild(this.wrapper);
-        
-        // Add default styles
-        this.addDefaultStyles();
-        
-        // Bind event handlers
-        this._onCheckboxChange = this._onCheckboxChange.bind(this);
-        this._onWrapperClick = this._onWrapperClick.bind(this);
-        this._onLabelClick = this._onLabelClick.bind(this);
-    }
+  constructor() {
+    super();
 
-    addDefaultStyles() {
-        if (!document.getElementById('upo-ui-checkbox-styles')) {
-            const style = document.createElement('style');
-            style.id = 'upo-ui-checkbox-styles';
-            style.textContent = `
+    // Create the checkbox elements
+    this.checkbox = document.createElement("input");
+    this.label = document.createElement("label");
+    this.wrapper = document.createElement("div");
+
+    // Add elements to the component
+    this.wrapper.appendChild(this.checkbox);
+    this.wrapper.appendChild(this.label);
+    this.appendChild(this.wrapper);
+
+    // Add default styles
+    this.addDefaultStyles();
+
+    // Bind event handlers
+    this._onCheckboxChange = this._onCheckboxChange.bind(this);
+    this._onWrapperClick = this._onWrapperClick.bind(this);
+    this._onLabelClick = this._onLabelClick.bind(this);
+  }
+
+  addDefaultStyles() {
+    if (!document.getElementById("upo-ui-checkbox-styles")) {
+      const style = document.createElement("style");
+      style.id = "upo-ui-checkbox-styles";
+      style.textContent = `
                 .upo-checkbox-wrapper {
                     display: flex;
                     align-items: center;
@@ -226,107 +226,109 @@ class Checkbox extends HTMLElement {
                     background-color: rgba(107, 114, 128, 0.15);
                 }
             `;
-            document.head.appendChild(style);
-        }
+      document.head.appendChild(style);
     }
+  }
 
-    connectedCallback() {
-        // Set up the wrapper
-        this.wrapper.className = 'upo-checkbox-wrapper';
-        
-        // Set up the checkbox
-        this.checkbox.type = 'checkbox';
-        this.checkbox.className = 'upo-checkbox-input';
-        this.checkbox.checked = this.hasAttribute('checked');
-        this.checkbox.disabled = this.hasAttribute('disabled');
-        
-        // Set up the label
-        this.label.className = 'upo-checkbox-label';
-        this.label.textContent = this.getAttribute('label') || 'Checkbox';
-        
-        // Set up accessibility
-        const id = this.getAttribute('id') || `checkbox-${Math.random().toString(36).substr(2, 9)}`;
-        this.checkbox.id = id;
-        this.label.setAttribute('for', id);
-        
-        // Add event listeners
-        this.checkbox.addEventListener('change', this._onCheckboxChange);
-        this.wrapper.addEventListener('click', this._onWrapperClick);
-        this.label.addEventListener('click', this._onLabelClick);
-        
-        // Update disabled state
-        this.updateDisabledState();
-        
-        // Update color
-        this.updateColor();
+  connectedCallback() {
+    // Set up the wrapper
+    this.wrapper.className = "upo-checkbox-wrapper";
+
+    // Set up the checkbox
+    this.checkbox.type = "checkbox";
+    this.checkbox.className = "upo-checkbox-input";
+    this.checkbox.checked = this.hasAttribute("checked");
+    this.checkbox.disabled = this.hasAttribute("disabled");
+
+    // Set up the label
+    this.label.className = "upo-checkbox-label";
+    this.label.textContent = this.getAttribute("label") || "Checkbox";
+
+    // Set up accessibility
+    const id =
+      this.getAttribute("id") ||
+      `checkbox-${Math.random().toString(36).substr(2, 9)}`;
+    this.checkbox.id = id;
+    this.label.setAttribute("for", id);
+
+    // Add event listeners
+    this.checkbox.addEventListener("change", this._onCheckboxChange);
+    this.wrapper.addEventListener("click", this._onWrapperClick);
+    this.label.addEventListener("click", this._onLabelClick);
+
+    // Update disabled state
+    this.updateDisabledState();
+
+    // Update color
+    this.updateColor();
+  }
+
+  disconnectedCallback() {
+    this.checkbox.removeEventListener("change", this._onCheckboxChange);
+    this.wrapper.removeEventListener("click", this._onWrapperClick);
+    this.label.removeEventListener("click", this._onLabelClick);
+  }
+
+  static get observedAttributes() {
+    return ["checked", "label", "disabled", "color"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "checked") {
+      this.checkbox.checked = this.hasAttribute("checked");
     }
-
-    disconnectedCallback() {
-        this.checkbox.removeEventListener('change', this._onCheckboxChange);
-        this.wrapper.removeEventListener('click', this._onWrapperClick);
-        this.label.removeEventListener('click', this._onLabelClick);
+    if (name === "label") {
+      this.label.textContent = newValue;
     }
-
-    static get observedAttributes() {
-        return ['checked', 'label', 'disabled', 'color'];
+    if (name === "disabled") {
+      this.updateDisabledState();
     }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'checked') {
-            this.checkbox.checked = this.hasAttribute('checked');
-        }
-        if (name === 'label') {
-            this.label.textContent = newValue;
-        }
-        if (name === 'disabled') {
-            this.updateDisabledState();
-        }
-        if (name === 'color') {
-            this.updateColor();
-        }
+    if (name === "color") {
+      this.updateColor();
     }
+  }
 
-    updateDisabledState() {
-        const isDisabled = this.hasAttribute('disabled');
-        this.checkbox.disabled = isDisabled;
-        
-        if (isDisabled) {
-            this.wrapper.classList.add('upo-checkbox-disabled');
-        } else {
-            this.wrapper.classList.remove('upo-checkbox-disabled');
-        }
+  updateDisabledState() {
+    const isDisabled = this.hasAttribute("disabled");
+    this.checkbox.disabled = isDisabled;
+
+    if (isDisabled) {
+      this.wrapper.classList.add("upo-checkbox-disabled");
+    } else {
+      this.wrapper.classList.remove("upo-checkbox-disabled");
     }
+  }
 
-    updateColor() {
-        const color = this.getAttribute('color');
-        
-        // Remove any existing color data attributes
-        this.checkbox.removeAttribute('data-color');
-        
-        if (color) {
-            // Check if it's a predefined color
-            const predefinedColors = ['red', 'green', 'yellow', 'purple', 'gray'];
-            
-            if (predefinedColors.includes(color)) {
-                this.checkbox.setAttribute('data-color', color);
-            } else {
-                // Custom hex color
-                this.checkbox.style.accentColor = color;
-                this.checkbox.style.setProperty('--custom-color', color);
-                
-                // Add custom color styles
-                this.addCustomColorStyles(color);
-            }
-        }
+  updateColor() {
+    const color = this.getAttribute("color");
+
+    // Remove any existing color data attributes
+    this.checkbox.removeAttribute("data-color");
+
+    if (color) {
+      // Check if it's a predefined color
+      const predefinedColors = ["red", "green", "yellow", "purple", "gray"];
+
+      if (predefinedColors.includes(color)) {
+        this.checkbox.setAttribute("data-color", color);
+      } else {
+        // Custom hex color
+        this.checkbox.style.accentColor = color;
+        this.checkbox.style.setProperty("--custom-color", color);
+
+        // Add custom color styles
+        this.addCustomColorStyles(color);
+      }
     }
+  }
 
-    addCustomColorStyles(color) {
-        const styleId = `upo-checkbox-custom-${color.replace('#', '')}`;
-        
-        if (!document.getElementById(styleId)) {
-            const style = document.createElement('style');
-            style.id = styleId;
-            style.textContent = `
+  addCustomColorStyles(color) {
+    const styleId = `upo-checkbox-custom-${color.replace("#", "")}`;
+
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement("style");
+      style.id = styleId;
+      style.textContent = `
                 .upo-checkbox-input[style*="--custom-color: ${color}"]:checked {
                     background-color: ${color} !important;
                     border-color: ${color} !important;
@@ -340,41 +342,43 @@ class Checkbox extends HTMLElement {
                     border-color: ${color} !important;
                 }
             `;
-            document.head.appendChild(style);
-        }
+      document.head.appendChild(style);
+    }
+  }
+
+  _onCheckboxChange() {
+    if (this.checkbox.checked) {
+      this.setAttribute("checked", "");
+    } else {
+      this.removeAttribute("checked");
     }
 
-    _onCheckboxChange() {
-        if (this.checkbox.checked) {
-            this.setAttribute('checked', '');
-        } else {
-            this.removeAttribute('checked');
-        }
-        
-        this.dispatchEvent(new CustomEvent('change', {
-            detail: { checked: this.checkbox.checked },
-            bubbles: true
-        }));
+    this.dispatchEvent(
+      new CustomEvent("change", {
+        detail: { checked: this.checkbox.checked },
+        bubbles: true,
+      }),
+    );
+  }
+
+  _onWrapperClick(e) {
+    if (e.target === this.checkbox) {
+      return;
     }
 
-    _onWrapperClick(e) {
-        if (e.target === this.checkbox) {
-            return;
-        }
-        
-        if (!this.hasAttribute('disabled')) {
-            this.checkbox.checked = !this.checkbox.checked;
-            this._onCheckboxChange();
-        }
+    if (!this.hasAttribute("disabled")) {
+      this.checkbox.checked = !this.checkbox.checked;
+      this._onCheckboxChange();
     }
+  }
 
-    _onLabelClick(e) {
-        if (!this.hasAttribute('disabled')) {
-            this.checkbox.checked = !this.checkbox.checked;
-            this._onCheckboxChange();
-        }
+  _onLabelClick(e) {
+    if (!this.hasAttribute("disabled")) {
+      this.checkbox.checked = !this.checkbox.checked;
+      this._onCheckboxChange();
     }
+  }
 }
 
-customElements.define('ui-checkbox', Checkbox);
-export default Checkbox; 
+customElements.define("ui-checkbox", Checkbox);
+export default Checkbox;

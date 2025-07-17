@@ -1,43 +1,43 @@
 /**
  * Badge Component
- * 
+ *
  * Displays small status indicators for notifications, labels, and status indicators.
  * Supports different colors, sizes, and variants.
- * 
+ *
  * Attributes:
  * - color: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info'
  * - size: 'sm' | 'md' | 'lg' (default: 'md')
  * - variant: 'solid' | 'outline' | 'soft' (default: 'solid')
  * - rounded: boolean (default: false)
- * 
+ *
  * Usage:
  * <ui-badge>Default</ui-badge>
  * <ui-badge color="success" size="sm">New</ui-badge>
  * <ui-badge color="error" variant="outline">Error</ui-badge>
  */
 class Badge extends HTMLElement {
-    constructor() {
-        super();
-        
-        // Create the badge element directly (no shadow DOM)
-        this.badgeElement = document.createElement('span');
-        
-        // Flag to prevent double processing
-        this.initialized = false;
-        
-        // Add the badge element to the component
-        this.appendChild(this.badgeElement);
-        
-        // Add default styles via CSS
-        this.addDefaultStyles();
-    }
+  constructor() {
+    super();
 
-    // Add default CSS styles to document if not already added
-    addDefaultStyles() {
-        if (!document.getElementById('upo-ui-badge-styles')) {
-            const style = document.createElement('style');
-            style.id = 'upo-ui-badge-styles';
-            style.textContent = `
+    // Create the badge element directly (no shadow DOM)
+    this.badgeElement = document.createElement("span");
+
+    // Flag to prevent double processing
+    this.initialized = false;
+
+    // Add the badge element to the component
+    this.appendChild(this.badgeElement);
+
+    // Add default styles via CSS
+    this.addDefaultStyles();
+  }
+
+  // Add default CSS styles to document if not already added
+  addDefaultStyles() {
+    if (!document.getElementById("upo-ui-badge-styles")) {
+      const style = document.createElement("style");
+      style.id = "upo-ui-badge-styles";
+      style.textContent = `
                 .upo-badge {
                     display: inline-flex;
                     align-items: center;
@@ -171,93 +171,94 @@ class Badge extends HTMLElement {
                     color: #0e7490;
                 }
             `;
-            document.head.appendChild(style);
-        }
+      document.head.appendChild(style);
+    }
+  }
+
+  static get observedAttributes() {
+    return ["color", "size", "variant", "rounded"];
+  }
+
+  get color() {
+    return this.getAttribute("color") || "primary";
+  }
+
+  get size() {
+    return this.getAttribute("size") || "md";
+  }
+
+  get variant() {
+    return this.getAttribute("variant") || "solid";
+  }
+
+  get rounded() {
+    return this.hasAttribute("rounded");
+  }
+
+  // Connected callback - called when element is added to DOM
+  connectedCallback() {
+    // Prevent double processing
+    if (this.initialized) return;
+    this.initialized = true;
+
+    // Store original content before building the badge (preserve HTML)
+    const originalContent = Array.from(this.childNodes)
+      .filter((node) => node !== this.badgeElement)
+      .map((node) => node.outerHTML || node.textContent || "")
+      .join("")
+      .trim();
+
+    // Move any existing children (except our badgeElement) to avoid duplication
+    const children = Array.from(this.childNodes);
+    children.forEach((child) => {
+      if (child !== this.badgeElement) {
+        this.removeChild(child);
+      }
+    });
+
+    // Set up the badge element
+    this.badgeElement.className = `upo-badge upo-badge-${this.size} upo-badge-${this.variant}-${this.color}`;
+
+    // Add rounded class if specified
+    if (this.rounded) {
+      this.badgeElement.classList.add("upo-badge-rounded");
     }
 
-    static get observedAttributes() {
-        return ['color', 'size', 'variant', 'rounded'];
-    }
+    // Set the content from the original content (support HTML)
+    this.badgeElement.innerHTML = originalContent || "Badge";
+  }
 
-    get color() {
-        return this.getAttribute('color') || 'primary';
-    }
+  // Called when attributes change
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (!this.initialized) return;
 
-    get size() {
-        return this.getAttribute('size') || 'md';
-    }
-
-    get variant() {
-        return this.getAttribute('variant') || 'solid';
-    }
-
-    get rounded() {
-        return this.hasAttribute('rounded');
-    }
-
-    // Connected callback - called when element is added to DOM
-    connectedCallback() {
-        // Prevent double processing
-        if (this.initialized) return;
-        this.initialized = true;
-
-        // Store original content before building the badge (preserve HTML)
-        const originalContent = Array.from(this.childNodes)
-            .filter(node => node !== this.badgeElement)
-            .map(node => node.outerHTML || node.textContent || '')
-            .join('').trim();
-
-        // Move any existing children (except our badgeElement) to avoid duplication
-        const children = Array.from(this.childNodes);
-        children.forEach(child => {
-            if (child !== this.badgeElement) {
-                this.removeChild(child);
-            }
-        });
-
-        // Set up the badge element
-        this.badgeElement.className = `upo-badge upo-badge-${this.size} upo-badge-${this.variant}-${this.color}`;
-        
-        // Add rounded class if specified
+    switch (name) {
+      case "color":
+        this.updateClasses();
+        break;
+      case "size":
+        this.updateClasses();
+        break;
+      case "variant":
+        this.updateClasses();
+        break;
+      case "rounded":
         if (this.rounded) {
-            this.badgeElement.classList.add('upo-badge-rounded');
+          this.badgeElement.classList.add("upo-badge-rounded");
+        } else {
+          this.badgeElement.classList.remove("upo-badge-rounded");
         }
-        
-        // Set the content from the original content (support HTML)
-        this.badgeElement.innerHTML = originalContent || 'Badge';
+        break;
     }
+  }
 
-    // Called when attributes change
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (!this.initialized) return;
-        
-        switch (name) {
-            case 'color':
-                this.updateClasses();
-                break;
-            case 'size':
-                this.updateClasses();
-                break;
-            case 'variant':
-                this.updateClasses();
-                break;
-            case 'rounded':
-                if (this.rounded) {
-                    this.badgeElement.classList.add('upo-badge-rounded');
-                } else {
-                    this.badgeElement.classList.remove('upo-badge-rounded');
-                }
-                break;
-        }
+  updateClasses() {
+    this.badgeElement.className = `upo-badge upo-badge-${this.size} upo-badge-${this.variant}-${this.color}`;
+    if (this.rounded) {
+      this.badgeElement.classList.add("upo-badge-rounded");
     }
-
-    updateClasses() {
-        this.badgeElement.className = `upo-badge upo-badge-${this.size} upo-badge-${this.variant}-${this.color}`;
-        if (this.rounded) {
-            this.badgeElement.classList.add('upo-badge-rounded');
-        }
-    }
+  }
 }
 
-customElements.define('ui-badge', Badge);
-export default Badge; 
+customElements.define("ui-badge", Badge);
+export default Badge;
