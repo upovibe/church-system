@@ -18,7 +18,7 @@ class MessageSection extends App {
 
   render() {
     return `
-      <section class="bg-black text-white py-16 px-4 sm:px-8 md:px-16 lg:px-24">
+      <section class="bg-black text-white pt-10 px-4 sm:px-8 md:px-16 lg:px-24">
         <div class=" grid grid-cols-1 sm:grid-cols-2 gap-8 items-center justify-start">
           <!-- Left Content Area -->
           <div class="flex flex-col gap-4">

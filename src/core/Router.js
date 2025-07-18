@@ -109,6 +109,7 @@ class Router {
 
   // Navigate to a path
   navigate(path) {
+    console.log(`Navigating to: ${path}`);
     history.pushState(null, null, path);
     this.render();
   }
@@ -222,10 +223,8 @@ class Router {
     // For single-segment paths, try static patterns first
     else {
       possiblePaths.push(
-        `app${path}.js`, // Simple style: /contact → app/contact.js
         `app${path}/page.js`, // Next.js style: /contact → app/contact/page.js
         `app${path}/index.js`, // Index style: /contact → app/contact/index.js
-        `app${path}/${path.split("/").pop()}.js`, // Named style: /contact → app/contact/contact.js
       );
     }
 
@@ -358,6 +357,7 @@ class Router {
     }
 
     if (!ComponentClass) {
+      console.log(`Component not found for path: ${path}`);
       this.renderNotFound();
       return;
     }

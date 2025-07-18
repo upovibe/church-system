@@ -16,7 +16,7 @@ class ProgramSection extends App {
 
   render() {
     return `
-      <section class="bg-black text-white py-16 px-4 sm:px-8 ">
+      <section class="bg-black pt-10 text-white py-16 px-4 sm:px-8 ">
         <div class=" mx-auto">
           
           <!-- Top Section: Video and Image Side-by-Side -->
@@ -49,7 +49,7 @@ class ProgramSection extends App {
           <div class="flex flex-col lg:flex-row items-center gap-12">
             <!-- Text Content -->
            <div class="flex flex-col w-full lg:w-1/2 space-y-[2ch] text-left items-start self-start pt-8">
-  <h2 class="text-6xl sm:text-8xl font-extrabold leading-tight text-yellow-400">
+  <h2 class="text-6xl lg:text-8xl font-extrabold leading-tight text-yellow-400">
     Stories of <br/>Transformation
   </h2>
   <p class="text-lg sm:text-3xl text-gray-500 leading-relaxed tracking-widest px-4 pt-14">

@@ -1,10 +1,10 @@
 import App from '@/core/App.js';
 import '@/components/ui/Box.js';
-import '@/components/layout/CounterLayout.js';
-import '@/components/layout/Hero.js';
-import '@/components/layout/MessageSection.js';
-import '@/components/layout/ProgramSection.js';
-import '@/components/layout/MinistrySection.js';
+import '@/components/layout/home/Hero.js';
+import '@/components/layout/home/MessageSection.js';
+import '@/components/layout/home/ProgramSection.js';
+import '@/components/layout/home/MinistrySection.js';
+import '@/components/layout/home/AddressSection.js';
 
 /**
  * Root Page Component (/)
@@ -24,7 +24,8 @@ class RootPage extends App {
                     <hero-section></hero-section>  
                     <message-section></message-section>
                     <program-section></program-section>  
-                    <ministry-section></ministry-section>     
+                    <ministry-section></ministry-section>
+                    <address-section></address-section>     
             </div>
         `;
   }

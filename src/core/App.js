@@ -121,6 +121,10 @@ class App extends HTMLElement {
     // First render
     this.innerHTML = this.render();
   }
+
+  disconnectedCallback() {
+    // This method is a placeholder for components that need to clean up.
+  }
 }
 
 export default App;

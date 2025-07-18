@@ -7,6 +7,11 @@ import '@/components/common/Indicator.js';
 class Header extends App {
   unsubscribe = null;
 
+  constructor() {
+    super();
+    this.updateIndicator = this.updateIndicator.bind(this);
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -18,25 +23,55 @@ class Header extends App {
       const navItems = this.querySelectorAll('.nav-item');
       const mobileMenu = this.querySelector('#mobile-menu');
       const hamburgerBtn = this.querySelector('#hamburger-btn');
+      const currentPath = window.location.pathname;
 
       const activate = (el) => {
+        if (!el) return;
+        // First, deactivate all other items
         navItems.forEach((item) => {
           item.classList.remove('text-yellow-400');
-          item.querySelector('app-indicator').classList.add('hidden');
+          const indicator = item.querySelector('app-indicator');
+          if (indicator) {
+            indicator.classList.add('hidden');
+          }
         });
 
+        // Then, activate the correct one
         el.classList.add('text-yellow-400');
-        const textWidth = el.querySelector('span').offsetWidth;
+        const textElement = el.querySelector('span');
         const indicator = el.querySelector('app-indicator');
 
-        indicator.style.width = `${textWidth}px`;
-        indicator.classList.remove('hidden');
+        if (textElement && indicator) {
+          const textWidth = textElement.offsetWidth;
+          indicator.style.width = `${textWidth}px`;
+          indicator.classList.remove('hidden');
+        }
       };
 
-      if (navItems.length > 0) activate(navItems[0]);
+      // On initial load, find the active item from the URL
+      const activeItem = Array.from(navItems).find((item) => {
+        const link = item.querySelector('a');
+        return link && link.getAttribute('href') === currentPath;
+      });
 
+      if (activeItem) {
+        activate(activeItem);
+      } else {
+        // If no path matches, default to activating the first item (Home)
+        if (currentPath === '/' && navItems.length > 0) activate(navItems[0]);
+      }
+
+      // Add smart click listeners
       navItems.forEach((item) => {
-        item.addEventListener('click', () => activate(item));
+        item.addEventListener('click', () => {
+          const link = item.querySelector('a');
+          // If it's not a real link, activate it immediately.
+          // If it IS a real link, do nothing and let the router handle it.
+          // The activate() call on page load will handle the indicator.
+          if (!link) {
+            activate(item);
+          }
+        });
       });
 
       // Mobile menu toggle
@@ -51,6 +86,44 @@ class Header extends App {
   disconnectedCallback() {
     if (this.unsubscribe) {
       this.unsubscribe();
+    }
+    // Clean up the event listener
+    window.removeEventListener('route-changed', this.updateIndicator);
+  }
+
+  updateIndicator() {
+    const navItems = this.querySelectorAll('.nav-item');
+    const currentPath = window.location.pathname;
+
+    // Deactivate all indicators first
+    navItems.forEach((item) => {
+      item.classList.remove('text-yellow-400');
+      const indicator = item.querySelector('app-indicator');
+      if (indicator) {
+        indicator.classList.add('hidden');
+      }
+    });
+
+    // Find the active item based on the current URL
+    let activeItem = null;
+    navItems.forEach((item) => {
+      const link = item.querySelector('a');
+      if (link && link.getAttribute('href') === currentPath) {
+        activeItem = item;
+      }
+    });
+
+    // Activate the found item
+    if (activeItem) {
+      activeItem.classList.add('text-yellow-400');
+      const textElement = activeItem.querySelector('span');
+      const indicator = activeItem.querySelector('app-indicator');
+
+      if (textElement && indicator) {
+        const textWidth = textElement.offsetWidth;
+        indicator.style.width = `${textWidth}px`;
+        indicator.classList.remove('hidden');
+      }
     }
   }
 
@@ -102,15 +175,15 @@ class Header extends App {
   getNavItems() {
     return `
       <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span>Home</span>
+        <span><a href='/'>Home</a></span>
         <app-indicator class="hidden"></app-indicator>
       </li>
       <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span>Services & Events</span>
+        <span><a href='/events'>Services & Events</a></span>
         <app-indicator class="hidden"></app-indicator>
       </li>
       <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span>Ministries</span>
+        <span><a href='/ministry'> Ministries </a></span>
         <app-indicator class="hidden"></app-indicator>
       </li>
       <li class="nav-item relative flex flex-col items-center cursor-pointer">

@@ -3,14 +3,14 @@
 
 const importMap = {
   imports: {
-    "@/": "/src/",
-    "@/core/": "/src/core/",
-    "@/components/": "/src/components/",
-    "@/app/": "/src/app/",
-    "@/services/": "/src/services/",
-    "@/utils/": "/src/utils/",
-    "@/assets/": "/src/assets/",
-    "@/hooks/": "/src/hooks/",
+    '@/': './src/',
+    '@/core/': '/src/core/',
+    '@/components/': '/src/components/',
+    '@/app/': './src/app/',
+    '@/services/': './src/services/',
+    '@/utils/': './src/utils/',
+    '@/assets/': './src/assets/',
+    '@/hooks/': './src/hooks/',
   },
 };
 
