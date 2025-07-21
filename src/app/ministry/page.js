@@ -1,6 +1,7 @@
 import App from '@/core/App.js';
-import '@/components/layout/ministry/MinistrySection.js';
-import '@/components/layout/events/RecentEventsSection.js';
+import '@/components/layout/ministry/SectionMinistry.js';
+import '@/components/layout/ministry/SectionCards.js';
+import '@/components/layout/home/AddressSection.js';
 
 class MinistryPage extends App {
   async connectedCallback() {
@@ -8,19 +9,20 @@ class MinistryPage extends App {
     document.title = 'Ministry | UPO UI';
 
     // Ensure custom element is defined before rendering
-    await customElements.whenDefined('ministry-section');
+    await customElements.whenDefined('section-ministry');
     this.innerHTML = this.render();
   }
 
   render() {
     return `
-            <div >         
-                <ministry-section></ministry-section> 
-                <recent-section></recent-section>                       
+            <div>         
+                <section-ministry></section-ministry> 
+                <section-cards></section-cards> 
+                <address-section></address-section>                                  
             </div>
         `;
   }
 }
 
-customElements.define('ministry-page', MinistryPage);
+customElements.define('app-ministry-page', MinistryPage);
 export default MinistryPage;

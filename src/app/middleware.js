@@ -49,7 +49,7 @@ export default {
   auth: {
     requireAuth: false,
     redirectIfAuth: true,
-    redirectTo: (user) => (user ? `/dashboard/${user.role}` : "/dashboard"),
+    redirectTo: (user) => (user ? `/dashboard/${user.role}` : '/dashboard'),
     logAccess: false,
   },
 
@@ -60,43 +60,43 @@ export default {
   },
 
   // Role-specific dashboard access
-  "dashboard/admin": {
+  'dashboard/admin': {
     requireAuth: true,
-    requireRole: "admin",
+    requireRole: 'admin',
     logAccess: true,
-    redirectTo: (user) => (user ? `/dashboard/${user.role}` : "/dashboard"),
+    redirectTo: (user) => (user ? `/dashboard/${user.role}` : '/dashboard'),
   },
 
-  "dashboard/teacher": {
+  'dashboard/teacher': {
     requireAuth: true,
-    requireRole: "teacher",
+    requireRole: 'teacher',
     logAccess: true,
-    redirectTo: (user) => (user ? `/dashboard/${user.role}` : "/dashboard"),
+    redirectTo: (user) => (user ? `/dashboard/${user.role}` : '/dashboard'),
   },
 
-  "dashboard/student": {
+  'dashboard/student': {
     requireAuth: true,
-    requireRole: "student",
+    requireRole: 'student',
     logAccess: true,
-    redirectTo: (user) => (user ? `/dashboard/${user.role}` : "/dashboard"),
+    redirectTo: (user) => (user ? `/dashboard/${user.role}` : '/dashboard'),
   },
 
-  "dashboard/parent": {
+  'dashboard/parent': {
     requireAuth: true,
-    requireRole: "parent",
+    requireRole: 'parent',
     logAccess: true,
-    redirectTo: (user) => (user ? `/dashboard/${user.role}` : "/dashboard"),
+    redirectTo: (user) => (user ? `/dashboard/${user.role}` : '/dashboard'),
   },
 
-  "dashboard/staff": {
+  'dashboard/staff': {
     requireAuth: true,
-    requireRole: "staff",
+    requireRole: 'staff',
     logAccess: true,
-    redirectTo: (user) => (user ? `/dashboard/${user.role}` : "/dashboard"),
+    redirectTo: (user) => (user ? `/dashboard/${user.role}` : '/dashboard'),
   },
 
   // STANDALONE PAGES (no layout, custom behavior)
-  "": {
+  '': {
     requireAuth: false,
     logAccess: false,
   },
@@ -112,9 +112,9 @@ export default {
   },
 
   // FALLBACK FOR UNKNOWN PAGES
-  "*": {
+  '*': {
     requireAuth: false,
     logAccess: false,
-    redirectTo: (user) => (user ? `/dashboard/${user.role}` : "/dashboard"),
+    redirectTo: (user) => (user ? `/dashboard/${user.role}` : '/dashboard'),
   },
 };

@@ -147,7 +147,7 @@ class Header extends App {
           </div>
 
           <!-- Contact Button -->
-          <div>
+          <a href="/contact" >
             <button class="flex gap-2 rounded-full border border-white px-4 py-2 text-white">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                    stroke-width="1.5" stroke="currentColor" class="size-5 self-center">
@@ -161,7 +161,7 @@ class Header extends App {
               </svg>
               <span class="text-lg">Contact Us</span>
             </button>
-          </div>
+          </a>
         </nav>
 
         <!-- Mobile Menu -->
@@ -183,11 +183,11 @@ class Header extends App {
         <app-indicator class="hidden"></app-indicator>
       </li>
       <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span><a href='/ministry'> Ministries </a></span>
+        <span><a href='/ministry'>Ministries</a></span>
         <app-indicator class="hidden"></app-indicator>
       </li>
       <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span>Life Groups</span>
+        <span><a href='/lifegroups'>Life Groups</a></span>
         <app-indicator class="hidden"></app-indicator>
       </li>
       <li class="nav-item relative flex flex-col items-center cursor-pointer">
