@@ -1,18 +1,18 @@
-import App from "@/core/App.js";
+import App from '@/core/App.js';
 
 /**
  * Teacher Dashboard Page Component (/dashboard/teacher)
- *
+ * 
  * Simple teacher dashboard with basic content.
  */
 class TeacherDashboardPage extends App {
-  connectedCallback() {
-    super.connectedCallback();
-    document.title = "Teacher Dashboard | School System";
-  }
+    connectedCallback() {
+        super.connectedCallback();
+        document.title = 'Teacher Dashboard | School System';
+    }
 
-  render() {
-    return `
+    render() {
+        return `
             <div class="space-y-6">
                 <div class="bg-white shadow rounded-lg p-6">
                     <h1 class="text-2xl font-bold text-gray-900 mb-4">
@@ -41,8 +41,8 @@ class TeacherDashboardPage extends App {
                 </div>
             </div>
         `;
-  }
+    }
 }
 
-customElements.define("app-teacher-dashboard-page", TeacherDashboardPage);
-export default TeacherDashboardPage;
+customElements.define('app-teacher-dashboard-page', TeacherDashboardPage);
+export default TeacherDashboardPage; 

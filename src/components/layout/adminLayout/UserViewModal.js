@@ -1,103 +1,100 @@
-import "@/components/ui/Modal.js";
-import "@/components/ui/Toast.js";
-import "@/components/ui/Badge.js";
+import '@/components/ui/Modal.js';
+import '@/components/ui/Toast.js';
+import '@/components/ui/Badge.js';
 
 /**
  * User View Modal Component
- *
+ * 
  * A modal component for viewing user details in the admin panel
- *
+ * 
  * Attributes:
  * - open: boolean - controls modal visibility
- *
+ * 
  * Events:
  * - modal-closed: Fired when modal is closed
  */
 class UserViewModal extends HTMLElement {
-  constructor() {
-    super();
-    this.userData = null;
-  }
-
-  static get observedAttributes() {
-    return ["open"];
-  }
-
-  connectedCallback() {
-    this.render();
-    this.setupEventListeners();
-  }
-
-  setupEventListeners() {
-    // Listen for confirm button click (Close)
-    this.addEventListener("confirm", () => {
-      this.close();
-    });
-
-    // Listen for cancel button click
-    this.addEventListener("cancel", () => {
-      this.close();
-    });
-  }
-
-  open() {
-    this.setAttribute("open", "");
-  }
-
-  close() {
-    this.removeAttribute("open");
-    this.resetForm();
-  }
-
-  // Reset form to initial state
-  resetForm() {
-    this.userData = null;
-    this.render();
-  }
-
-  // Set user data for viewing
-  setUserData(userData) {
-    this.userData = { ...userData };
-    this.render();
-  }
-
-  // Format date for display
-  formatDate(dateString) {
-    if (!dateString) return "N/A";
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch (error) {
-      return dateString;
+    constructor() {
+        super();
+        this.userData = null;
     }
-  }
 
-  render() {
-    this.innerHTML = `
+    static get observedAttributes() {
+        return ['open'];
+    }
+
+    connectedCallback() {
+        this.render();
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Listen for confirm button click (Close)
+        this.addEventListener('confirm', () => {
+            this.close();
+        });
+        
+        // Listen for cancel button click
+        this.addEventListener('cancel', () => {
+            this.close();
+        });
+    }
+
+    open() {
+        this.setAttribute('open', '');
+    }
+
+    close() {
+        this.removeAttribute('open');
+        this.resetForm();
+    }
+
+    // Reset form to initial state
+    resetForm() {
+        this.userData = null;
+        this.render();
+    }
+
+    // Set user data for viewing
+    setUserData(userData) {
+        this.userData = { ...userData };
+        this.render();
+    }
+
+    // Format date for display
+    formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (error) {
+            return dateString;
+        }
+    }
+
+    render() {
+        this.innerHTML = `
             <ui-modal 
-                ${this.hasAttribute("open") ? "open" : ""} 
+                ${this.hasAttribute('open') ? 'open' : ''} 
                 position="right" 
                 size="lg"
                 close-button="true">
                 <div slot="title">View User Details</div>
                 
                 <div>
-                    ${
-                      this.userData
-                        ? `
+                    ${this.userData ? `
                         <!-- User Header -->
                         <div class="flex items-center gap-3 border-b pb-4">
-                            <h3 class="text-xl font-semibold text-gray-900">${this.userData.name || "N/A"}</h3>
-                            <ui-badge color="secondary"><i class="fas fa-user mr-1"></i>User ID: ${this.userData.id || "N/A"}</ui-badge>
-                            <ui-badge color="${this.userData.status === "active" ? "success" : "error"}">
-                                <i class="fas fa-${this.userData.status === "active" ? "check" : "times"} mr-1"></i>
-                                ${this.userData.status === "active" ? "Active" : "Inactive"}
+                            <h3 class="text-xl font-semibold text-gray-900">${this.userData.name || 'N/A'}</h3>
+                            <ui-badge color="${this.userData.status === 'active' ? 'success' : 'error'}">
+                                <i class="fas fa-${this.userData.status === 'active' ? 'check' : 'times'} mr-1"></i>
+                                ${this.userData.status === 'active' ? 'Active' : 'Inactive'}
                             </ui-badge>
                         </div>
 
@@ -112,29 +109,19 @@ class UserViewModal extends HTMLElement {
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         <i class="fas fa-user mr-1"></i>Full Name
                                     </label>
-                                    <p class="text-gray-900 text-sm font-medium">${this.userData.name || "N/A"}</p>
+                                    <p class="text-gray-900 text-sm font-medium">${this.userData.name || 'N/A'}</p>
                                 </div>
                                 <div class="bg-gray-50 p-3 rounded-lg">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         <i class="fas fa-envelope mr-1"></i>Email Address
                                     </label>
-                                    <p class="text-gray-900 text-sm">${this.userData.email || "N/A"}</p>
+                                    <p class="text-gray-900 text-sm">${this.userData.email || 'N/A'}</p>
                                 </div>
                                 <div class="bg-gray-50 p-3 rounded-lg">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         <i class="fas fa-user-tag mr-1"></i>Role
                                     </label>
-                                    <p class="text-gray-900 text-sm">${this.userData.role_name || "N/A"}</p>
-                                </div>
-                                <div class="bg-gray-50 p-3 rounded-lg">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        <i class="fas fa-toggle-on mr-1"></i>Status
-                                    </label>
-                                    <p class="text-gray-900 text-sm">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${this.userData.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}">
-                                            ${this.userData.status === "active" ? "Active" : "Inactive"}
-                                        </span>
-                                    </p>
+                                    <p class="text-gray-900 text-sm">${this.userData.role || 'N/A'}</p>
                                 </div>
                             </div>
                         </div>
@@ -160,18 +147,16 @@ class UserViewModal extends HTMLElement {
                                 </div>
                             </div>
                         </div>
-                    `
-                        : `
+                    ` : `
                         <div class="text-center py-8">
                             <p class="text-gray-500">No user data available</p>
                         </div>
-                    `
-                    }
+                    `}
                 </div>
             </ui-modal>
         `;
-  }
+    }
 }
 
-customElements.define("user-view-modal", UserViewModal);
-export default UserViewModal;
+customElements.define('user-view-modal', UserViewModal);
+export default UserViewModal; 

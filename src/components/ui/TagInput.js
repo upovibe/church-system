@@ -1,8 +1,8 @@
 /**
  * Tag Input Component
- *
+ * 
  * A tag input component that allows users to add and remove tags with validation.
- *
+ * 
  * Attributes:
  * - placeholder: string (default: 'Add tags...') - Placeholder text for input
  * - min-tags: number (default: 0) - Minimum number of tags required
@@ -10,7 +10,7 @@
  * - value: string (default: '') - Initial tags as comma-separated string
  * - disabled: boolean (default: false) - Disable the input
  * - status: 'success' | 'warning' | 'error' | 'info' (default: '') - Validation state
- *
+ * 
  * Features:
  * - Add tags by typing and pressing Enter or comma
  * - Remove tags by clicking the X button
@@ -18,7 +18,7 @@
  * - Validation states
  * - Duplicate tag prevention
  * - Tag trimming and validation
- *
+ * 
  * Usage:
  * <ui-tag-input></ui-tag-input>
  * <ui-tag-input min-tags="2" max-tags="5" placeholder="Add skills"></ui-tag-input>
@@ -27,48 +27,48 @@
  */
 
 class TagInput extends HTMLElement {
-  constructor() {
-    super();
-
-    // Create the main container
-    this.container = document.createElement("div");
-    this.container.className = "tag-input-container";
-
-    // Create the input element
-    this.input = document.createElement("input");
-    this.input.type = "text";
-    this.input.className = "tag-input-field";
-
-    // Create the tags container
-    this.tagsContainer = document.createElement("div");
-    this.tagsContainer.className = "tag-input-tags";
-
-    // Add elements to the container
-    this.container.appendChild(this.tagsContainer);
-    this.container.appendChild(this.input);
-
-    // Add the container to the component
-    this.appendChild(this.container);
-
-    // Initialize tags array
-    this.tags = [];
-
-    // Flag to prevent double processing
-    this.initialized = false;
-
-    // Add default styles
-    this.addDefaultStyles();
-
-    // Set up event listeners
-    this.setupEventListeners();
-  }
-
-  // Add default CSS styles to document if not already added
-  addDefaultStyles() {
-    if (!document.getElementById("upo-ui-tag-input-styles")) {
-      const style = document.createElement("style");
-      style.id = "upo-ui-tag-input-styles";
-      style.textContent = `
+    constructor() {
+        super();
+        
+        // Create the main container
+        this.container = document.createElement('div');
+        this.container.className = 'tag-input-container';
+        
+        // Create the input element
+        this.input = document.createElement('input');
+        this.input.type = 'text';
+        this.input.className = 'tag-input-field';
+        
+        // Create the tags container
+        this.tagsContainer = document.createElement('div');
+        this.tagsContainer.className = 'tag-input-tags';
+        
+        // Add elements to the container
+        this.container.appendChild(this.tagsContainer);
+        this.container.appendChild(this.input);
+        
+        // Add the container to the component
+        this.appendChild(this.container);
+        
+        // Initialize tags array
+        this.tags = [];
+        
+        // Flag to prevent double processing
+        this.initialized = false;
+        
+        // Add default styles
+        this.addDefaultStyles();
+        
+        // Set up event listeners
+        this.setupEventListeners();
+    }
+    
+    // Add default CSS styles to document if not already added
+    addDefaultStyles() {
+        if (!document.getElementById('upo-ui-tag-input-styles')) {
+            const style = document.createElement('style');
+            style.id = 'upo-ui-tag-input-styles';
+            style.textContent = `
                 .tag-input-container {
                     display: flex;
                     flex-wrap: wrap;
@@ -193,177 +193,169 @@ class TagInput extends HTMLElement {
                     color: #ef4444;
                 }
             `;
-      document.head.appendChild(style);
+            document.head.appendChild(style);
+        }
     }
-  }
-
-  // Set up event listeners
-  setupEventListeners() {
-    // Handle input events
-    this.input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === ",") {
-        e.preventDefault();
-        this.addTag();
-      } else if (e.key === "Backspace" && this.input.value === "") {
-        // Remove last tag on backspace if input is empty
-        this.removeLastTag();
-      }
-    });
-
-    this.input.addEventListener("input", () => {
-      // Clear validation state on input
-      this.clearValidationState();
-    });
-
-    // Handle blur event for validation
-    this.input.addEventListener("blur", () => {
-      this.validateTags();
-    });
-
-    // Forward events from the internal input to the custom element
-    this.input.addEventListener("input", (e) => {
-      this.dispatchEvent(
-        new CustomEvent("input", {
-          bubbles: true,
-          detail: { value: this.getValue() },
-        }),
-      );
-    });
-
-    this.input.addEventListener("change", (e) => {
-      this.dispatchEvent(
-        new CustomEvent("change", {
-          bubbles: true,
-          detail: { value: this.getValue() },
-        }),
-      );
-    });
-
-    this.input.addEventListener("focus", (e) => {
-      this.dispatchEvent(new CustomEvent("focus", { bubbles: true }));
-    });
-
-    this.input.addEventListener("blur", (e) => {
-      this.dispatchEvent(new CustomEvent("blur", { bubbles: true }));
-    });
-  }
-
-  // Connected callback
-  connectedCallback() {
-    if (this.initialized) return;
-    this.initialized = true;
-
-    // Get attributes
-    this._placeholder = this.getAttribute("placeholder") || "Add tags...";
-    this._minTags = parseInt(this.getAttribute("min-tags")) || 0;
-    this._maxTags = parseInt(this.getAttribute("max-tags")) || 10;
-    this._disabled = this.hasAttribute("disabled");
-    this._status = this.getAttribute("status") || "";
-    this._value = this.getAttribute("value") || "";
-
+    
+    // Set up event listeners
+    setupEventListeners() {
+        // Handle input events
+        this.input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                this.addTag();
+            } else if (e.key === 'Backspace' && this.input.value === '') {
+                // Remove last tag on backspace if input is empty
+                this.removeLastTag();
+            }
+        });
+        
+        this.input.addEventListener('input', () => {
+            // Clear validation state on input
+            this.clearValidationState();
+        });
+        
+        // Handle blur event for validation
+        this.input.addEventListener('blur', () => {
+            this.validateTags();
+        });
+        
+        // Forward events from the internal input to the custom element
+        this.input.addEventListener('input', (e) => {
+            this.dispatchEvent(new CustomEvent('input', { 
+                bubbles: true, 
+                detail: { value: this.getValue() } 
+            }));
+        });
+        
+        this.input.addEventListener('change', (e) => {
+            this.dispatchEvent(new CustomEvent('change', { 
+                bubbles: true, 
+                detail: { value: this.getValue() } 
+            }));
+        });
+        
+        this.input.addEventListener('focus', (e) => {
+            this.dispatchEvent(new CustomEvent('focus', { bubbles: true }));
+        });
+        
+        this.input.addEventListener('blur', (e) => {
+            this.dispatchEvent(new CustomEvent('blur', { bubbles: true }));
+        });
+    }
+    
+    // Connected callback
+    connectedCallback() {
+        if (this.initialized) return;
+        this.initialized = true;
+        
+        // Get attributes
+        this._placeholder = this.getAttribute('placeholder') || 'Add tags...';
+        this._minTags = parseInt(this.getAttribute('min-tags')) || 0;
+        this._maxTags = parseInt(this.getAttribute('max-tags')) || 10;
+        this._disabled = this.hasAttribute('disabled');
+        this._status = this.getAttribute('status') || '';
+        this._value = this.getAttribute('value') || '';
+        
+        // Set up the input
+        this.setupInput();
+        
+        // Load initial value
+        if (this._value) {
+            this.setValue(this._value);
+        }
+        
+        // Apply status
+        if (this._status) {
+            this.setupStatus();
+        }
+        
+        // Remove attributes from wrapper
+        const attributes = this.getAttributeNames();
+        attributes.forEach(attr => {
+            this.removeAttribute(attr);
+        });
+    }
+    
     // Set up the input
-    this.setupInput();
-
-    // Load initial value
-    if (this._value) {
-      this.setValue(this._value);
+    setupInput() {
+        this.input.placeholder = this._placeholder;
+        this.input.disabled = this._disabled;
+        
+        if (this._disabled) {
+            this.container.style.pointerEvents = 'none';
+        }
     }
-
-    // Apply status
-    if (this._status) {
-      this.setupStatus();
+    
+    // Set up status
+    setupStatus() {
+        if (['success', 'warning', 'error', 'info'].includes(this._status)) {
+            this.classList.add(`tag-input-${this._status}`);
+        }
     }
-
-    // Remove attributes from wrapper
-    const attributes = this.getAttributeNames();
-    attributes.forEach((attr) => {
-      this.removeAttribute(attr);
-    });
-  }
-
-  // Set up the input
-  setupInput() {
-    this.input.placeholder = this._placeholder;
-    this.input.disabled = this._disabled;
-
-    if (this._disabled) {
-      this.container.style.pointerEvents = "none";
+    
+    // Add a tag
+    addTag() {
+        const tagText = this.input.value.trim();
+        
+        if (!tagText) return;
+        
+        // Check if tag already exists
+        if (this.tags.includes(tagText)) {
+            this.showError('Tag already exists');
+            return;
+        }
+        
+        // Check max tags limit
+        if (this.tags.length >= this._maxTags) {
+            this.showError(`Maximum ${this._maxTags} tags allowed`);
+            return;
+        }
+        
+        // Add the tag
+        this.tags.push(tagText);
+        this.renderTags();
+        this.input.value = '';
+        this.validateTags();
+        
+        // Dispatch change event
+        this.dispatchEvent(new CustomEvent('change', { 
+            bubbles: true, 
+            detail: { value: this.getValue() } 
+        }));
     }
-  }
-
-  // Set up status
-  setupStatus() {
-    if (["success", "warning", "error", "info"].includes(this._status)) {
-      this.classList.add(`tag-input-${this._status}`);
+    
+    // Remove a tag
+    removeTag(tagText) {
+        const index = this.tags.indexOf(tagText);
+        if (index > -1) {
+            this.tags.splice(index, 1);
+            this.renderTags();
+            this.validateTags();
+            
+            // Dispatch change event
+            this.dispatchEvent(new CustomEvent('change', { 
+                bubbles: true, 
+                detail: { value: this.getValue() } 
+            }));
+        }
     }
-  }
-
-  // Add a tag
-  addTag() {
-    const tagText = this.input.value.trim();
-
-    if (!tagText) return;
-
-    // Check if tag already exists
-    if (this.tags.includes(tagText)) {
-      this.showError("Tag already exists");
-      return;
+    
+    // Remove last tag
+    removeLastTag() {
+        if (this.tags.length > 0) {
+            this.removeTag(this.tags[this.tags.length - 1]);
+        }
     }
-
-    // Check max tags limit
-    if (this.tags.length >= this._maxTags) {
-      this.showError(`Maximum ${this._maxTags} tags allowed`);
-      return;
-    }
-
-    // Add the tag
-    this.tags.push(tagText);
-    this.renderTags();
-    this.input.value = "";
-    this.validateTags();
-
-    // Dispatch change event
-    this.dispatchEvent(
-      new CustomEvent("change", {
-        bubbles: true,
-        detail: { value: this.getValue() },
-      }),
-    );
-  }
-
-  // Remove a tag
-  removeTag(tagText) {
-    const index = this.tags.indexOf(tagText);
-    if (index > -1) {
-      this.tags.splice(index, 1);
-      this.renderTags();
-      this.validateTags();
-
-      // Dispatch change event
-      this.dispatchEvent(
-        new CustomEvent("change", {
-          bubbles: true,
-          detail: { value: this.getValue() },
-        }),
-      );
-    }
-  }
-
-  // Remove last tag
-  removeLastTag() {
-    if (this.tags.length > 0) {
-      this.removeTag(this.tags[this.tags.length - 1]);
-    }
-  }
-
-  // Render tags
-  renderTags() {
-    this.tagsContainer.innerHTML = "";
-
-    this.tags.forEach((tag) => {
-      const tagElement = document.createElement("div");
-      tagElement.className = "tag-input-tag";
-      tagElement.innerHTML = `
+    
+    // Render tags
+    renderTags() {
+        this.tagsContainer.innerHTML = '';
+        
+        this.tags.forEach(tag => {
+            const tagElement = document.createElement('div');
+            tagElement.className = 'tag-input-tag';
+            tagElement.innerHTML = `
                 <span class="tag-text">${this.escapeHtml(tag)}</span>
                 <button type="button" class="tag-remove" aria-label="Remove tag">
                     <svg fill="currentColor" viewBox="0 0 24 24">
@@ -371,123 +363,120 @@ class TagInput extends HTMLElement {
                     </svg>
                 </button>
             `;
-
-      // Add remove event listener
-      const removeBtn = tagElement.querySelector(".tag-remove");
-      removeBtn.addEventListener("click", () => {
-        this.removeTag(tag);
-      });
-
-      this.tagsContainer.appendChild(tagElement);
-    });
-  }
-
-  // Validate tags
-  validateTags() {
-    this.clearValidationState();
-
-    if (this.tags.length < this._minTags) {
-      this.showError(`Minimum ${this._minTags} tags required`);
-      return false;
+            
+            // Add remove event listener
+            const removeBtn = tagElement.querySelector('.tag-remove');
+            removeBtn.addEventListener('click', () => {
+                this.removeTag(tag);
+            });
+            
+            this.tagsContainer.appendChild(tagElement);
+        });
     }
-
-    return true;
-  }
-
-  // Show error
-  showError(message) {
-    this.classList.add("tag-input-error");
-
-    // Remove existing error message
-    const existingError = this.querySelector(".tag-input-error-message");
-    if (existingError) {
-      existingError.remove();
+    
+    // Validate tags
+    validateTags() {
+        this.clearValidationState();
+        
+        if (this.tags.length < this._minTags) {
+            this.showError(`Minimum ${this._minTags} tags required`);
+            return false;
+        }
+        
+        return true;
     }
-
-    // Add error message
-    const errorElement = document.createElement("div");
-    errorElement.className = "tag-input-error-message";
-    errorElement.textContent = message;
-    this.appendChild(errorElement);
-  }
-
-  // Clear validation state
-  clearValidationState() {
-    this.classList.remove("tag-input-error");
-    const errorElement = this.querySelector(".tag-input-error-message");
-    if (errorElement) {
-      errorElement.remove();
+    
+    // Show error
+    showError(message) {
+        this.classList.add('tag-input-error');
+        
+        // Remove existing error message
+        const existingError = this.querySelector('.tag-input-error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Add error message
+        const errorElement = document.createElement('div');
+        errorElement.className = 'tag-input-error-message';
+        errorElement.textContent = message;
+        this.appendChild(errorElement);
     }
-  }
-
-  // Escape HTML
-  escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  // Get value as comma-separated string
-  getValue() {
-    return this.tags.join(",");
-  }
-
-  // Set value from comma-separated string
-  setValue(value) {
-    if (typeof value === "string") {
-      this.tags = value
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag);
-    } else if (Array.isArray(value)) {
-      this.tags = [...value];
-    } else {
-      this.tags = [];
+    
+    // Clear validation state
+    clearValidationState() {
+        this.classList.remove('tag-input-error');
+        const errorElement = this.querySelector('.tag-input-error-message');
+        if (errorElement) {
+            errorElement.remove();
+        }
     }
-    this.renderTags();
-    this.validateTags();
-  }
-
-  // Getter methods
-  get placeholder() {
-    return this._placeholder || "";
-  }
-
-  get minTags() {
-    return this._minTags || 0;
-  }
-
-  get maxTags() {
-    return this._maxTags || 10;
-  }
-
-  get disabled() {
-    return this._disabled || false;
-  }
-
-  get status() {
-    return this._status || "";
-  }
-
-  // Value getter/setter
-  get value() {
-    return this.getValue();
-  }
-
-  set value(val) {
-    this.setValue(val);
-  }
-
-  // Focus method
-  focus() {
-    this.input.focus();
-  }
-
-  // Blur method
-  blur() {
-    this.input.blur();
-  }
+    
+    // Escape HTML
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Get value as comma-separated string
+    getValue() {
+        return this.tags.join(',');
+    }
+    
+    // Set value from comma-separated string
+    setValue(value) {
+        if (typeof value === 'string') {
+            this.tags = value.split(',').map(tag => tag.trim()).filter(tag => tag);
+        } else if (Array.isArray(value)) {
+            this.tags = [...value];
+        } else {
+            this.tags = [];
+        }
+        this.renderTags();
+        this.validateTags();
+    }
+    
+    // Getter methods
+    get placeholder() {
+        return this._placeholder || '';
+    }
+    
+    get minTags() {
+        return this._minTags || 0;
+    }
+    
+    get maxTags() {
+        return this._maxTags || 10;
+    }
+    
+    get disabled() {
+        return this._disabled || false;
+    }
+    
+    get status() {
+        return this._status || '';
+    }
+    
+    // Value getter/setter
+    get value() {
+        return this.getValue();
+    }
+    
+    set value(val) {
+        this.setValue(val);
+    }
+    
+    // Focus method
+    focus() {
+        this.input.focus();
+    }
+    
+    // Blur method
+    blur() {
+        this.input.blur();
+    }
 }
 
-customElements.define("ui-tag-input", TagInput);
-export default TagInput;
+customElements.define('ui-tag-input', TagInput);
+export default TagInput; 

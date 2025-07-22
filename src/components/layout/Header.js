@@ -1,202 +1,306 @@
-import App from '@/core/App.js';
-import store from '@/core/store.js';
-import '@/components/ui/Link.js';
-import '@/components/ui/Button.js';
-import '@/components/common/Indicator.js';
+  import App from '@/core/App.js';
+  import store from '@/core/store.js';
+  import api from '@/services/api.js';
+  import { fetchColorSettings } from '@/utils/colorSettings.js';
+  import '@/components/ui/Link.js';
 
-class Header extends App {
-  unsubscribe = null;
+  class Header extends App {
+    unsubscribe = null;
 
-  constructor() {
-    super();
-    this.updateIndicator = this.updateIndicator.bind(this);
-  }
+    connectedCallback() {
+      super.connectedCallback();
+      this.fetchSchoolLogo();
+      this.fetchContactInfo();
+      this.fetchColorSettings();
+      this.fetchSocialUrls();
+      this.setupMobileMenuEvents();
 
-  connectedCallback() {
-    super.connectedCallback();
+      // Subscribe to global state (e.g., for future auth UI)
+      this.unsubscribe = store.subscribe((newState) => {
+        this.set('isAuthenticated', newState.isAuthenticated);
+      });
+    }
 
-    this.unsubscribe = store.subscribe((newState) => {
-      this.set('isAuthenticated', newState.isAuthenticated);
-    });
+    disconnectedCallback() {
+      if (this.unsubscribe) {
+        this.unsubscribe();
+      }
+    }
 
-    setTimeout(() => {
-      const navItems = this.querySelectorAll('.nav-item');
-      const mobileMenu = this.querySelector('#mobile-menu');
-      const hamburgerBtn = this.querySelector('#hamburger-btn');
-      const currentPath = window.location.pathname;
+    setupMobileMenuEvents() {
+      this.addEventListener('click', (e) => {
+        const toggleButton = e.target.closest('[data-mobile-toggle]');
+        if (toggleButton) {
+          e.preventDefault();
+          this.toggleMobileMenu();
+        }
 
-      const activate = (el) => {
-        if (!el) return;
-        // First, deactivate all other items
-        navItems.forEach((item) => {
-          item.classList.remove('text-yellow-400');
-          const indicator = item.querySelector('app-indicator');
-          if (indicator) {
-            indicator.classList.add('hidden');
+        const overlay = e.target.closest('[data-mobile-overlay]');
+        if (overlay) {
+          e.preventDefault();
+          this.toggleMobileMenu();
+        }
+
+        // Handle mobile submenu toggles
+        const submenuToggle = e.target.closest('[data-mobile-submenu-toggle]');
+        if (submenuToggle) {
+          e.preventDefault();
+          this.toggleMobileSubmenu(submenuToggle);
+        }
+      });
+
+      // Close mobile menu on window resize
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+          this.closeMobileMenu();
+        }
+      });
+    }
+
+    toggleMobileMenu() {
+      const mobileMenu = this.querySelector('[data-mobile-menu]');
+      const overlay = this.querySelector('[data-mobile-overlay]');
+      
+      if (mobileMenu && overlay) {
+        const isOpen = mobileMenu.classList.contains('translate-x-0');
+        
+        if (isOpen) {
+          // Close menu
+          mobileMenu.classList.remove('translate-x-0');
+          mobileMenu.classList.add('-translate-x-full');
+          overlay.classList.remove('opacity-100', 'pointer-events-auto');
+          overlay.classList.add('opacity-0', 'pointer-events-none');
+        } else {
+          // Open menu
+          mobileMenu.classList.remove('-translate-x-full');
+          mobileMenu.classList.add('translate-x-0');
+          overlay.classList.remove('opacity-0', 'pointer-events-none');
+          overlay.classList.add('opacity-100', 'pointer-events-auto');
+        }
+      }
+    }
+
+    closeMobileMenu() {
+      const mobileMenu = this.querySelector('[data-mobile-menu]');
+      const overlay = this.querySelector('[data-mobile-overlay]');
+      
+      if (mobileMenu && overlay) {
+        mobileMenu.classList.remove('translate-x-0');
+        mobileMenu.classList.add('-translate-x-full');
+        overlay.classList.remove('opacity-100', 'pointer-events-auto');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    toggleMobileSubmenu(toggleButton) {
+      const submenu = toggleButton.nextElementSibling;
+      const icon = toggleButton.querySelector('i');
+      
+      if (submenu && icon) {
+        const isOpen = submenu.classList.contains('max-h-96');
+        
+        if (isOpen) {
+          // Close submenu
+          submenu.classList.remove('max-h-96', 'opacity-100');
+          submenu.classList.add('max-h-0', 'opacity-0');
+          icon.classList.remove('rotate-180');
+        } else {
+          // Open submenu
+          submenu.classList.remove('max-h-0', 'opacity-0');
+          submenu.classList.add('max-h-96', 'opacity-100');
+          icon.classList.add('rotate-180');
+        }
+      }
+    }
+
+    async fetchSchoolLogo() {
+      try {
+        const response = await api.get('/settings/key/application_logo');
+        if (response.data.success && response.data.data.setting_value) {
+          this.set('logoUrl', `/api/${response.data.data.setting_value}`);
+        }
+      } catch (error) {
+        console.error('Error fetching school logo:', error);
+      }
+    }
+
+    async fetchContactInfo() {
+      try {
+        const emailResponse = await api.get('/settings/key/contact_email');
+        if (emailResponse.data.success && emailResponse.data.data.setting_value) {
+          this.set('contactEmail', emailResponse.data.data.setting_value);
+        }
+
+        const phoneResponse = await api.get('/settings/key/contact_phone');
+        if (phoneResponse.data.success && phoneResponse.data.data.setting_value) {
+          this.set('contactPhone', phoneResponse.data.data.setting_value);
+        }
+      } catch (error) {
+        console.error('Error fetching contact info:', error);
+      }
+    }
+
+    async fetchColorSettings() {
+      try {
+        const colors = await fetchColorSettings();
+        
+        // Set all color values to state
+        Object.entries(colors).forEach(([key, value]) => {
+          this.set(key, value);
+        });
+
+      } catch (error) {
+        console.error('Error fetching color settings:', error);
+      }
+    }
+
+    async fetchSocialUrls() {
+      try {
+        const socialSettings = [
+          'facebook_url',
+          'twitter_url',
+          'instagram_url',
+          'linkedin_url',
+          'youtube_url'
+        ];
+
+        const socialPromises = socialSettings.map(async (settingKey) => {
+          try {
+            const response = await api.get(`/settings/key/${settingKey}`);
+            if (response.data.success && response.data.data.setting_value) {
+              return { key: settingKey, value: response.data.data.setting_value };
+            }
+          } catch (error) {
+            console.error(`Error fetching ${settingKey}:`, error);
+          }
+          return null;
+        });
+
+        const socialResults = await Promise.all(socialPromises);
+        
+        // Set all social URL values to state
+        socialResults.forEach(result => {
+          if (result) {
+            this.set(result.key, result.value);
           }
         });
 
-        // Then, activate the correct one
-        el.classList.add('text-yellow-400');
-        const textElement = el.querySelector('span');
-        const indicator = el.querySelector('app-indicator');
+      } catch (error) {
+        console.error('Error fetching social URLs:', error);
+      }
+    }
 
-        if (textElement && indicator) {
-          const textWidth = textElement.offsetWidth;
-          indicator.style.width = `${textWidth}px`;
-          indicator.classList.remove('hidden');
-        }
+    render() {
+      // Get all colors from state
+      const backgroundColor = this.get('background_color');
+      const primaryColor = this.get('primary_color');
+      const secondaryColor = this.get('secondary_color');
+      const accentColor = this.get('accent_color');
+      const textColor = this.get('text_color');
+      const darkColor = this.get('dark_color');
+      const hoverAccent = this.get('hover_accent');
+      
+      // Only render if we have the essential colors
+      if (!primaryColor || !textColor || !secondaryColor) {
+        return '';
+      }
+
+      // Navigation links array (customize for church if needed)
+      const navigationLinks = [
+        { href: '/', label: 'Home' },
+        { href: '/about', label: 'About' },
+        { href: '/ministries', label: 'Ministries' },
+        { href: '/events', label: 'Events' },
+        { href: '/gallery', label: 'Gallery' },
+        { href: '/give', label: 'Give' },
+        { href: '/contact', label: 'Contact' }
+      ];
+
+      // Helper function to render navigation links
+      const renderNavLinks = (isMobile = false) => {
+        const currentPath = window.location.pathname;
+        const isActive = (href) => {
+          if (href === '/') return currentPath === '/';
+          return currentPath === href || currentPath.startsWith(href + '/');
+        };
+        return navigationLinks.map(link => `
+          <ui-link href="${link.href}" class="nav-link ${isMobile ? `block w-full py-2 text-lg` : `inline-block py-1`} text-[${textColor}] font-medium transition-all duration-300 ease-in-out ${isActive(link.href) ? 'active-link' : ''}">
+            ${link.label}
+          </ui-link>
+        `).join('');
       };
 
-      // On initial load, find the active item from the URL
-      const activeItem = Array.from(navItems).find((item) => {
-        const link = item.querySelector('a');
-        return link && link.getAttribute('href') === currentPath;
-      });
-
-      if (activeItem) {
-        activate(activeItem);
-      } else {
-        // If no path matches, default to activating the first item (Home)
-        if (currentPath === '/' && navItems.length > 0) activate(navItems[0]);
-      }
-
-      // Add smart click listeners
-      navItems.forEach((item) => {
-        item.addEventListener('click', () => {
-          const link = item.querySelector('a');
-          // If it's not a real link, activate it immediately.
-          // If it IS a real link, do nothing and let the router handle it.
-          // The activate() call on page load will handle the indicator.
-          if (!link) {
-            activate(item);
+      // Add styles for active link
+      const style = `
+        <style>
+          .active-link {
+            color: ${accentColor} !important;
+            border-bottom: 5px solid ${accentColor} !important;
+            opacity: 1 !important;
+            font-weight: bold !important;
           }
-        });
-      });
+          .nav-link {
+            border-bottom: 5px solid transparent;
+            transition: border-color 0.2s, color 0.2s;
+          }
+          .nav-link:hover {
+            border-bottom: 5px solid ${hoverAccent};
+            color: ${hoverAccent};
+            
+          }
+        </style>
+      `;
 
-      // Mobile menu toggle
-      if (hamburgerBtn && mobileMenu) {
-        hamburgerBtn.addEventListener('click', () => {
-          mobileMenu.classList.toggle('hidden');
-        });
-      }
-    }, 0);
-  }
+      return `
+        <div class="relative">
+          ${style}
+          <header class="sticky top-0 z-50 backdrop-blur bg-[${primaryColor}]/70">
+            <div class="flex container mx-auto items-center justify-between p-3 lg:p-5">
+              <!-- Logo on the left -->
+              <ui-link href="/" class="flex items-center mr-4">
+                <img class="w-36 lg:w-44 max-w-none" src="${this.get('logoUrl')}" alt="Church Logo" />
+              </ui-link>
+              <!-- Nav links (center, after logo) -->
+              <nav class="hidden lg:flex flex-1 items-center space-x-10">
+                ${renderNavLinks(false)}
+              </nav>
+              <!-- Contact Us button on the right -->
+              <a href="/contact" class="hidden lg:inline-flex items-center px-6 py-2 bg-[${accentColor}] text-white font-bold rounded-full shadow-lg hover:bg-[${hoverAccent}] focus:outline-none focus:ring-2 focus:ring-[${accentColor}] focus:ring-offset-2 transition-all duration-300 ml-4 space-x-2">
+                <i class="fas fa-phone"></i>
+                <span class="">Contact Us</span>
+              </a>
+              <!-- Mobile Menu Button -->
+              <button data-mobile-toggle class="lg:hidden text-[${textColor}] size-8 rounded-md ml-auto">
+                <i class="fas fa-bars"></i>
+              </button>
+            </div>
+          </header>
 
-  disconnectedCallback() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-    // Clean up the event listener
-    window.removeEventListener('route-changed', this.updateIndicator);
-  }
+          <!-- Mobile Overlay -->
+          <div data-mobile-overlay class="fixed inset-0 bg-black bg-opacity-50 z-40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
 
-  updateIndicator() {
-    const navItems = this.querySelectorAll('.nav-item');
-    const currentPath = window.location.pathname;
-
-    // Deactivate all indicators first
-    navItems.forEach((item) => {
-      item.classList.remove('text-yellow-400');
-      const indicator = item.querySelector('app-indicator');
-      if (indicator) {
-        indicator.classList.add('hidden');
-      }
-    });
-
-    // Find the active item based on the current URL
-    let activeItem = null;
-    navItems.forEach((item) => {
-      const link = item.querySelector('a');
-      if (link && link.getAttribute('href') === currentPath) {
-        activeItem = item;
-      }
-    });
-
-    // Activate the found item
-    if (activeItem) {
-      activeItem.classList.add('text-yellow-400');
-      const textElement = activeItem.querySelector('span');
-      const indicator = activeItem.querySelector('app-indicator');
-
-      if (textElement && indicator) {
-        const textWidth = textElement.offsetWidth;
-        indicator.style.width = `${textWidth}px`;
-        indicator.classList.remove('hidden');
-      }
-    }
-  }
-
-  render() {
-    return `
-      <header class="fixed top-0 left-0 right-0 z-50 px-[10ch] py-10 backdrop-blur bg-transparent">
-        <nav class="flex items-center justify-between">
-          <!-- Logo + Nav -->
-          <div class="flex items-center space-x-4">
-            <!-- Hamburger button (mobile only) -->
-            <button id="hamburger-btn" class="md:hidden text-white focus:outline-none">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-            </button>
-
-            <!-- Desktop Nav -->
-            <ul class="hidden md:flex space-x-[10ch] text-lg font-medium text-white" id="nav-list">
-              ${this.getNavItems()}
-            </ul>
+          <!-- Mobile Menu -->
+          <div data-mobile-menu class="fixed inset-0 bg-[${primaryColor}] z-50 transform -translate-x-full transition-transform duration-300 lg:hidden">
+            <div class="flex items-center justify-between p-4 border-b border-[${primaryColor}]">
+              <img class="w-36 max-w-none" src="${this.get('logoUrl')}" alt="Church Logo" />
+              <button data-mobile-toggle class="text-[${textColor}] size-8 rounded-md">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="flex flex-col gap-2 items-start p-4 overflow-y-auto w-full">
+              <nav class="flex flex-col items-center justify-center space-y-2 w-full">
+                ${renderNavLinks(true)}
+              </nav>
+              <a href="/contact" class="mt-6 w-full inline-flex items-center justify-center px-6 py-3 bg-[${accentColor}] text-white font-bold rounded-full shadow-lg hover:bg-[${hoverAccent}] focus:outline-none focus:ring-2 focus:ring-[${accentColor}] focus:ring-offset-2 transition-all duration-300 space-x-2">
+                <i class="fas fa-phone"></i>
+                <span class="">Contact Us</span>
+              </a>
+            </div>
           </div>
-
-          <!-- Contact Button -->
-          <a href="/contact" >
-            <button class="flex gap-2 rounded-full border border-white px-4 py-2 text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                   stroke-width="1.5" stroke="currentColor" class="size-5 self-center">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M15.75 3.75 18 6m0 0 2.25 2.25M18 6l2.25-2.25M18 6l-2.25 2.25
-                      m1.5 13.5c-8.284 0-15-6.716-15-15V4.5A2.25 2.25 0 0 1 4.5 2.25h1.372c.516 0
-                      .966.351 1.091.852l1.106 4.423c.11.44-.054.902-.417 1.173l-1.293.97a1.062
-                      1.062 0 0 0-.38 1.21 12.035 12.035 0 0 0 7.143 7.143c.441.162.928-.004
-                      1.21-.38l.97-1.293a1.125 1.125 0 0 1 1.173-.417l4.423
-                      1.106c.5.125.852.575.852 1.091V19.5a2.25 2.25 0 0 1-2.25 2.25h-2.25Z"/>
-              </svg>
-              <span class="text-lg">Contact Us</span>
-            </button>
-          </a>
-        </nav>
-
-        <!-- Mobile Menu -->
-        <ul id="mobile-menu" class="md:hidden mt-4 flex flex-col gap-4 text-white text-lg font-medium hidden">
-          ${this.getNavItems()}
-        </ul>
-      </header>
-    `;
+        </div>
+      `;
+    }
   }
 
-  getNavItems() {
-    return `
-      <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span><a href='/'>Home</a></span>
-        <app-indicator class="hidden"></app-indicator>
-      </li>
-      <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span><a href='/events'>Services & Events</a></span>
-        <app-indicator class="hidden"></app-indicator>
-      </li>
-      <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span><a href='/ministry'>Ministries</a></span>
-        <app-indicator class="hidden"></app-indicator>
-      </li>
-      <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span><a href='/lifegroups'>Life Groups</a></span>
-        <app-indicator class="hidden"></app-indicator>
-      </li>
-      <li class="nav-item relative flex flex-col items-center cursor-pointer">
-        <span>Give</span>
-        <app-indicator class="hidden"></app-indicator>
-      </li>
-    `;
-  }
-}
-
-customElements.define('app-header', Header);
-export default Header;
+  customElements.define('app-header', Header);
+  export default Header;

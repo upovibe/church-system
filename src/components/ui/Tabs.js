@@ -1,11 +1,11 @@
 /**
  * Tabs Component
- *
+ * 
  * Creates a tabbed interface with multiple panels. Supports:
  * - Tab switching with smooth transitions
  * - Active state management
  * - Accessible keyboard navigation
- *
+ * 
  * Usage:
  * <ui-tabs>
  *   <ui-tab-list>
@@ -17,28 +17,28 @@
  * </ui-tabs>
  */
 class TabList extends HTMLElement {
-  constructor() {
-    super();
+    constructor() {
+        super();
+        
+        // Create the tab list div element directly (no shadow DOM)
+        this.tabListDiv = document.createElement('div');
+        
+        // Flag to prevent double processing
+        this.initialized = false;
+        
+        // Add the tab list div to the component
+        this.appendChild(this.tabListDiv);
+        
+        // Add default styles via CSS
+        this.addDefaultStyles();
+    }
 
-    // Create the tab list div element directly (no shadow DOM)
-    this.tabListDiv = document.createElement("div");
-
-    // Flag to prevent double processing
-    this.initialized = false;
-
-    // Add the tab list div to the component
-    this.appendChild(this.tabListDiv);
-
-    // Add default styles via CSS
-    this.addDefaultStyles();
-  }
-
-  // Add default CSS styles to document if not already added
-  addDefaultStyles() {
-    if (!document.getElementById("upo-ui-tabs-styles")) {
-      const style = document.createElement("style");
-      style.id = "upo-ui-tabs-styles";
-      style.textContent = `
+    // Add default CSS styles to document if not already added
+    addDefaultStyles() {
+        if (!document.getElementById('upo-ui-tabs-styles')) {
+            const style = document.createElement('style');
+            style.id = 'upo-ui-tabs-styles';
+            style.textContent = `
                 .upo-tab-list {
                     display: flex;
                     gap: 0.125rem;
@@ -91,183 +91,182 @@ class TabList extends HTMLElement {
                     display: block;
                 }
             `;
-      document.head.appendChild(style);
+            document.head.appendChild(style);
+        }
     }
-  }
 
-  // Connected callback - called when element is added to DOM
-  connectedCallback() {
-    // Prevent double processing
-    if (this.initialized) return;
-    this.initialized = true;
+    // Connected callback - called when element is added to DOM
+    connectedCallback() {
+        // Prevent double processing
+        if (this.initialized) return;
+        this.initialized = true;
 
-    // Set the tab list class
-    this.tabListDiv.className = "upo-tab-list";
-
-    // Move any existing children to the tab list div
-    const children = Array.from(this.childNodes);
-    children.forEach((child) => {
-      if (child !== this.tabListDiv) {
-        this.tabListDiv.appendChild(child);
-      }
-    });
-  }
+        // Set the tab list class
+        this.tabListDiv.className = 'upo-tab-list';
+        
+        // Move any existing children to the tab list div
+        const children = Array.from(this.childNodes);
+        children.forEach(child => {
+            if (child !== this.tabListDiv) {
+                this.tabListDiv.appendChild(child);
+            }
+        });
+    }
 }
 
 class Tab extends HTMLElement {
-  constructor() {
-    super();
-
-    // Create the tab button element directly (no shadow DOM)
-    this.tabButton = document.createElement("button");
-
-    // Flag to prevent double processing
-    this.initialized = false;
-
-    // Add the button to the component
-    this.appendChild(this.tabButton);
-
-    // Add default styles via CSS (handled by TabList)
-    this.addDefaultStyles();
-  }
-
-  // Add default CSS styles to document if not already added
-  addDefaultStyles() {
-    // Styles are already added by TabList component
-    // This method exists for consistency with the pattern
-  }
-
-  connectedCallback() {
-    // Prevent double processing
-    if (this.initialized) return;
-    this.initialized = true;
-
-    // Set the tab class
-    this.className = "upo-tab";
-    this.tabButton.type = "button";
-
-    // Store original content before building the tab
-    const originalContent = Array.from(this.childNodes)
-      .filter((node) => node !== this.tabButton)
-      .map((node) => node.textContent || "")
-      .join("")
-      .trim();
-
-    // Move any existing children (except our button) to avoid duplication
-    const children = Array.from(this.childNodes);
-    children.forEach((child) => {
-      if (child !== this.tabButton) {
-        this.removeChild(child);
-      }
-    });
-
-    // Set the button content
-    this.tabButton.textContent = originalContent;
-
-    // Add click event listener
-    this.tabButton.addEventListener("click", this._handleClick.bind(this));
-  }
-
-  disconnectedCallback() {
-    if (this.tabButton) {
-      this.tabButton.removeEventListener("click", this._handleClick.bind(this));
+    constructor() {
+        super();
+        
+        // Create the tab button element directly (no shadow DOM)
+        this.tabButton = document.createElement('button');
+        
+        // Flag to prevent double processing
+        this.initialized = false;
+        
+        // Add the button to the component
+        this.appendChild(this.tabButton);
+        
+        // Add default styles via CSS (handled by TabList)
+        this.addDefaultStyles();
     }
-  }
 
-  _handleClick() {
-    const tabsContainer = this.closest("ui-tabs");
-    if (tabsContainer) {
-      tabsContainer.setActiveTab(this.getAttribute("value"));
+    // Add default CSS styles to document if not already added
+    addDefaultStyles() {
+        // Styles are already added by TabList component
+        // This method exists for consistency with the pattern
     }
-  }
+    
+    connectedCallback() {
+        // Prevent double processing
+        if (this.initialized) return;
+        this.initialized = true;
+
+        // Set the tab class
+        this.className = 'upo-tab';
+        this.tabButton.type = 'button';
+        
+        // Store original content before building the tab
+        const originalContent = Array.from(this.childNodes)
+            .filter(node => node !== this.tabButton)
+            .map(node => node.textContent || '')
+            .join('').trim();
+
+        // Move any existing children (except our button) to avoid duplication
+        const children = Array.from(this.childNodes);
+        children.forEach(child => {
+            if (child !== this.tabButton) {
+                this.removeChild(child);
+            }
+        });
+
+        // Set the button content
+        this.tabButton.textContent = originalContent;
+        
+        // Add click event listener
+        this.tabButton.addEventListener('click', this._handleClick.bind(this));
+    }
+    
+    disconnectedCallback() {
+        if (this.tabButton) {
+            this.tabButton.removeEventListener('click', this._handleClick.bind(this));
+        }
+    }
+    
+    _handleClick() {
+        const tabsContainer = this.closest('ui-tabs');
+        if (tabsContainer) {
+            tabsContainer.setActiveTab(this.getAttribute('value'));
+        }
+    }
 }
 
 class TabPanel extends HTMLElement {
-  constructor() {
-    super();
+    constructor() {
+        super();
+        
+        // Create the panel div element directly (no shadow DOM)
+        this.panelDiv = document.createElement('div');
+        
+        // Flag to prevent double processing
+        this.initialized = false;
+        
+        // Add the panel div to the component
+        this.appendChild(this.panelDiv);
+        
+        // Add default styles via CSS (handled by TabList)
+        this.addDefaultStyles();
+    }
 
-    // Create the panel div element directly (no shadow DOM)
-    this.panelDiv = document.createElement("div");
+    // Add default CSS styles to document if not already added
+    addDefaultStyles() {
+        // Styles are already added by TabList component
+        // This method exists for consistency with the pattern
+    }
+    
+    connectedCallback() {
+        // Prevent double processing
+        if (this.initialized) return;
+        this.initialized = true;
 
-    // Flag to prevent double processing
-    this.initialized = false;
-
-    // Add the panel div to the component
-    this.appendChild(this.panelDiv);
-
-    // Add default styles via CSS (handled by TabList)
-    this.addDefaultStyles();
-  }
-
-  // Add default CSS styles to document if not already added
-  addDefaultStyles() {
-    // Styles are already added by TabList component
-    // This method exists for consistency with the pattern
-  }
-
-  connectedCallback() {
-    // Prevent double processing
-    if (this.initialized) return;
-    this.initialized = true;
-
-    // Set the panel class
-    this.className = "upo-tab-panel";
-
-    // Move any existing children to the panel div
-    const children = Array.from(this.childNodes);
-    children.forEach((child) => {
-      if (child !== this.panelDiv) {
-        this.panelDiv.appendChild(child);
-      }
-    });
-  }
+        // Set the panel class
+        this.className = 'upo-tab-panel';
+        
+        // Move any existing children to the panel div
+        const children = Array.from(this.childNodes);
+        children.forEach(child => {
+            if (child !== this.panelDiv) {
+                this.panelDiv.appendChild(child);
+            }
+        });
+    }
 }
 
 class Tabs extends HTMLElement {
-  constructor() {
-    super();
-    this.currentTab = null;
-  }
-
-  connectedCallback() {
-    // Set the first tab as active by default if no active tab is specified
-    setTimeout(() => {
-      if (!this.currentTab) {
-        const firstTab = this.querySelector("ui-tab");
-        if (firstTab) {
-          this.setActiveTab(firstTab.getAttribute("value"));
-        }
-      }
-    }, 0);
-  }
-
-  setActiveTab(value) {
-    this.currentTab = value;
-
-    // Update tabs
-    const tabs = this.querySelectorAll("ui-tab");
-    tabs.forEach((tab) => {
-      if (tab.getAttribute("value") === value) {
-        tab.setAttribute("active", "");
-      } else {
-        tab.removeAttribute("active");
-      }
-    });
-
-    // Update panels
-    const panels = this.querySelectorAll("ui-tab-panel");
-    panels.forEach((panel) => {
-      if (panel.getAttribute("value") === value) {
-        panel.setAttribute("active", "");
-      } else {
-        panel.removeAttribute("active");
-      }
-    });
-  }
+    constructor() {
+        super();
+        this.currentTab = null;
+    }
+    
+    connectedCallback() {
+        // Set the first tab as active by default if no active tab is specified
+        setTimeout(() => {
+            if (!this.currentTab) {
+                const firstTab = this.querySelector('ui-tab');
+                if (firstTab) {
+                    this.setActiveTab(firstTab.getAttribute('value'));
+                }
+            }
+        }, 0);
+    }
+    
+    setActiveTab(value) {
+        this.currentTab = value;
+        
+        // Update tabs
+        const tabs = this.querySelectorAll('ui-tab');
+        tabs.forEach(tab => {
+            if (tab.getAttribute('value') === value) {
+                tab.setAttribute('active', '');
+            } else {
+                tab.removeAttribute('active');
+            }
+        });
+        
+        // Update panels
+        const panels = this.querySelectorAll('ui-tab-panel');
+        panels.forEach(panel => {
+            if (panel.getAttribute('value') === value) {
+                panel.setAttribute('active', '');
+            } else {
+                panel.removeAttribute('active');
+            }
+        });
+    }
 }
 
-customElements.define("ui-tab-list", TabList);
-customElements.define("ui-tab", Tab);
-customElements.define("ui-tab-panel", TabPanel);
-customElements.define("ui-tabs", Tabs);
-export default Tabs;
+customElements.define('ui-tab-list', TabList);
+customElements.define('ui-tab', Tab);
+customElements.define('ui-tab-panel', TabPanel);
+customElements.define('ui-tabs', Tabs);
+export default Tabs; 

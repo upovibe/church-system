@@ -22,7 +22,7 @@ Router::delete('/users/{id}', 'UserController@destroy');
 Router::get('/users/{id}/profile', 'UserController@profile');
 Router::put('/users/{id}/profile', 'UserController@updateProfile');
 Router::post('/users/{id}/change-password', 'UserController@changePassword');
-Router::post('/users/{id}/resend-welcome', 'UserController@resendWelcomeEmail');
+Router::post('/users/{id}/upload-profile-image', 'UserController@uploadProfileImage');
 
 // Role management routes (admin only)
 // Note: Controllers will use RoleMiddleware::requireAdmin($pdo);
@@ -60,3 +60,71 @@ Router::get('/settings/category/{category}', 'SettingController@getByCategory');
 Router::get('/settings/{id}', 'SettingController@show');
 Router::put('/settings/{id}', 'SettingController@update');
 Router::delete('/settings/{id}', 'SettingController@destroy');
+
+// Event Management Routes (admin only for create/update/delete, public for view)
+Router::get('/events', 'EventController@index');
+Router::post('/events', 'EventController@store');
+Router::get('/events/active', 'EventController@getActive');
+Router::get('/events/upcoming', 'EventController@getUpcoming');
+Router::get('/events/category', 'EventController@getByCategory');
+Router::get('/events/search', 'EventController@search');
+Router::get('/events/slug/{slug}', 'EventController@showBySlug');
+Router::get('/events/{id}', 'EventController@show');
+Router::put('/events/{id}', 'EventController@update');
+Router::delete('/events/{id}', 'EventController@destroy');
+Router::put('/events/{id}/toggle-active', 'EventController@toggleActive');
+Router::put('/events/{id}/status', 'EventController@updateStatus');
+
+// News Management Routes (admin only for create/update/delete, public for view)
+Router::get('/news', 'NewsController@index');
+Router::post('/news', 'NewsController@store');
+Router::get('/news/active', 'NewsController@getActive');
+Router::get('/news/recent', 'NewsController@getRecent');
+Router::get('/news/search', 'NewsController@search');
+Router::get('/news/slug/{slug}', 'NewsController@showBySlug');
+Router::get('/news/{id}', 'NewsController@show');
+Router::put('/news/{id}', 'NewsController@update');
+Router::delete('/news/{id}', 'NewsController@destroy');
+
+// Gallery Management Routes (admin only for create/update/delete, public for view)
+Router::get('/galleries', 'GalleryController@index');
+Router::post('/galleries', 'GalleryController@store');
+Router::get('/galleries/active', 'GalleryController@getActive');
+Router::get('/galleries/recent', 'GalleryController@getRecent');
+Router::get('/galleries/search', 'GalleryController@search');
+Router::get('/galleries/slug/{slug}', 'GalleryController@showBySlug');
+Router::get('/galleries/{id}', 'GalleryController@show');
+Router::put('/galleries/{id}', 'GalleryController@update');
+Router::delete('/galleries/{id}', 'GalleryController@destroy');
+Router::delete('/galleries/{id}/images/{imageIndex}', 'GalleryController@removeImage');
+
+// Video Gallery Management Routes (admin only for create/update/delete, public for view)
+Router::get('/video-galleries', 'VideoGalleryController@index');
+Router::post('/video-galleries', 'VideoGalleryController@store');
+Router::get('/video-galleries/active', 'VideoGalleryController@getActive');
+Router::get('/video-galleries/recent', 'VideoGalleryController@getRecent');
+Router::get('/video-galleries/search', 'VideoGalleryController@search');
+Router::get('/video-galleries/slug/{slug}', 'VideoGalleryController@showBySlug');
+Router::get('/video-galleries/{id}', 'VideoGalleryController@show');
+Router::put('/video-galleries/{id}', 'VideoGalleryController@update');
+Router::delete('/video-galleries/{id}', 'VideoGalleryController@destroy');
+Router::delete('/video-galleries/{id}/videos/{videoIndex}', 'VideoGalleryController@removeVideoLink');
+
+// Team Management Routes (admin only for create/update/delete, public for view)
+Router::get('/teams', 'TeamController@index');
+Router::get('/teams/public', 'TeamController@getPublic');
+Router::post('/teams', 'TeamController@store');
+Router::get('/teams/department/{department}', 'TeamController@getByDepartment');
+Router::get('/teams/{id}', 'TeamController@show');
+Router::put('/teams/{id}', 'TeamController@update');
+Router::delete('/teams/{id}', 'TeamController@destroy');
+
+// Guest Applications
+Router::get('/applications', 'ApplicationController@index');
+Router::get('/applications/{id}', 'ApplicationController@show');
+Router::post('/applications', 'ApplicationController@store');
+
+// DB setup endpoints
+Router::get('/db/test', 'DbController@test');
+Router::get('/db/check', 'DbController@check');
+Router::post('/db/fresh', 'DbController@fresh');

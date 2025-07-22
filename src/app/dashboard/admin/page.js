@@ -1,18 +1,18 @@
-import App from "@/core/App.js";
+import App from '@/core/App.js';
 
 /**
  * Admin Dashboard Page Component (/dashboard/admin)
- *
+ * 
  * Simple admin dashboard with basic content.
  */
 class AdminDashboardPage extends App {
-  connectedCallback() {
-    super.connectedCallback();
-    document.title = "Admin Dashboard | School System";
-  }
+    connectedCallback() {
+        super.connectedCallback();
+        document.title = 'Admin Dashboard | School System';
+    }
 
-  render() {
-    return `
+    render() {
+        return `
             <div class="space-y-6">
                 <div class="bg-white shadow rounded-lg p-6">
                     <h1 class="text-2xl font-bold text-gray-900 mb-4">
@@ -41,8 +41,8 @@ class AdminDashboardPage extends App {
                 </div>
             </div>
         `;
-  }
+    }
 }
 
-customElements.define("app-admin-dashboard-page", AdminDashboardPage);
-export default AdminDashboardPage;
+customElements.define('app-admin-dashboard-page', AdminDashboardPage);
+export default AdminDashboardPage; 

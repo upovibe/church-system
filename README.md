@@ -17,61 +17,55 @@ A lightweight, vanilla JavaScript Web Component library designed for CSS framewo
 ```html
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>UPO UI Demo</title>
     <!-- Add your preferred CSS framework -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Or use Bootstrap -->
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-  </head>
-  <body>
+</head>
+<body>
     <!-- Use components with your CSS framework classes -->
-    <ui-input
-      placeholder="Enter your name"
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-    >
+    <ui-input 
+        placeholder="Enter your name"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
     </ui-input>
-
+    
     <!-- Load the library -->
     <script type="module" src="./bundler/bundle.js"></script>
-  </body>
+</body>
 </html>
 ```
 
 ## 🎨 Styling
 
 ### With Tailwind CSS
-
 ```html
-<ui-input
-  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-></ui-input>
+<ui-input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
 ```
 
 ### With Bootstrap
-
 ```html
-<ui-input class="form-control form-control-lg border-primary"></ui-input>
+<ui-input class="form-control form-control-lg border-primary">
 ```
 
 ### With Custom CSS
-
 ```html
-<ui-input class="my-custom-input"></ui-input>
+<ui-input class="my-custom-input">
 ```
 
 ```css
 .my-custom-input {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
 }
 
 .my-custom-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 ```
 
@@ -87,7 +81,6 @@ Our components use a **transparent wrapper approach** instead of Shadow DOM:
 ## 📁 Installation
 
 ### Option 1: Direct Download
-
 Download the repository and include the bundle file:
 
 ```html
@@ -95,16 +88,11 @@ Download the repository and include the bundle file:
 ```
 
 ### Option 2: Using CDN
-
 ```html
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/upovibe/upoUI@v1.0.1/components/bundle.js"
-></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/upovibe/upoUI@v1.0.1/components/bundle.js"></script>
 ```
 
 ### Option 3: Clone Repository
-
 ```bash
 git clone https://github.com/upovibe/upoUI.git
 cd upoUI
@@ -114,7 +102,6 @@ cd upoUI
 ## 🌐 Browser Support
 
 Works in all modern browsers that support:
-
 - ES Modules
 - Custom Elements v1
 - JavaScript Classes

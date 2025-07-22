@@ -8,8 +8,8 @@ class PageModel extends BaseModel {
     
     // Fields that can be mass assigned
     protected static $fillable = [
-        'slug',
         'title',
+        'slug',
         'category',
         'content',
         'meta_description',
@@ -23,7 +23,8 @@ class PageModel extends BaseModel {
     protected static $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'banner_image' => 'json'
     ];
     
     // Whether the model uses timestamps
@@ -34,10 +35,27 @@ class PageModel extends BaseModel {
     }
     
     /**
-     * Find page by slug
+     * Find page by slug (static method)
      */
     public static function findBySlug($slug) {
         return static::where('slug', $slug)->first();
+    }
+    
+    /**
+     * Find page by slug (instance method)
+     */
+    public function findBySlugInstance($slug) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE slug = ?");
+            $stmt->execute([$slug]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $result = $this->applyCasts($result);
+            }
+            return $result;
+        } catch (PDOException $e) {
+            throw new Exception('Error fetching page by slug: ' . $e->getMessage());
+        }
     }
     
     /**
@@ -51,7 +69,14 @@ class PageModel extends BaseModel {
                 ORDER BY sort_order ASC, title ASC
             ");
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Apply casts to each result
+            foreach ($results as &$result) {
+                $result = $this->applyCasts($result);
+            }
+            
+            return $results;
         } catch (PDOException $e) {
             throw new Exception('Error fetching active pages: ' . $e->getMessage());
         }
@@ -68,7 +93,14 @@ class PageModel extends BaseModel {
                 ORDER BY sort_order ASC, title ASC
             ");
             $stmt->execute([$category]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Apply casts to each result
+            foreach ($results as &$result) {
+                $result = $this->applyCasts($result);
+            }
+            
+            return $results;
         } catch (PDOException $e) {
             throw new Exception('Error fetching pages by category: ' . $e->getMessage());
         }

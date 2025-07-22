@@ -1,110 +1,108 @@
-import App from "@/core/App.js";
-import "@/components/ui/Card.js";
-import "@/components/ui/Input.js";
-import "@/components/ui/Button.js";
-import "@/components/ui/Toast.js";
-import api from "@/services/api.js";
+import App from '@/core/App.js';
+import '@/components/ui/Card.js';
+import '@/components/ui/Input.js';
+import '@/components/ui/Button.js';
+import '@/components/ui/Toast.js';
+import api from '@/services/api.js';
 
 /**
  * Forgot Password Page Component (/auth/forgot-password)
- *
+ * 
  * Forgot password form with email field and password reset functionality.
  */
 class ForgotPasswordPage extends App {
-  constructor() {
-    super();
-    this.formData = {
-      email: "",
-    };
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    document.title = "Forgot Password | School System";
-  }
-
-  handleInputChange(field, value) {
-    this.formData[field] = value;
-  }
-
-  async handleSubmit() {
-    const { email } = this.formData;
-
-    if (!email) {
-      Toast.show({
-        title: "Validation Error",
-        message: "Please enter your email address",
-        variant: "error",
-        duration: 3000,
-      });
-      return;
+    constructor() {
+        super();
+        this.formData = {
+            email: ''
+        };
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Toast.show({
-        title: "Invalid Email",
-        message: "Please enter a valid email address",
-        variant: "error",
-        duration: 3000,
-      });
-      return;
+    connectedCallback() {
+        super.connectedCallback();
+        document.title = 'Forgot Password | School System';
     }
 
-    try {
-      await this.sendPasswordReset(email);
-    } catch (error) {
-      Toast.show({
-        title: "Reset Failed",
-        message:
-          error.response?.data?.error ||
-          "An error occurred while sending reset email",
-        variant: "error",
-        duration: 3000,
-      });
+    handleInputChange(field, value) {
+        this.formData[field] = value;
     }
-  }
 
-  async sendPasswordReset(email) {
-    try {
-      // Make API call to send password reset email
-      const response = await api.post("/auth/forgot-password", {
-        email: email,
-      });
+    async handleSubmit() {
+        const { email } = this.formData;
+        
+        if (!email) {
+            Toast.show({
+                title: 'Validation Error',
+                message: 'Please enter your email address',
+                variant: 'error',
+                duration: 3000
+            });
+            return;
+        }
 
-      Toast.show({
-        title: "Reset Email Sent",
-        message:
-          "If an account with this email exists, you will receive password reset instructions.",
-        variant: "success",
-        duration: 5000,
-      });
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            Toast.show({
+                title: 'Invalid Email',
+                message: 'Please enter a valid email address',
+                variant: 'error',
+                duration: 3000
+            });
+            return;
+        }
 
-      // Clear form
-      this.formData.email = "";
-      this.querySelector("ui-input").value = "";
-
-      // Redirect to login page after a delay
-      setTimeout(() => {
-        window.location.href = "/auth/login";
-      }, 3000);
-    } catch (error) {
-      // Handle specific API errors
-      if (error.response?.status === 404) {
-        throw new Error("No account found with this email address");
-      } else if (error.response?.status === 422) {
-        throw new Error("Please check your email address and try again");
-      } else {
-        throw new Error("Network error. Please try again.");
-      }
+        try {
+            await this.sendPasswordReset(email);
+        } catch (error) {
+            Toast.show({
+                title: 'Reset Failed',
+                message: error.response?.data?.error || 'An error occurred while sending reset email',
+                variant: 'error',
+                duration: 3000
+            });
+        }
     }
-  }
 
-  // Removed updateSubmitButton method - simplified like login page
+    async sendPasswordReset(email) {
+        try {
+            // Make API call to send password reset email
+            const response = await api.post('/auth/forgot-password', {
+                email: email
+            });
 
-  render() {
-    return `
+            Toast.show({
+                title: 'Reset Email Sent',
+                message: 'If an account with this email exists, you will receive password reset instructions.',
+                variant: 'success',
+                duration: 5000
+            });
+
+            // Clear form
+            this.formData.email = '';
+            this.querySelector('ui-input').value = '';
+
+            // Redirect to login page after a delay
+            setTimeout(() => {
+                window.location.href = '/auth/login';
+            }, 3000);
+
+        } catch (error) {
+            // Handle specific API errors
+            if (error.response?.status === 404) {
+                throw new Error('No account found with this email address');
+            } else if (error.response?.status === 422) {
+                throw new Error('Please check your email address and try again');
+            } else {
+                throw new Error('Network error. Please try again.');
+            }
+        }
+    }
+
+    // Removed updateSubmitButton method - simplified like login page
+
+    render() {
+        return `
             <div class="flex items-center justify-center min-h-screen p-5">
                     <ui-card class="p-8 shadow-2xl rounded-2xl border-0 bg-white/95 backdrop-blur-sm max-w-sm w-full">
                         <!-- Logo/Icon Section -->
@@ -178,8 +176,8 @@ class ForgotPasswordPage extends App {
                     </ui-card>
             </div>
         `;
-  }
+    }
 }
 
-customElements.define("app-forgot-password-page", ForgotPasswordPage);
-export default ForgotPasswordPage;
+customElements.define('app-forgot-password-page', ForgotPasswordPage);
+export default ForgotPasswordPage; 

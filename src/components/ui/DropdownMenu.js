@@ -1,8 +1,8 @@
 /**
  * DropdownMenu Component
- *
+ * 
  * A flexible dropdown menu component that allows custom HTML content.
- *
+ * 
  * Usage:
  * <ui-dropdown-menu>
  *   <ui-dropdown-menu-trigger>Open</ui-dropdown-menu-trigger>
@@ -30,7 +30,7 @@
  *     </ui-dropdown-menu-item>
  *   </ui-dropdown-menu-content>
  * </ui-dropdown-menu>
- *
+ * 
  * Features:
  * - Flexible content: Put any HTML inside menu items
  * - Action-based events: Use data-action for custom actions
@@ -39,42 +39,42 @@
  */
 
 class DropdownMenu extends HTMLElement {
-  constructor() {
-    super();
-
-    // Create the main container
-    this.container = document.createElement("div");
-    this.container.className = "upo-dropdown-menu-container";
-
-    // Create the trigger container
-    this.triggerContainer = document.createElement("div");
-    this.triggerContainer.className = "upo-dropdown-menu-trigger-container";
-
-    // Create the content container
-    this.contentContainer = document.createElement("div");
-    this.contentContainer.className = "upo-dropdown-menu-content-container";
-
-    // Assemble the structure
-    this.container.appendChild(this.triggerContainer);
-    this.container.appendChild(this.contentContainer);
-    this.appendChild(this.container);
-
-    // Initialize state
-    this.isOpen = false;
-    this.initialized = false;
-
-    // Add default styles
-    this.addDefaultStyles();
-
-    // Set up event listeners
-    this.setupEventListeners();
-  }
-
-  addDefaultStyles() {
-    if (!document.getElementById("upo-ui-dropdown-menu-styles")) {
-      const style = document.createElement("style");
-      style.id = "upo-ui-dropdown-menu-styles";
-      style.textContent = `
+    constructor() {
+        super();
+        
+        // Create the main container
+        this.container = document.createElement('div');
+        this.container.className = 'upo-dropdown-menu-container';
+        
+        // Create the trigger container
+        this.triggerContainer = document.createElement('div');
+        this.triggerContainer.className = 'upo-dropdown-menu-trigger-container';
+        
+        // Create the content container
+        this.contentContainer = document.createElement('div');
+        this.contentContainer.className = 'upo-dropdown-menu-content-container';
+        
+        // Assemble the structure
+        this.container.appendChild(this.triggerContainer);
+        this.container.appendChild(this.contentContainer);
+        this.appendChild(this.container);
+        
+        // Initialize state
+        this.isOpen = false;
+        this.initialized = false;
+        
+        // Add default styles
+        this.addDefaultStyles();
+        
+        // Set up event listeners
+        this.setupEventListeners();
+    }
+    
+    addDefaultStyles() {
+        if (!document.getElementById('upo-ui-dropdown-menu-styles')) {
+            const style = document.createElement('style');
+            style.id = 'upo-ui-dropdown-menu-styles';
+            style.textContent = `
                 .upo-dropdown-menu-container {
                     position: relative;
                     display: inline-block;
@@ -259,356 +259,339 @@ class DropdownMenu extends HTMLElement {
                     font-size: 1rem;
                 }
             `;
-      document.head.appendChild(style);
-    }
-  }
-
-  setupEventListeners() {
-    // Toggle on trigger click
-    this.triggerContainer.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!this.disabled) {
-        this.toggle();
-      }
-    });
-
-    // Close on escape key
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && this.isOpen) {
-        this.close();
-      }
-    });
-
-    // Close when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!this.container.contains(e.target) && this.isOpen) {
-        this.close();
-      }
-    });
-
-    // Handle menu item clicks
-    this.contentContainer.addEventListener("click", (e) => {
-      const menuItem = e.target.closest(".upo-dropdown-menu-item");
-      if (menuItem && !menuItem.classList.contains("disabled")) {
-        // Check if click was on a custom element with data-action
-        const customElement = e.target.closest("[data-action]");
-        if (customElement) {
-          e.preventDefault();
-          e.stopPropagation();
-          this.close();
-
-          const eventDetail = {
-            text: customElement.textContent.trim(),
-            action: customElement.getAttribute("data-action"),
-            icon:
-              menuItem.querySelector(".upo-dropdown-menu-item-icon")
-                ?.innerHTML || "",
-            color: this.getMenuItemColor(menuItem),
-          };
-
-          // Dispatch on the dropdown menu element
-          this.dispatchEvent(
-            new CustomEvent("item-click", {
-              detail: eventDetail,
-            }),
-          );
-
-          // Also dispatch on document to ensure it bubbles up
-          document.dispatchEvent(
-            new CustomEvent("item-click", {
-              detail: eventDetail,
-            }),
-          );
-          return;
+            document.head.appendChild(style);
         }
-
-        this.close();
-        // Dispatch custom event
-        this.dispatchEvent(
-          new CustomEvent("item-click", {
-            detail: {
-              text: menuItem.textContent.trim(),
-              icon:
-                menuItem.querySelector(".upo-dropdown-menu-item-icon")
-                  ?.innerHTML || "",
-              color: this.getMenuItemColor(menuItem),
-            },
-          }),
-        );
-      }
-    });
-  }
-
-  getMenuItemColor(menuItem) {
-    const colors = ["red", "green", "blue", "yellow", "purple"];
-    for (const color of colors) {
-      if (menuItem.classList.contains(color)) {
-        return color;
-      }
     }
-    return null;
-  }
-
-  toggle() {
-    if (this.isOpen) {
-      this.close();
-    } else {
-      this.open();
+    
+    setupEventListeners() {
+        // Toggle on trigger click
+        this.triggerContainer.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!this.disabled) {
+                this.toggle();
+            }
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.close();
+            }
+        });
+        
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.container.contains(e.target) && this.isOpen) {
+                this.close();
+            }
+        });
+        
+        // Handle menu item clicks
+        this.contentContainer.addEventListener('click', (e) => {
+            const menuItem = e.target.closest('.upo-dropdown-menu-item');
+            if (menuItem && !menuItem.classList.contains('disabled')) {
+                // Check if click was on a custom element with data-action
+                const customElement = e.target.closest('[data-action]');
+                if (customElement) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.close();
+                    
+                    const eventDetail = {
+                        text: customElement.textContent.trim(),
+                        action: customElement.getAttribute('data-action'),
+                        icon: menuItem.querySelector('.upo-dropdown-menu-item-icon')?.innerHTML || '',
+                        color: this.getMenuItemColor(menuItem)
+                    };
+                    
+                    // Dispatch on the dropdown menu element
+                    this.dispatchEvent(new CustomEvent('item-click', {
+                        detail: eventDetail
+                    }));
+                    
+                    // Also dispatch on document to ensure it bubbles up
+                    document.dispatchEvent(new CustomEvent('item-click', {
+                        detail: eventDetail
+                    }));
+                    return;
+                }
+                
+                this.close();
+                // Dispatch custom event
+                this.dispatchEvent(new CustomEvent('item-click', {
+                    detail: {
+                        text: menuItem.textContent.trim(),
+                        icon: menuItem.querySelector('.upo-dropdown-menu-item-icon')?.innerHTML || '',
+                        color: this.getMenuItemColor(menuItem)
+                    }
+                }));
+            }
+        });
     }
-  }
-
-  open() {
-    this.isOpen = true;
-    this.contentContainer.classList.add("open");
-    this.triggerContainer.setAttribute("aria-expanded", "true");
-
-    // Check for overflow and adjust position
-    this.adjustPosition();
-  }
-
-  close() {
-    this.isOpen = false;
-    this.contentContainer.classList.remove("open");
-    this.triggerContainer.setAttribute("aria-expanded", "false");
-  }
-
-  connectedCallback() {
-    if (this.initialized) return;
-    this.initialized = true;
-
-    // Process trigger and content
-    this.processTrigger();
-    this.processContent();
-
-    // Set position
-    const position = this.getAttribute("position") || "bottom";
-    this.contentContainer.classList.add(position);
-
-    // Set size
-    const size = this.getAttribute("size") || "md";
-    this.container.classList.add(`upo-dropdown-menu-${size}`);
-
-    // Set disabled state
-    if (this.hasAttribute("disabled")) {
-      this.triggerContainer.classList.add("disabled");
+    
+    getMenuItemColor(menuItem) {
+        const colors = ['red', 'green', 'blue', 'yellow', 'purple'];
+        for (const color of colors) {
+            if (menuItem.classList.contains(color)) {
+                return color;
+            }
+        }
+        return null;
     }
-
-    // Set ARIA attributes
-    this.triggerContainer.setAttribute("role", "button");
-    this.triggerContainer.setAttribute("aria-haspopup", "true");
-    this.triggerContainer.setAttribute("aria-expanded", "false");
-    this.contentContainer.setAttribute("role", "menu");
-  }
-
-  processTrigger() {
-    const trigger = this.querySelector("ui-dropdown-menu-trigger");
-    if (trigger) {
-      // Move trigger content to trigger container
-      this.triggerContainer.innerHTML = "";
-      this.triggerContainer.appendChild(trigger.cloneNode(true));
-      trigger.remove();
-    }
-  }
-
-  processContent() {
-    const content = this.querySelector("ui-dropdown-menu-content");
-    if (content) {
-      // Move content to content container
-      this.contentContainer.innerHTML = "";
-      this.contentContainer.appendChild(content.cloneNode(true));
-      content.remove();
-
-      // Process the content after moving it
-      this.processContentItems();
-    }
-  }
-
-  processContentItems() {
-    // Process all items in the content container
-    const items = this.contentContainer.querySelectorAll(
-      "ui-dropdown-menu-label, ui-dropdown-menu-separator, ui-dropdown-menu-item",
-    );
-
-    items.forEach((item) => {
-      if (item.tagName === "UI-DROPDOWN-MENU-LABEL") {
-        // Label is already processed by its own component
-      } else if (item.tagName === "UI-DROPDOWN-MENU-SEPARATOR") {
-        // Separator is already processed by its own component
-      } else if (item.tagName === "UI-DROPDOWN-MENU-ITEM") {
-        // Menu item is already processed by its own component
-      }
-    });
-  }
-
-  static get observedAttributes() {
-    return ["position", "size", "disabled"];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (!this.initialized) return;
-
-    switch (name) {
-      case "position":
-        this.contentContainer.className =
-          this.contentContainer.className.replace(/top|bottom|left|right/g, "");
-        this.contentContainer.classList.add(newValue || "bottom");
-        break;
-      case "size":
-        this.container.className = this.container.className.replace(
-          /upo-dropdown-menu-(sm|md|lg)/g,
-          "",
-        );
-        this.container.classList.add(`upo-dropdown-menu-${newValue || "md"}`);
-        break;
-      case "disabled":
-        if (newValue !== null) {
-          this.triggerContainer.classList.add("disabled");
+    
+    toggle() {
+        if (this.isOpen) {
+            this.close();
         } else {
-          this.triggerContainer.classList.remove("disabled");
+            this.open();
         }
-        break;
     }
-  }
-
-  get position() {
-    return this.getAttribute("position") || "bottom";
-  }
-
-  set position(value) {
-    this.setAttribute("position", value);
-  }
-
-  get size() {
-    return this.getAttribute("size") || "md";
-  }
-
-  set size(value) {
-    this.setAttribute("size", value);
-  }
-
-  get disabled() {
-    return this.hasAttribute("disabled");
-  }
-
-  set disabled(value) {
-    if (value) {
-      this.setAttribute("disabled", "");
-    } else {
-      this.removeAttribute("disabled");
+    
+    open() {
+        this.isOpen = true;
+        this.contentContainer.classList.add('open');
+        this.triggerContainer.setAttribute('aria-expanded', 'true');
+        
+        // Check for overflow and adjust position
+        this.adjustPosition();
     }
-  }
-
-  // Public methods
-  openDropdown() {
-    this.open();
-  }
-
-  closeDropdown() {
-    this.close();
-  }
-
-  adjustPosition() {
-    // Wait for the next frame to ensure the dropdown is rendered
-    requestAnimationFrame(() => {
-      const container = this.container;
-      const content = this.contentContainer;
-
-      if (!container || !content) return;
-
-      // Get container and content dimensions
-      const containerRect = container.getBoundingClientRect();
-      const contentRect = content.getBoundingClientRect();
-
-      // Check if content would overflow to the right
-      const wouldOverflowRight =
-        containerRect.left + contentRect.width > window.innerWidth;
-
-      // Remove any existing alignment classes
-      content.classList.remove("right-aligned");
-
-      // If it would overflow, align to the right
-      if (wouldOverflowRight) {
-        content.classList.add("right-aligned");
-      }
-    });
-  }
+    
+    close() {
+        this.isOpen = false;
+        this.contentContainer.classList.remove('open');
+        this.triggerContainer.setAttribute('aria-expanded', 'false');
+    }
+    
+    connectedCallback() {
+        if (this.initialized) return;
+        this.initialized = true;
+        
+        // Process trigger and content
+        this.processTrigger();
+        this.processContent();
+        
+        // Set position
+        const position = this.getAttribute('position') || 'bottom';
+        this.contentContainer.classList.add(position);
+        
+        // Set size
+        const size = this.getAttribute('size') || 'md';
+        this.container.classList.add(`upo-dropdown-menu-${size}`);
+        
+        // Set disabled state
+        if (this.hasAttribute('disabled')) {
+            this.triggerContainer.classList.add('disabled');
+        }
+        
+        // Set ARIA attributes
+        this.triggerContainer.setAttribute('role', 'button');
+        this.triggerContainer.setAttribute('aria-haspopup', 'true');
+        this.triggerContainer.setAttribute('aria-expanded', 'false');
+        this.contentContainer.setAttribute('role', 'menu');
+    }
+    
+    processTrigger() {
+        const trigger = this.querySelector('ui-dropdown-menu-trigger');
+        if (trigger) {
+            // Move trigger content to trigger container
+            this.triggerContainer.innerHTML = '';
+            this.triggerContainer.appendChild(trigger.cloneNode(true));
+            trigger.remove();
+        }
+    }
+    
+    processContent() {
+        const content = this.querySelector('ui-dropdown-menu-content');
+        if (content) {
+            // Move content to content container
+            this.contentContainer.innerHTML = '';
+            this.contentContainer.appendChild(content.cloneNode(true));
+            content.remove();
+            
+            // Process the content after moving it
+            this.processContentItems();
+        }
+    }
+    
+    processContentItems() {
+        // Process all items in the content container
+        const items = this.contentContainer.querySelectorAll('ui-dropdown-menu-label, ui-dropdown-menu-separator, ui-dropdown-menu-item');
+        
+        items.forEach(item => {
+            if (item.tagName === 'UI-DROPDOWN-MENU-LABEL') {
+                // Label is already processed by its own component
+            } else if (item.tagName === 'UI-DROPDOWN-MENU-SEPARATOR') {
+                // Separator is already processed by its own component
+            } else if (item.tagName === 'UI-DROPDOWN-MENU-ITEM') {
+                // Menu item is already processed by its own component
+            }
+        });
+    }
+    
+    static get observedAttributes() {
+        return ['position', 'size', 'disabled'];
+    }
+    
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (!this.initialized) return;
+        
+        switch (name) {
+            case 'position':
+                this.contentContainer.className = this.contentContainer.className.replace(/top|bottom|left|right/g, '');
+                this.contentContainer.classList.add(newValue || 'bottom');
+                break;
+            case 'size':
+                this.container.className = this.container.className.replace(/upo-dropdown-menu-(sm|md|lg)/g, '');
+                this.container.classList.add(`upo-dropdown-menu-${newValue || 'md'}`);
+                break;
+            case 'disabled':
+                if (newValue !== null) {
+                    this.triggerContainer.classList.add('disabled');
+                } else {
+                    this.triggerContainer.classList.remove('disabled');
+                }
+                break;
+        }
+    }
+    
+    get position() {
+        return this.getAttribute('position') || 'bottom';
+    }
+    
+    set position(value) {
+        this.setAttribute('position', value);
+    }
+    
+    get size() {
+        return this.getAttribute('size') || 'md';
+    }
+    
+    set size(value) {
+        this.setAttribute('size', value);
+    }
+    
+    get disabled() {
+        return this.hasAttribute('disabled');
+    }
+    
+    set disabled(value) {
+        if (value) {
+            this.setAttribute('disabled', '');
+        } else {
+            this.removeAttribute('disabled');
+        }
+    }
+    
+    // Public methods
+    openDropdown() {
+        this.open();
+    }
+    
+    closeDropdown() {
+        this.close();
+    }
+    
+    adjustPosition() {
+        // Wait for the next frame to ensure the dropdown is rendered
+        requestAnimationFrame(() => {
+            const container = this.container;
+            const content = this.contentContainer;
+            
+            if (!container || !content) return;
+            
+            // Get container and content dimensions
+            const containerRect = container.getBoundingClientRect();
+            const contentRect = content.getBoundingClientRect();
+            
+            // Check if content would overflow to the right
+            const wouldOverflowRight = containerRect.left + contentRect.width > window.innerWidth;
+            
+            // Remove any existing alignment classes
+            content.classList.remove('right-aligned');
+            
+            // If it would overflow, align to the right
+            if (wouldOverflowRight) {
+                content.classList.add('right-aligned');
+            }
+        });
+    }
 }
 
 // DropdownMenuTrigger Component
 class DropdownMenuTrigger extends HTMLElement {
-  constructor() {
-    super();
-  }
-
-  connectedCallback() {
-    // This component is processed by the parent DropdownMenu
-  }
+    constructor() {
+        super();
+    }
+    
+    connectedCallback() {
+        // This component is processed by the parent DropdownMenu
+    }
 }
 
 // DropdownMenuContent Component
 class DropdownMenuContent extends HTMLElement {
-  constructor() {
-    super();
-  }
-
-  connectedCallback() {
-    // This component is processed by the parent DropdownMenu
-  }
+    constructor() {
+        super();
+    }
+    
+    connectedCallback() {
+        // This component is processed by the parent DropdownMenu
+    }
 }
 
 // DropdownMenuLabel Component
 class DropdownMenuLabel extends HTMLElement {
-  constructor() {
-    super();
-  }
-
-  connectedCallback() {
-    this.className = "upo-dropdown-menu-label";
-  }
+    constructor() {
+        super();
+    }
+    
+    connectedCallback() {
+        this.className = 'upo-dropdown-menu-label';
+    }
 }
 
 // DropdownMenuSeparator Component
 class DropdownMenuSeparator extends HTMLElement {
-  constructor() {
-    super();
-  }
-
-  connectedCallback() {
-    this.className = "upo-dropdown-menu-separator";
-  }
+    constructor() {
+        super();
+    }
+    
+    connectedCallback() {
+        this.className = 'upo-dropdown-menu-separator';
+    }
 }
 
 // DropdownMenuItem Component
 class DropdownMenuItem extends HTMLElement {
-  constructor() {
-    super();
-  }
-
-  connectedCallback() {
-    this.className = "upo-dropdown-menu-item";
-    this.setAttribute("role", "menuitem");
-
-    // Add color class if specified
-    if (this.hasAttribute("color")) {
-      this.classList.add(this.getAttribute("color"));
+    constructor() {
+        super();
     }
-
-    // Add disabled class if specified
-    if (this.hasAttribute("disabled")) {
-      this.classList.add("disabled");
+    
+    connectedCallback() {
+        this.className = 'upo-dropdown-menu-item';
+        this.setAttribute('role', 'menuitem');
+        
+        // Add color class if specified
+        if (this.hasAttribute('color')) {
+            this.classList.add(this.getAttribute('color'));
+        }
+        
+        // Add disabled class if specified
+        if (this.hasAttribute('disabled')) {
+            this.classList.add('disabled');
+        }
+        
+        // No automatic icon creation - let users put whatever they want inside
     }
-
-    // No automatic icon creation - let users put whatever they want inside
-  }
 }
 
 // Register components
-customElements.define("ui-dropdown-menu", DropdownMenu);
-customElements.define("ui-dropdown-menu-trigger", DropdownMenuTrigger);
-customElements.define("ui-dropdown-menu-content", DropdownMenuContent);
-customElements.define("ui-dropdown-menu-label", DropdownMenuLabel);
-customElements.define("ui-dropdown-menu-separator", DropdownMenuSeparator);
-customElements.define("ui-dropdown-menu-item", DropdownMenuItem);
+customElements.define('ui-dropdown-menu', DropdownMenu);
+customElements.define('ui-dropdown-menu-trigger', DropdownMenuTrigger);
+customElements.define('ui-dropdown-menu-content', DropdownMenuContent);
+customElements.define('ui-dropdown-menu-label', DropdownMenuLabel);
+customElements.define('ui-dropdown-menu-separator', DropdownMenuSeparator);
+customElements.define('ui-dropdown-menu-item', DropdownMenuItem);
 
-export default DropdownMenu;
+export default DropdownMenu; 

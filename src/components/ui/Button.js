@@ -1,44 +1,44 @@
 /**
  * Button Component
- *
+ * 
  * Interactive button component with various styles, colors, and states.
  * Supports different variants, colors, sizes, and interactive states.
- *
+ * 
  * Attributes:
  * - variant: 'solid' | 'outline' | 'ghost' (default: 'solid')
  * - color: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info'
  * - size: 'sm' | 'md' | 'lg' (default: 'md')
  * - disabled: boolean
  * - loading: boolean
- *
+ * 
  * Usage:
  * <ui-button>Default Button</ui-button>
  * <ui-button variant="outline" color="success">Success</ui-button>
  * <ui-button size="lg" disabled>Disabled</ui-button>
  */
 class Button extends HTMLElement {
-  constructor() {
-    super();
-
-    // Create the button element directly (no shadow DOM)
-    this.buttonElement = document.createElement("button");
-
-    // Flag to prevent double processing
-    this.initialized = false;
-
-    // Add the button element to the component
-    this.appendChild(this.buttonElement);
-
-    // Add default styles via CSS
-    this.addDefaultStyles();
-  }
-
-  // Add default CSS styles to document if not already added
-  addDefaultStyles() {
-    if (!document.getElementById("upo-ui-button-styles")) {
-      const style = document.createElement("style");
-      style.id = "upo-ui-button-styles";
-      style.textContent = `
+    constructor() {
+        super();
+        
+        // Create the button element directly (no shadow DOM)
+        this.buttonElement = document.createElement('button');
+        
+        // Flag to prevent double processing
+        this.initialized = false;
+        
+        // Add the button element to the component
+        this.appendChild(this.buttonElement);
+        
+        // Add default styles via CSS
+        this.addDefaultStyles();
+    }
+    
+    // Add default CSS styles to document if not already added
+    addDefaultStyles() {
+        if (!document.getElementById('upo-ui-button-styles')) {
+            const style = document.createElement('style');
+            style.id = 'upo-ui-button-styles';
+            style.textContent = `
                 .upo-button {
                     display: inline-flex;
                     align-items: center;
@@ -342,123 +342,121 @@ class Button extends HTMLElement {
                     transform: translateY(0);
                 }
             `;
-      document.head.appendChild(style);
-    }
-  }
-
-  static get observedAttributes() {
-    return ["variant", "color", "size", "disabled", "loading", "class"];
-  }
-
-  get variant() {
-    return this.getAttribute("variant") || "solid";
-  }
-
-  get color() {
-    return this.getAttribute("color") || "primary";
-  }
-
-  get size() {
-    return this.getAttribute("size") || "md";
-  }
-
-  get disabled() {
-    return this.hasAttribute("disabled");
-  }
-
-  get loading() {
-    return this.hasAttribute("loading");
-  }
-
-  // Connected callback - called when element is added to DOM
-  connectedCallback() {
-    // Prevent double processing
-    if (this.initialized) return;
-    this.initialized = true;
-
-    // Store original HTML content before building the button
-    const originalNodes = Array.from(this.childNodes).filter(
-      (node) => node !== this.buttonElement,
-    );
-
-    // Move any existing children (except our buttonElement) to avoid duplication
-    const children = Array.from(this.childNodes);
-    children.forEach((child) => {
-      if (child !== this.buttonElement) {
-        this.removeChild(child);
-      }
-    });
-
-    // Set up the button element
-    this.updateClasses();
-
-    // Move the original HTML content to the button element (preserves icons)
-    if (originalNodes.length > 0) {
-      originalNodes.forEach((node) => {
-        this.buttonElement.appendChild(node.cloneNode(true));
-      });
-    } else {
-      this.buttonElement.textContent = "Button";
+            document.head.appendChild(style);
+        }
     }
 
-    // Set disabled state
-    if (this.disabled) {
-      this.buttonElement.disabled = true;
+    static get observedAttributes() {
+        return ['variant', 'color', 'size', 'disabled', 'loading', 'class'];
     }
-  }
 
-  // Called when attributes change
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (!this.initialized) return;
+    get variant() {
+        return this.getAttribute('variant') || 'solid';
+    }
 
-    switch (name) {
-      case "variant":
-      case "color":
-      case "size":
-      case "class":
+    get color() {
+        return this.getAttribute('color') || 'primary';
+    }
+
+    get size() {
+        return this.getAttribute('size') || 'md';
+    }
+
+    get disabled() {
+        return this.hasAttribute('disabled');
+    }
+
+    get loading() {
+        return this.hasAttribute('loading');
+    }
+    
+    // Connected callback - called when element is added to DOM
+    connectedCallback() {
+        // Prevent double processing
+        if (this.initialized) return;
+        this.initialized = true;
+        
+        // Store original HTML content before building the button
+        const originalNodes = Array.from(this.childNodes)
+            .filter(node => node !== this.buttonElement);
+
+        // Move any existing children (except our buttonElement) to avoid duplication
+        const children = Array.from(this.childNodes);
+        children.forEach(child => {
+            if (child !== this.buttonElement) {
+                this.removeChild(child);
+            }
+        });
+
+        // Set up the button element
         this.updateClasses();
-        break;
-      case "disabled":
-        this.buttonElement.disabled = this.disabled;
-        break;
-      case "loading":
-        this.updateClasses();
-        break;
-    }
-  }
-
-  updateClasses() {
-    const baseClasses = [
-      "upo-button",
-      `upo-button-${this.size}`,
-      `upo-button-${this.variant}-${this.color}`,
-    ];
-
-    if (this.loading) {
-      baseClasses.push("upo-button-loading");
+        
+        // Move the original HTML content to the button element (preserves icons)
+        if (originalNodes.length > 0) {
+            originalNodes.forEach(node => {
+                this.buttonElement.appendChild(node.cloneNode(true));
+            });
+        } else {
+            this.buttonElement.textContent = 'Button';
+        }
+        
+        // Set disabled state
+        if (this.disabled) {
+            this.buttonElement.disabled = true;
+        }
     }
 
-    // Get custom classes from the component itself
-    const customClasses = Array.from(this.classList);
+    // Called when attributes change
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (!this.initialized) return;
+        
+        switch (name) {
+            case 'variant':
+            case 'color':
+            case 'size':
+            case 'class':
+                this.updateClasses();
+                break;
+            case 'disabled':
+                this.buttonElement.disabled = this.disabled;
+                break;
+            case 'loading':
+                this.updateClasses();
+                break;
+        }
+    }
 
-    // Apply base classes first, then custom classes (custom classes will override)
-    this.buttonElement.className =
-      baseClasses.join(" ") + " " + customClasses.join(" ");
-  }
-
-  // Forward common methods to the internal button
-  focus() {
-    this.buttonElement.focus();
-  }
-
-  blur() {
-    this.buttonElement.blur();
-  }
-
-  click() {
-    this.buttonElement.click();
-  }
+    updateClasses() {
+        const baseClasses = [
+            'upo-button',
+            `upo-button-${this.size}`,
+            `upo-button-${this.variant}-${this.color}`
+        ];
+        
+        if (this.loading) {
+            baseClasses.push('upo-button-loading');
+        }
+        
+        // Get custom classes from the component itself
+        const customClasses = Array.from(this.classList);
+        
+        // Apply base classes first, then custom classes (custom classes will override)
+        this.buttonElement.className = baseClasses.join(' ') + ' ' + customClasses.join(' ');
+    }
+    
+    // Forward common methods to the internal button
+    focus() {
+        this.buttonElement.focus();
+    }
+    
+    blur() {
+        this.buttonElement.blur();
+    }
+    
+    click() {
+        this.buttonElement.click();
+    }
 }
 
-customElements.define("ui-button", Button);
-export default Button;
+    customElements.define('ui-button', Button);
+export default Button; 

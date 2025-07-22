@@ -1,179 +1,173 @@
-import App from "@/core/App.js";
-import "@/components/ui/Card.js";
-import "@/components/ui/Input.js";
-import "@/components/ui/Button.js";
-import "@/components/ui/Toast.js";
-import api from "@/services/api.js";
+import App from '@/core/App.js';
+import '@/components/ui/Card.js';
+import '@/components/ui/Input.js';
+import '@/components/ui/Button.js';
+import '@/components/ui/Toast.js';
+import api from '@/services/api.js';
 
 /**
  * Reset Password Page Component (/reset-password)
- *
+ * 
  * Password reset form that handles the token from URL and allows setting new password.
  */
 class ResetPasswordPage extends App {
-  constructor() {
-    super();
-    this.formData = {
-      password: "",
-      confirmPassword: "",
-    };
-    this.token = null;
-    this.isValidToken = false;
-    this.isLoading = true;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    document.title = "Reset Password | School System";
-    this.extractTokenFromUrl();
-  }
-
-  extractTokenFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    this.token = urlParams.get("token");
-
-    if (!this.token) {
-      this.showError(
-        "Invalid reset link. Please request a new password reset.",
-      );
-      return;
+    constructor() {
+        super();
+        this.formData = {
+            password: '',
+            confirmPassword: ''
+        };
+        this.token = null;
+        this.isValidToken = false;
+        this.isLoading = true;
     }
 
-    // Validate token format (basic check)
-    if (this.token.length < 32) {
-      this.showError("Invalid reset token format.");
-      return;
+    connectedCallback() {
+        super.connectedCallback();
+        document.title = 'Reset Password | School System';
+        this.extractTokenFromUrl();
     }
 
-    this.isValidToken = true;
-    this.isLoading = false;
-    this.render();
-  }
+    extractTokenFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        this.token = urlParams.get('token');
+        
+        if (!this.token) {
+            this.showError('Invalid reset link. Please request a new password reset.');
+            return;
+        }
 
-  showError(message) {
-    this.isLoading = false;
-    this.render();
+        // Validate token format (basic check)
+        if (this.token.length < 32) {
+            this.showError('Invalid reset token format.');
+            return;
+        }
 
-    Toast.show({
-      title: "Invalid Reset Link",
-      message: message,
-      variant: "error",
-      duration: 5000,
-    });
-
-    // Redirect to forgot password page after showing error
-    setTimeout(() => {
-      window.location.href = "/auth/forgot-password";
-    }, 3000);
-  }
-
-  handleInputChange(field, value) {
-    this.formData[field] = value;
-  }
-
-  validatePassword(password) {
-    // Simple validation - just check minimum length
-    if (password.length < 6) {
-      return {
-        isValid: false,
-        error: "Password must be at least 6 characters long",
-      };
-    }
-    return { isValid: true };
-  }
-
-  async handleSubmit() {
-    const { password, confirmPassword } = this.formData;
-
-    if (!password || !confirmPassword) {
-      Toast.show({
-        title: "Validation Error",
-        message: "Please fill in all fields",
-        variant: "error",
-        duration: 3000,
-      });
-      return;
+        this.isValidToken = true;
+        this.isLoading = false;
+        this.render();
     }
 
-    if (password !== confirmPassword) {
-      Toast.show({
-        title: "Password Mismatch",
-        message: "Passwords do not match",
-        variant: "error",
-        duration: 3000,
-      });
-      return;
+    showError(message) {
+        this.isLoading = false;
+        this.render();
+        
+        Toast.show({
+            title: 'Invalid Reset Link',
+            message: message,
+            variant: 'error',
+            duration: 5000
+        });
+
+        // Redirect to forgot password page after showing error
+        setTimeout(() => {
+            window.location.href = '/auth/forgot-password';
+        }, 3000);
     }
 
-    // Validate password strength
-    const passwordValidation = this.validatePassword(password);
-    if (!passwordValidation.isValid) {
-      Toast.show({
-        title: "Weak Password",
-        message: passwordValidation.error,
-        variant: "error",
-        duration: 3000,
-      });
-      return;
+    handleInputChange(field, value) {
+        this.formData[field] = value;
     }
 
-    try {
-      await this.resetPassword(password);
-    } catch (error) {
-      Toast.show({
-        title: "Reset Failed",
-        message:
-          error.response?.data?.error ||
-          "An error occurred while resetting password",
-        variant: "error",
-        duration: 3000,
-      });
+    validatePassword(password) {
+        // Simple validation - just check minimum length
+        if (password.length < 6) {
+            return {
+                isValid: false,
+                error: 'Password must be at least 6 characters long'
+            };
+        }
+        return { isValid: true };
     }
-  }
 
-  async resetPassword(password) {
-    try {
-      // Make API call to reset password
-      const response = await api.post("/auth/reset-password", {
-        token: this.token,
-        password: password,
-      });
+    async handleSubmit() {
+        const { password, confirmPassword } = this.formData;
+        
+        if (!password || !confirmPassword) {
+            Toast.show({
+                title: 'Validation Error',
+                message: 'Please fill in all fields',
+                variant: 'error',
+                duration: 3000
+            });
+            return;
+        }
 
-      Toast.show({
-        title: "Password Reset Successful",
-        message:
-          "Your password has been updated successfully. You can now login with your new password.",
-        variant: "success",
-        duration: 5000,
-      });
+        if (password !== confirmPassword) {
+            Toast.show({
+                title: 'Password Mismatch',
+                message: 'Passwords do not match',
+                variant: 'error',
+                duration: 3000
+            });
+            return;
+        }
 
-      // Clear form
-      this.formData.password = "";
-      this.formData.confirmPassword = "";
-      this.querySelectorAll("ui-input").forEach((input) => (input.value = ""));
+        // Validate password strength
+        const passwordValidation = this.validatePassword(password);
+        if (!passwordValidation.isValid) {
+            Toast.show({
+                title: 'Weak Password',
+                message: passwordValidation.error,
+                variant: 'error',
+                duration: 3000
+            });
+            return;
+        }
 
-      // Redirect to login page after a delay
-      setTimeout(() => {
-        window.location.href = "/auth/login";
-      }, 3000);
-    } catch (error) {
-      // Handle specific API errors
-      if (error.response?.status === 400) {
-        const errorMessage =
-          error.response?.data?.error ||
-          "Invalid or expired reset token. Please request a new password reset.";
-        throw new Error(errorMessage);
-      } else if (error.response?.status === 422) {
-        throw new Error("Please check your password and try again");
-      } else {
-        throw new Error("Network error. Please try again.");
-      }
+        try {
+            await this.resetPassword(password);
+        } catch (error) {
+            Toast.show({
+                title: 'Reset Failed',
+                message: error.response?.data?.error || 'An error occurred while resetting password',
+                variant: 'error',
+                duration: 3000
+            });
+        }
     }
-  }
 
-  render() {
-    if (this.isLoading) {
-      return `
+    async resetPassword(password) {
+        try {
+            // Make API call to reset password
+            const response = await api.post('/auth/reset-password', {
+                token: this.token,
+                password: password
+            });
+
+            Toast.show({
+                title: 'Password Reset Successful',
+                message: 'Your password has been updated successfully. You can now login with your new password.',
+                variant: 'success',
+                duration: 5000
+            });
+
+            // Clear form
+            this.formData.password = '';
+            this.formData.confirmPassword = '';
+            this.querySelectorAll('ui-input').forEach(input => input.value = '');
+
+            // Redirect to login page after a delay
+            setTimeout(() => {
+                window.location.href = '/auth/login';
+            }, 3000);
+
+        } catch (error) {
+            // Handle specific API errors
+            if (error.response?.status === 400) {
+                const errorMessage = error.response?.data?.error || 'Invalid or expired reset token. Please request a new password reset.';
+                throw new Error(errorMessage);
+            } else if (error.response?.status === 422) {
+                throw new Error('Please check your password and try again');
+            } else {
+                throw new Error('Network error. Please try again.');
+            }
+        }
+    }
+
+    render() {
+        if (this.isLoading) {
+            return `
                 <div class="flex items-center justify-center min-h-screen p-5">
                     <ui-card class="p-8 shadow-2xl rounded-2xl border-0 bg-white/95 backdrop-blur-sm max-w-md w-full">
                         <div class="text-center">
@@ -186,10 +180,10 @@ class ResetPasswordPage extends App {
                     </ui-card>
                 </div>
             `;
-    }
+        }
 
-    if (!this.isValidToken) {
-      return `
+        if (!this.isValidToken) {
+            return `
                 <div class="flex items-center justify-center min-h-screen p-5">
                     <ui-card class="p-8 shadow-2xl rounded-2xl border-0 bg-white/95 backdrop-blur-sm max-w-md w-full">
                         <div class="text-center">
@@ -209,9 +203,9 @@ class ResetPasswordPage extends App {
                     </ui-card>
                 </div>
             `;
-    }
+        }
 
-    return `
+        return `
             <div class="flex items-center justify-center min-h-screen p-5">
                 <ui-card class="p-8 shadow-2xl rounded-2xl border-0 bg-white/95 backdrop-blur-sm max-w-md w-full">
                     <!-- Logo/Icon Section -->
@@ -283,8 +277,9 @@ class ResetPasswordPage extends App {
                 </ui-card>
             </div>
         `;
-  }
+    }
 }
 
-customElements.define("app-reset-password-page", ResetPasswordPage);
+customElements.define('app-reset-password-page', ResetPasswordPage);
 export default ResetPasswordPage;
+ 
