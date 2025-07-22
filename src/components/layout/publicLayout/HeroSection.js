@@ -15,15 +15,17 @@ class HeroSection extends App {
         super.connectedCallback();
         this.currentImageIndex = 0;
         this.slideshowInterval = null;
+        if (!this._navListenerAttached) {
+            this.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-hero-nav-idx]');
+                if (btn) {
+                    const idx = parseInt(btn.getAttribute('data-hero-nav-idx'));
+                    this.goToImage(idx);
+                }
+            });
+            this._navListenerAttached = true;
+        }
         this.loadDataFromProps();
-        // Event delegation for nav buttons
-        this.addEventListener('click', (e) => {
-            const btn = e.target.closest('[data-hero-nav-idx]');
-            if (btn) {
-                const idx = parseInt(btn.getAttribute('data-hero-nav-idx'));
-                this.goToImage(idx);
-            }
-        });
     }
 
     disconnectedCallback() {
@@ -79,6 +81,13 @@ class HeroSection extends App {
         }, 4000); // 4 seconds per image
     }
 
+    goToImage(idx) {
+        if (this.currentImageIndex !== idx) {
+            this.currentImageIndex = idx;
+            this.render();
+            this.startSlideshow();
+        }
+    }
 
 
     // Helper method to get proper image URL
