@@ -71,26 +71,55 @@ class AboutSection extends App {
         }
 
         return `
-            <!-- About Section -->
-            <section class="py-40 bg-[${primaryColor}]">
-                <div class="container mx-auto w-full flex flex-col lg:flex-row items-center gap-8 px-4">
-                    <!-- Left: Title and Subtitle -->
-                    <div class="flex-1 flex flex-col justify-center items-start text-[${secondaryColor}] max-w-xl lg:pl-8">
-                        <h2 class="text-3xl lg:text-4xl font-bold mb-3">
-                            ${pageData.title || ''}
-                        </h2>
-                        <p class="text-lg opacity-80 mb-2">
-                            ${pageData.meta_description || ''}
-                        </p>
-                    </div>
-                    <!-- Right: Banner Image -->
-                    <div class="flex-1 flex justify-end items-center">
-                        <div class="relative w-full max-w-md h-64 lg:h-80">
+        
+        
+        <style>
+            .octagon-container {
+                position: relative;
+            }
+            
+            .octagon-mask {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                position: relative;
+                clip-path: polygon(
+                    30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%
+                );
+                -webkit-clip-path: polygon(
+                    30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%
+                );
+            }
+            
+            .octagon-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        </style>
+
+        
+        <!-- About Section -->
+        <section class="py-40 bg-[${primaryColor}]">
+            <div class="container mx-auto w-full flex flex-col lg:flex-row items-center gap-8 px-4">
+                <!-- Left: Title and Subtitle -->
+                <div class="flex-1 flex flex-col justify-center items-start text-[${secondaryColor}] max-w-xl lg:pl-8">
+                    <h2 class="text-3xl lg:text-4xl font-bold mb-3">
+                        ${pageData.title || ''}
+                    </h2>
+                    <p class="text-lg opacity-80 mb-2">
+                        ${pageData.meta_description || ''}
+                    </p>
+                </div>
+                <!-- Right: Octagon Banner Image -->
+                <div class="flex-1 flex justify-end items-center">
+                    <div class="octagon-container" style="width: 300px; height: 300px;">
+                        <div class="octagon-mask">
                             <img src="/api/${pageData.banner_image}"
                                  alt="About Our School"
-                                 class="w-full h-full object-cover rounded-2xl shadow-xl border-4 border-white"
+                                 class="octagon-image"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="absolute inset-0 hidden items-center justify-center bg-gray-100 rounded-2xl">
+                            <div class="absolute inset-0 hidden items-center justify-center bg-gray-100">
                                 <div class="text-center">
                                     <i class="fas fa-image text-gray-400 text-4xl mb-2"></i>
                                     <p class="text-gray-500 font-medium">About banner image</p>
@@ -99,8 +128,9 @@ class AboutSection extends App {
                         </div>
                     </div>
                 </div>
-            </section>
-        `;
+            </div>
+        </section>
+    `;
     }
 }
 
