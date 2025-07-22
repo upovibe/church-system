@@ -203,11 +203,11 @@ class HeroSection extends App {
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
                     <!-- Hero Content Overlay -->
                     <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
-                        <div class="text-left text-white px-4 lg:px-8 max-w-4xl">
-                            <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
+                        <div class="text-left text-white px-4 lg:px-8 max-w-4xl space-y-6">
+                            <h1 class="text-4xl md:max-w-lg lg:max-w-2xl lg:text-6xl font-bold  drop-shadow-lg" style="line-height: 1.2;">
                                 ${heroTitle}
                             </h1>
-                            <p class="text-lg lg:text-xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
+                            <p class="text-lg lg:text-xl opacity-95 leading-relaxed mx-auto drop-shadow-md">
                                 ${heroSubtitle}
                             </p>
                             <div class="flex flex-row gap-2 sm:gap-4 justify-center w-fit">
