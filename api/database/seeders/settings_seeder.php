@@ -40,11 +40,11 @@ class SettingsSeeder
             ['setting_key' => 'font_family', 'setting_value' => 'Inter, sans-serif', 'setting_type' => 'text', 'category' => 'theme', 'description' => 'Primary font family'],
 
             // Branding Settings
-            ['setting_key' => 'application_name', 'setting_value' => 'Our School', 'setting_type' => 'text', 'category' => 'branding', 'description' => 'School name'],
-            ['setting_key' => 'application_description', 'setting_value' => 'Empowering students with quality education and fostering academic excellence for a brighter future.', 'setting_type' => 'textarea', 'category' => 'branding', 'description' => 'School description'],
-            ['setting_key' => 'application_logo', 'setting_value' => 'uploads/settings/logo_1752712977_687847114ab44.png', 'setting_type' => 'file', 'category' => 'branding', 'description' => 'School logo path'],
+            ['setting_key' => 'application_name', 'setting_value' => 'Our School', 'setting_type' => 'text', 'category' => 'branding', 'description' => 'Church name'],
+            ['setting_key' => 'application_description', 'setting_value' => 'Empowering students with quality education and fostering academic excellence for a brighter future.', 'setting_type' => 'textarea', 'category' => 'branding', 'description' => 'Church brief description'],
+            ['setting_key' => 'application_logo', 'setting_value' => 'uploads/settings/a748e8051dd23974492c9f62eff5caa27d90aeb8_1753224113_688013b195189.png', 'setting_type' => 'file', 'category' => 'branding', 'description' => 'School logo path'],
             ['setting_key' => 'application_favicon', 'setting_value' => 'uploads/settings/favicon_1752713006_6878472e10dc2.png', 'setting_type' => 'file', 'category' => 'branding', 'description' => 'School favicon path'],
-            ['setting_key' => 'application_tagline', 'setting_value' => 'Excellence in Education', 'setting_type' => 'text', 'category' => 'branding', 'description' => 'School tagline'],
+            ['setting_key' => 'application_tagline', 'setting_value' => 'God exist', 'setting_type' => 'text', 'category' => 'branding', 'description' => 'School tagline'],
 
             // Contact Settings
             ['setting_key' => 'contact_address', 'setting_value' => '123 School Street, City, Country', 'setting_type' => 'textarea', 'category' => 'contact', 'description' => 'School address'],
