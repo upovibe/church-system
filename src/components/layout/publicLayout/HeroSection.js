@@ -144,12 +144,13 @@ class HeroSection extends App {
     render() {
         const pageData = this.get('pageData');
         const error = this.get('error');
-        const heroTitle = this.get('heroTitle') || 'Welcome to Our School';
-        const heroSubtitle = this.get('heroSubtitle') || 'Excellence in Education, Character, and Leadership';
+        const heroTitle = this.get('heroTitle');
+        const heroSubtitle = this.get('heroSubtitle');
         const primaryColor = this.get('primary_color');
         const secondaryColor = this.get('secondary_color');
         const accentColor = this.get('accent_color');
         const textColor = this.get('text_color');
+        const darkColor = this.get('dark_color');
         const hoverPrimary = this.get('hover_primary');
         const hoverSecondary = this.get('hover_secondary');
         const hoverAccent = this.get('hover_accent');
@@ -211,7 +212,7 @@ class HeroSection extends App {
                                 ${heroSubtitle}
                             </p>
                             <div class="flex flex-row gap-2 sm:gap-4 justify-center w-fit">
-                                <button class="px-5 py-2 bg-[${secondaryColor}] text-[${textColor}] rounded-full text-lg shadow-lg flex items-center gap-2 mx-auto">
+                                <button class="px-5 py-2 bg-[${secondaryColor}] text-[${darkColor}] rounded-full text-lg shadow-lg flex items-center gap-2 mx-auto">
                                     <i class="fas fa-quote-left text-base"></i>
                                     Quote of the Day
                                 </button>

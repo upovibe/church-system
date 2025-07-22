@@ -254,7 +254,7 @@
       return `
         <div class="relative">
           ${style}
-          <header class="sticky top-0 z-50 backdrop-blur-3xl bg-[${primaryColor}]/70">
+          <header class="sticky top-0 z-50 bg-[${primaryColor}]/5 -mb-24">
             <div class="flex container mx-auto items-center justify-between p-3 lg:p-5">
               <!-- Logo on the left -->
               <ui-link href="/" class="flex items-center mr-4">
@@ -265,7 +265,7 @@
                 ${renderNavLinks(false)}
               </nav>
               <!-- Contact Us button on the right -->
-              <a href="/contact" class="hidden lg:inline-flex items-center px-6 py-2 bg-[${accentColor}] text-white font-bold rounded-full shadow-lg hover:bg-[${hoverAccent}] focus:outline-none focus:ring-2 focus:ring-[${accentColor}] focus:ring-offset-2 transition-all duration-300 ml-4 space-x-2">
+              <a href="/contact" class="hidden lg:inline-flex items-center px-6 py-2 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 ml-4 space-x-2">
                 <i class="fas fa-phone"></i>
                 <span class="">Contact Us</span>
               </a>
@@ -291,7 +291,7 @@
               <nav class="flex flex-col items-center justify-center space-y-2 w-full">
                 ${renderNavLinks(true)}
               </nav>
-              <a href="/contact" class="mt-6 w-full inline-flex items-center justify-center px-6 py-3 bg-[${accentColor}] text-white font-bold rounded-full shadow-lg hover:bg-[${hoverAccent}] focus:outline-none focus:ring-2 focus:ring-[${accentColor}] focus:ring-offset-2 transition-all duration-300 space-x-2">
+              <a href="/contact" class="mt-6 w-full inline-flex items-center justify-center px-6 py-3 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 space-x-2">
                 <i class="fas fa-phone"></i>
                 <span class="">Contact Us</span>
               </a>
