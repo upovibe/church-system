@@ -77,10 +77,10 @@ class AboutSection extends App {
                     <!-- Left: Title and Subtitle -->
                     <div class="flex-1 flex flex-col justify-center items-start text-[${secondaryColor}] max-w-xl lg:pl-8">
                         <h2 class="text-3xl lg:text-4xl font-bold mb-3">
-                            ${this.get('aboutTitle')}
+                            ${pageData.title || ''}
                         </h2>
                         <p class="text-lg opacity-80 mb-2">
-                            ${pageData.meta_description || ''}
+                            ${pageData.subtitle || ''}
                         </p>
                     </div>
                     <!-- Right: Banner Image -->

@@ -144,8 +144,8 @@ class HeroSection extends App {
     render() {
         const pageData = this.get('pageData');
         const error = this.get('error');
-        const heroTitle = this.get('heroTitle');
-        const heroSubtitle = this.get('heroSubtitle');
+        const heroTitle = (pageData && pageData.title) ? pageData.title : '';
+        const heroSubtitle = (pageData && pageData.subtitle) ? pageData.subtitle : '';
         const primaryColor = this.get('primary_color');
         const secondaryColor = this.get('secondary_color');
         const accentColor = this.get('accent_color');
