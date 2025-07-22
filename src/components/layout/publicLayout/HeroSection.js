@@ -192,7 +192,7 @@ class HeroSection extends App {
 
         this.innerHTML = `
             <!-- Hero Banner Section with Slideshow Background -->
-            <div class="mb-8">
+            <div class="">
                 <div class="relative w-full h-[500px] lg:h-[70vh] overflow-hidden">
                     ${showImages ? bannerImages.map((img, idx) => `
                         <div
