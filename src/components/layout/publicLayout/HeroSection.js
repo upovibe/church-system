@@ -13,7 +13,23 @@ class HeroSection extends App {
 
     connectedCallback() {
         super.connectedCallback();
+        this.currentImageIndex = 0;
+        this.slideshowInterval = null;
         this.loadDataFromProps();
+        // Event delegation for nav buttons
+        this.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-hero-nav-idx]');
+            if (btn) {
+                const idx = parseInt(btn.getAttribute('data-hero-nav-idx'));
+                this.goToImage(idx);
+            }
+        });
+    }
+
+    disconnectedCallback() {
+        if (this.slideshowInterval) {
+            clearInterval(this.slideshowInterval);
+        }
     }
 
     loadDataFromProps() {
@@ -50,6 +66,17 @@ class HeroSection extends App {
 
         // Render immediately with the data
         this.render();
+        this.startSlideshow();
+    }
+
+    startSlideshow() {
+        const bannerImages = this.getBannerImages(this.get('pageData')) || [];
+        if (this.slideshowInterval) clearInterval(this.slideshowInterval);
+        if (bannerImages.length <= 1) return;
+        this.slideshowInterval = setInterval(() => {
+            this.currentImageIndex = (this.currentImageIndex + 1) % bannerImages.length;
+            window.requestAnimationFrame(() => this.render());
+        }, 4000); // 4 seconds per image
     }
 
 
@@ -110,8 +137,6 @@ class HeroSection extends App {
         const error = this.get('error');
         const heroTitle = this.get('heroTitle') || 'Welcome to Our School';
         const heroSubtitle = this.get('heroSubtitle') || 'Excellence in Education, Character, and Leadership';
-        
-        // Get colors from state
         const primaryColor = this.get('primary_color');
         const secondaryColor = this.get('secondary_color');
         const accentColor = this.get('accent_color');
@@ -121,103 +146,84 @@ class HeroSection extends App {
         const hoverAccent = this.get('hover_accent');
 
         if (error) {
-            return `
+            this.innerHTML = `
                 <div class="container mx-auto flex items-center justify-center p-8">
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                         ${error}
                     </div>
                 </div>
             `;
+            return;
         }
 
-
-
         const bannerImages = this.getBannerImages(pageData) || [];
+        const currentIdx = this.currentImageIndex;
+        const showImages = bannerImages.length > 0;
 
-        return `
-            <!-- Hero Banner Section -->
+        // Navigation dots/numbers for images
+        const navNumbers = bannerImages.length > 1 ? `
+            <div class="absolute bottom-6 right-6 z-40 flex flex-col items-end gap-2 select-none">
+                ${bannerImages.map((img, idx) => `
+                    <button type="button"
+                        class="w-8 h-8 flex items-center justify-center rounded-full font-bold text-lg border-2 transition-all duration-200
+                            ${currentIdx === idx
+                                ? `bg-[${accentColor}] text-white border-[${accentColor}] shadow-lg`
+                                : `bg-white/80 text-[${textColor}] border-white hover:bg-[${accentColor}] hover:text-white`}
+                        "
+                        aria-label="Go to image ${idx + 1}"
+                        data-hero-nav-idx="${idx}"
+                    >
+                        ${idx + 1}
+                    </button>
+                `).join('')}
+            </div>
+        ` : '';
+
+        this.innerHTML = `
+            <!-- Hero Banner Section with Slideshow Background -->
             <div class="mb-8">
-                <div class="relative">
-                    <!-- Main Hero Banner Image -->
-                    <div class="relative w-full h-[500px] lg:h-[70vh] rounded-3xl overflow-hidden">
-                        <img src="${this.getImageUrl(bannerImages[0])}" 
-                             alt="Hero Banner" 
-                             class="w-full h-full object-cover"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="absolute inset-0 hidden items-center justify-center bg-gray-50">
-                            <div class="text-center">
-                                <i class="fas fa-image text-gray-400 text-4xl mb-2"></i>
-                                <p class="text-gray-500">Banner image not found</p>
-                            </div>
+                <div class="relative w-full h-[500px] lg:h-[70vh] overflow-hidden rounded-xl">
+                    ${showImages ? bannerImages.map((img, idx) => `
+                        <div
+                             class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === this.currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                             style="background-image: url('${this.getImageUrl(img)}'); transition-property: opacity;">
                         </div>
-                        
-                        <!-- Dark gradient overlay from bottom to top -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                        
-                        <!-- Hero Content Overlay -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center text-white px-4 lg:px-8 max-w-4xl">
-                                <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
-                                    ${heroTitle}
-                                </h1>
-                                <p class="text-lg lg:text-xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
-                                    ${heroSubtitle}
-                                </p>
-                                <div class="flex flex-row gap-2 sm:gap-4 justify-center">
-                                    <a href="/public/about-us" 
-                                       class="inline-flex items-center justify-center px-3 py-2 sm:px-6 sm:py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap text-sm sm:text-base">
-                                        <i class="fas fa-info-circle mr-1 sm:mr-2 text-sm sm:text-base"></i>
-                                        Learn More
-                                    </a>
-                                    <a href="/public/admissions" 
-                                       class="inline-flex items-center justify-center px-3 py-2 sm:px-6 sm:py-3 border-2 border-[${textColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${textColor}] hover:text-[${secondaryColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap text-sm sm:text-base">
-                                        <i class="fas fa-graduation-cap mr-1 sm:mr-2 text-sm sm:text-base"></i>
-                                        Apply Now
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Mouse Scroll Indicator -->
-                        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-                            <div class="flex flex-col items-center text-[${textColor}] cursor-pointer group" onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
-                                <div class="w-6 h-10 border-2 border-[${textColor}] rounded-full flex justify-center transition-all duration-300 group-hover:scale-110 group-hover:border-[${accentColor}]">
-                                    <div class="w-1.5 h-3 bg-[${textColor}] rounded-full mt-2 animate-bounce transition-all duration-300 group-hover:bg-[${accentColor}]"></div>
-                                </div>
-                                <span class="text-sm mt-3 opacity-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105 font-medium">Scroll</span>
+                    `).join('') : ''}
+                    <!-- Dark gradient overlay from bottom to top -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
+                    <!-- Hero Content Overlay -->
+                    <div class="absolute inset-0 flex items-center justify-center z-30">
+                        <div class="text-center text-white px-4 lg:px-8 max-w-4xl">
+                            <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
+                                ${heroTitle}
+                            </h1>
+                            <p class="text-lg lg:text-xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
+                                ${heroSubtitle}
+                            </p>
+                            <div class="flex flex-row gap-2 sm:gap-4 justify-center">
+                                <a href="/public/about-us" 
+                                   class="inline-flex items-center justify-center px-3 py-2 sm:px-6 sm:py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap text-sm sm:text-base">
+                                    <i class="fas fa-info-circle mr-1 sm:mr-2 text-sm sm:text-base"></i>
+                                    Learn More
+                                </a>
+                                <a href="/public/admissions" 
+                                   class="inline-flex items-center justify-center px-3 py-2 sm:px-6 sm:py-3 border-2 border-[${textColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${textColor}] hover:text-[${secondaryColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap text-sm sm:text-base">
+                                    <i class="fas fa-graduation-cap mr-1 sm:mr-2 text-sm sm:text-base"></i>
+                                    Apply Now
+                                </a>
                             </div>
                         </div>
                     </div>
+                    ${navNumbers}
                 </div>
-                
-                <!-- Additional Banner Images Grid -->
-                ${bannerImages.length > 1 ? `
-                    <div class="mt-8">
-                        <h2 class="text-3xl font-bold text-[${secondaryColor}] mb-6 text-center">Gallery</h2>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            ${bannerImages.slice(1).map((imagePath, index) => `
-                                <div class="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                                    <div class="relative w-full h-40">
-                                        <img src="${this.getImageUrl(imagePath)}" 
-                                             alt="Gallery Image ${index + 2}" 
-                                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="absolute inset-0 hidden items-center justify-center bg-[${primaryColor}] bg-opacity-10 rounded-xl">
-                                            <div class="text-center">
-                                                <i class="fas fa-image text-[${primaryColor}] text-xl mb-2"></i>
-                                                <p class="text-[${secondaryColor}] text-sm font-medium">Image not found</p>
-                                            </div>
-                                        </div>
-                                        <!-- Overlay on hover -->
-                                        <div class="absolute inset-0 bg-gradient-to-t from-[${secondaryColor}] via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-300"></div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                ` : ''}
             </div>
         `;
+    }
+
+    goToImage(idx) {
+        this.currentImageIndex = idx;
+        window.requestAnimationFrame(() => this.render());
+        this.startSlideshow();
     }
 }
 
