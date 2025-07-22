@@ -78,7 +78,7 @@ class HeroSection extends App {
         this.slideshowInterval = setInterval(() => {
             this.currentImageIndex = (this.currentImageIndex + 1) % bannerImages.length;
             window.requestAnimationFrame(() => this.render());
-        }, 4000); // 4 seconds per image
+        }, 7000); // 7 seconds per image
     }
 
     goToImage(idx) {
