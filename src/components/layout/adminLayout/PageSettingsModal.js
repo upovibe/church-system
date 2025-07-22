@@ -203,15 +203,6 @@ class PageSettingsModal extends HTMLElement {
                             </ui-input>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-                            <ui-input 
-                                data-field="subtitle"
-                                type="text" 
-                                placeholder="Enter page subtitle (optional)"
-                                class="w-full">
-                            </ui-input>
-                        </div>
-                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
                             <ui-input 
                                 data-field="title"
@@ -220,9 +211,15 @@ class PageSettingsModal extends HTMLElement {
                                 class="w-full">
                             </ui-input>
                         </div>
-                        
-
-                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
+                            <ui-input 
+                                data-field="subtitle"
+                                type="text" 
+                                placeholder="Enter page subtitle (optional)"
+                                class="w-full">
+                            </ui-input>
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                             <ui-dropdown 
