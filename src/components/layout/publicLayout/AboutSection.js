@@ -80,7 +80,7 @@ class AboutSection extends App {
                             ${pageData.title || ''}
                         </h2>
                         <p class="text-lg opacity-80 mb-2">
-                            ${pageData.subtitle || ''}
+                            ${pageData.meta_description || ''}
                         </p>
                     </div>
                     <!-- Right: Banner Image -->
