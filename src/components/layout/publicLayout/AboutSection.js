@@ -72,7 +72,7 @@ class AboutSection extends App {
 
         return `
             <!-- About Section -->
-            <section class="py-10 bg-[${primaryColor}]">
+            <section class="py-40 bg-[${primaryColor}]">
                 <div class="container mx-auto w-full flex flex-col lg:flex-row items-center gap-8 px-4">
                     <!-- Left: Title and Subtitle -->
                     <div class="flex-1 flex flex-col justify-center items-start text-[${secondaryColor}] max-w-xl lg:pl-8">
@@ -80,7 +80,7 @@ class AboutSection extends App {
                             ${this.get('aboutTitle')}
                         </h2>
                         <p class="text-lg opacity-80 mb-2">
-                            ${this.get('aboutSubtitle')}
+                            ${pageData.meta_description || ''}
                         </p>
                     </div>
                     <!-- Right: Banner Image -->
