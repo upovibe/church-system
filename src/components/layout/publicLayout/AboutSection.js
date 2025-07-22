@@ -98,9 +98,9 @@ class AboutSection extends App {
             }
         </style>
 
-        
+
         <!-- About Section -->
-        <section class="py-40 bg-[${primaryColor}]">
+        <section class="py-10 bg-[${primaryColor}]">
             <div class="container mx-auto w-full flex flex-col lg:flex-row items-center gap-8 px-4">
                 <!-- Left: Title and Subtitle -->
                 <div class="flex-1 flex flex-col justify-center items-start text-[${secondaryColor}] max-w-xl lg:pl-8">
@@ -112,8 +112,8 @@ class AboutSection extends App {
                     </p>
                 </div>
                 <!-- Right: Octagon Banner Image -->
-                <div class="flex-1 flex justify-end items-center">
-                    <div class="octagon-container" style="width: 300px; height: 300px;">
+                <div class="flex-1 flex justify-center items-center">
+                    <div class="octagon-container size-[30rem]">
                         <div class="octagon-mask">
                             <img src="/api/${pageData.banner_image}"
                                  alt="About Our School"

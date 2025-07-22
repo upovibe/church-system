@@ -55,13 +55,13 @@ class PageSeeder
                 'slug' => 'about-us',
                 'name' => 'About',
                 'subtitle' => 'Our story and heritage',
-                'title' => 'About Us',
+                'title' => 'Grow your faith with us',
                 'content' => '<h2>Our Story</h2><p>Founded with a vision to provide exceptional education, our school has been serving the community for many years. We have grown from a small institution to a comprehensive educational center that prepares students for the challenges of tomorrow.</p><h3>Our Heritage</h3><p>With a rich history of academic excellence and community involvement, we continue to build on our strong foundation while embracing innovation and modern educational practices.</p><h3>Our Community</h3><p>We are proud of our diverse and inclusive community where students from various backgrounds come together to learn, grow, and succeed.</p>',
-                'meta_description' => 'Learn about our school\'s history, heritage, and commitment to providing quality education in a supportive community environment.',
+                'meta_description' => 'We are a vibrant community of believers dedicated to worship, fellowship, and service. Our mission is to share God\'s love, grow in faith, and make a positive impact in the world through compassionate outreach and meaningful connections.',
                 'category' => 'about',
                 'is_active' => 1,
                 'sort_order' => 3,
-                'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
+                'banner_image' => json_encode(['uploads/pages/1c1dad70d491dc7f004638d8bb190765d313cd68_1753223192_68801018c39f1.jpg'])
             ],
             [
                 'slug' => 'mission-vision',
