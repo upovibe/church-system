@@ -162,18 +162,19 @@ class HeroSection extends App {
 
         // Navigation dots/numbers for images
         const navNumbers = bannerImages.length > 1 ? `
-            <div class="absolute bottom-6 right-6 z-40 flex flex-col items-end gap-2 select-none">
+            <div class="absolute bottom-6 right-6 z-40 flex flex-col items-end gap-3 select-none">
                 ${bannerImages.map((img, idx) => `
                     <button type="button"
-                        class="w-8 h-8 flex items-center justify-center rounded-full font-bold text-lg border-2 transition-all duration-200
-                            ${currentIdx === idx
-                                ? `bg-[${accentColor}] text-white border-[${accentColor}] shadow-lg`
-                                : `bg-white/80 text-[${textColor}] border-white hover:bg-[${accentColor}] hover:text-white`}
-                        "
+                        class="flex items-start justify-start gap-3 font-bold text-3xl border-0 transition-all duration-200 w-fit h-fit px-0 py-1 bg-transparent shadow-none group"
                         aria-label="Go to image ${idx + 1}"
                         data-hero-nav-idx="${idx}"
                     >
-                        ${idx + 1}
+                        <span class="inline-block w-12 mr-2 border-t-2 border-b-transparent border-l-transparent border-r-transparent align-top
+                            ${currentIdx === idx ? `border-t-[${textColor}]` : `border-t-transparent`} 
+                            transition-colors duration-200"></span>
+                        <span class="font-light inline-block align-top leading-none -mt-2 ${currentIdx === idx ? `text-[${textColor}]` : `text-[${textColor}]/50`} transition-colors duration-200">
+                            ${String(idx + 1).padStart(2, '0')}
+                        </span>
                     </button>
                 `).join('')}
             </div>
@@ -192,15 +193,15 @@ class HeroSection extends App {
                     <!-- Dark gradient overlay from bottom to top -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
                     <!-- Hero Content Overlay -->
-                    <div class="absolute inset-0 flex items-center justify-center z-30">
-                        <div class="text-center text-white px-4 lg:px-8 max-w-4xl">
+                    <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
+                        <div class="text-left text-white px-4 lg:px-8 max-w-4xl">
                             <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
                                 ${heroTitle}
                             </h1>
                             <p class="text-lg lg:text-xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
                                 ${heroSubtitle}
                             </p>
-                            <div class="flex flex-row gap-2 sm:gap-4 justify-center">
+                            <div class="flex flex-row gap-2 sm:gap-4 justify-center w-fit">
                                 <a href="/public/about-us" 
                                    class="inline-flex items-center justify-center px-3 py-2 sm:px-6 sm:py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap text-sm sm:text-base">
                                     <i class="fas fa-info-circle mr-1 sm:mr-2 text-sm sm:text-base"></i>
@@ -219,13 +220,6 @@ class HeroSection extends App {
             </div>
         `;
     }
-
-    goToImage(idx) {
-        this.currentImageIndex = idx;
-        window.requestAnimationFrame(() => this.render());
-        this.startSlideshow();
-    }
 }
 
 customElements.define('hero-section', HeroSection);
-export default HeroSection; 
