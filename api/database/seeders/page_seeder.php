@@ -29,7 +29,7 @@ class PageSeeder
                 'slug' => 'home',
                 'name' => 'Home',
                 'subtitle' => 'Welcome to our church community',
-                'title' => 'Home',
+                'title' => 'A Place to Pelong, Pelieve, and Become',
                 'content' => '<h2>Welcome to Our School</h2><p>We are dedicated to nurturing young minds and fostering a love for learning in a supportive and inclusive environment. Our commitment to academic excellence, character development, and holistic education prepares students for success in an ever-changing world.</p><p>Discover our vibrant community where every student is encouraged to reach their full potential through innovative teaching methods, comprehensive programs, and a strong foundation of values.</p>',
                 'meta_description' => 'Welcome to our school - where excellence meets opportunity. Discover our comprehensive educational programs, dedicated staff, and commitment to student success.',
                 'category' => 'general',
