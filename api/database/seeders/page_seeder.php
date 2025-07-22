@@ -47,7 +47,7 @@ class PageSeeder
                 'category' => 'general',
                 'is_active' => 1,
                 'sort_order' => 2,
-                'banner_image' => json_encode(['uploads/pages/About_1752713456_687848c.jpg'])
+                'banner_image' => json_encode(['uploads/pages/82097_1_1753218234_687ffcbaa29d5.png', 'uploads/pages/BethelSongsnew_1_1753218235_687ffcbb73576.png', 'uploads/pages/sing2_1_1753218236_687ffcbca54d6.png'])
             ],
 
             // ===== ABOUT PAGES =====
