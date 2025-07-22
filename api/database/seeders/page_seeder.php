@@ -35,7 +35,7 @@ class PageSeeder
                 'category' => 'general',
                 'is_active' => 1,
                 'sort_order' => 1,
-                'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
+                'banner_image' => json_encode(['uploads/pages/82097_1_1753218234_687ffcbaa29d5.png', 'uploads/pages/BethelSongsnew_1_1753218235_687ffcbb73576.png', 'uploads/pages/sing2_1_1753218236_687ffcbca54d6.png'])
             ],
             [
                 'slug' => 'contact',
@@ -47,7 +47,7 @@ class PageSeeder
                 'category' => 'general',
                 'is_active' => 1,
                 'sort_order' => 2,
-                'banner_image' => json_encode(['uploads/pages/82097_1_1753218234_687ffcbaa29d5.png', 'uploads/pages/BethelSongsnew_1_1753218235_687ffcbb73576.png', 'uploads/pages/sing2_1_1753218236_687ffcbca54d6.png'])
+                'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
             ],
 
             // ===== ABOUT PAGES =====

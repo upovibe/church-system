@@ -28,7 +28,7 @@ class SettingsSeeder
             ['setting_key' => 'background_color', 'setting_value' => '#F9FAFB', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Page background color'],
             ['setting_key' => 'primary_color', 'setting_value' => '#000000', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Primary brand color'],
             ['setting_key' => 'secondary_color', 'setting_value' => '#ffffff', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Secondary brand color'],
-            ['setting_key' => 'accent_color', 'setting_value' => '#ffff00', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Accent color for highlights'],
+            ['setting_key' => 'accent_color', 'setting_value' => '#d9d917', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Accent color for highlights'],
             ['setting_key' => 'hover_primary', 'setting_value' => '#000000', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Hover state for primary elements'],
             ['setting_key' => 'hover_secondary', 'setting_value' => '#ffffff', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Hover state for secondary elements'],
             ['setting_key' => 'hover_accent', 'setting_value' => '#d9d917', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Hover state for accent elements'],
