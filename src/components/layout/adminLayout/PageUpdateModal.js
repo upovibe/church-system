@@ -214,17 +214,6 @@ class PageUpdateModal extends HTMLElement {
                             </ui-input>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-                            <ui-input 
-                                data-field="subtitle"
-                                name="subtitle"
-                                type="text" 
-                                placeholder="Enter page subtitle (optional)"
-                                value="${this.pageData?.subtitle || ''}"
-                                class="w-full">
-                            </ui-input>
-                        </div>
-                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
                             <ui-input 
                                 data-field="title"
@@ -235,9 +224,17 @@ class PageUpdateModal extends HTMLElement {
                                 class="w-full">
                             </ui-input>
                         </div>
-                        
-
-                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
+                            <ui-input 
+                                data-field="subtitle"
+                                name="subtitle"
+                                type="text" 
+                                placeholder="Enter page subtitle (optional)"
+                                value="${this.pageData?.subtitle || ''}"
+                                class="w-full">
+                            </ui-input>
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                             <ui-dropdown 
