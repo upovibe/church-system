@@ -31,12 +31,12 @@ class SettingsSeeder
             ['setting_key' => 'accent_color', 'setting_value' => '#ffff00', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Accent color for highlights'],
             ['setting_key' => 'hover_primary', 'setting_value' => '#000000', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Hover state for primary elements'],
             ['setting_key' => 'hover_secondary', 'setting_value' => '#ffffff', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Hover state for secondary elements'],
-            ['setting_key' => 'hover_accent', 'setting_value' => '#ffff00', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Hover state for accent elements'],
+            ['setting_key' => 'hover_accent', 'setting_value' => '#d9d917', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Hover state for accent elements'],
             ['setting_key' => 'text_color', 'setting_value' => '#ffffff', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Primary text color'],
             ['setting_key' => 'dark_color', 'setting_value' => '#000000', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Dark color (black)'],
             ['setting_key' => 'success_color', 'setting_value' => '#28a745', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Color used for success messages'],
             ['setting_key' => 'error_color', 'setting_value' => '#dc3545', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Color used for error messages'],
-            ['setting_key' => 'warning_color', 'setting_value' => '#ffc107', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Color used for warning messages'],
+            ['setting_key' => 'warning_color', 'setting_value' => '#d9d917', 'setting_type' => 'color', 'category' => 'theme', 'description' => 'Color used for warning messages'],
             ['setting_key' => 'font_family', 'setting_value' => 'Inter, sans-serif', 'setting_type' => 'text', 'category' => 'theme', 'description' => 'Primary font family'],
 
             // Branding Settings
