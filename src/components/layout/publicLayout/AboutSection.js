@@ -72,7 +72,7 @@ class AboutSection extends App {
 
         return `
             <!-- About Section -->
-            <section class="mx-auto py-10">
+            <section class="mx-auto py-10 bg-[${primaryColor}]">
                     <div class="text-center mb-12">
                         <h2 class="text-3xl lg:text-4xl font-bold text-[${primaryColor}] mb-4">
                             ${this.get('aboutTitle')}
