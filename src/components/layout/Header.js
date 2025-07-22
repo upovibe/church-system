@@ -254,7 +254,7 @@
       return `
         <div class="relative">
           ${style}
-          <header class="sticky top-0 z-50 backdrop-blur bg-[${primaryColor}]/70">
+          <header class="sticky top-0 z-50 backdrop-blur-3xl bg-[${primaryColor}]/70">
             <div class="flex container mx-auto items-center justify-between p-3 lg:p-5">
               <!-- Logo on the left -->
               <ui-link href="/" class="flex items-center mr-4">
