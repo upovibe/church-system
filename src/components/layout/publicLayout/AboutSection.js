@@ -103,11 +103,11 @@ class AboutSection extends App {
         <section class="py-10 bg-[${primaryColor}]">
             <div class="container mx-auto w-full flex flex-col lg:flex-row items-center gap-8 px-4">
                 <!-- Left: Title and Subtitle -->
-                <div class="flex-1 flex flex-col justify-center items-start text-[${secondaryColor}] max-w-xl lg:pl-8">
-                    <h2 class="text-3xl lg:text-4xl font-bold mb-3">
+                <div class="flex-1 flex flex-col gap-3 justify-center items-start text-[${secondaryColor}] max-w-md lg:pl-8">
+                    <h2 class="text-4xl lg:text-5xl font-bold" style="line-height: 1.2;">
                         ${pageData.title || ''}
                     </h2>
-                    <p class="text-lg opacity-80 mb-2">
+                    <p class="text-lg opacity-80">
                         ${pageData.meta_description || ''}
                     </p>
                 </div>
