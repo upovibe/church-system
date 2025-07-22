@@ -72,98 +72,33 @@ class AboutSection extends App {
 
         return `
             <!-- About Section -->
-            <section class="mx-auto py-10 bg-[${primaryColor}]">
-                    <div class="text-center mb-12">
-                        <h2 class="text-3xl lg:text-4xl font-bold text-[${primaryColor}] mb-4">
+            <section class="py-10 bg-[${primaryColor}]">
+                <div class="container mx-auto w-full flex flex-col lg:flex-row items-center gap-8 px-4">
+                    <!-- Left: Title and Subtitle -->
+                    <div class="flex-1 flex flex-col justify-center items-start text-[${secondaryColor}] max-w-xl lg:pl-8">
+                        <h2 class="text-3xl lg:text-4xl font-bold mb-3">
                             ${this.get('aboutTitle')}
                         </h2>
-                        <p class="text-lg opacity-80 mb-4">
+                        <p class="text-lg opacity-80 mb-2">
                             ${this.get('aboutSubtitle')}
                         </p>
-                        <div class="w-24 h-1 bg-[${primaryColor}] mx-auto rounded-full"></div>
                     </div>
-                    
-                    <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                            <!-- Content Column (Left) -->
-                            <div class="p-5 lg:p-12 flex flex-col justify-center">
-                                <content-display 
-                                    content="${pageData.content.replace(/"/g, '&quot;')}"
-                                    no-styles>
-                                </content-display>
-                                
-                                ${window.location.pathname !== '/public/about-us' ? `
-                                    <div class="mt-8">
-                                        <a href="/public/about-us" 
-                                           class="inline-flex items-center justify-center gap-2 px-6 py-1.5 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl group">
-                                            Read More
-                                            <i class="fas fa-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
-                                        </a>
-                                    </div>
-                                ` : ''}
-                            </div>
-                            
-                            <!-- Banner Image Column (Right) -->
-                            <div class="relative h-64 lg:h-auto">
-                                <img src="/api/${pageData.banner_image}" 
-                                     alt="About Our School" 
-                                     class="w-full h-full object-cover"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="absolute inset-0 hidden items-center justify-center bg-gray-100">
-                                    <div class="text-center">
-                                        <i class="fas fa-image text-gray-400 text-4xl mb-2"></i>
-                                        <p class="text-gray-500 font-medium">About banner image</p>
-                                    </div>
+                    <!-- Right: Banner Image -->
+                    <div class="flex-1 flex justify-end items-center">
+                        <div class="relative w-full max-w-md h-64 lg:h-80">
+                            <img src="/api/${pageData.banner_image}"
+                                 alt="About Our School"
+                                 class="w-full h-full object-cover rounded-2xl shadow-xl border-4 border-white"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="absolute inset-0 hidden items-center justify-center bg-gray-100 rounded-2xl">
+                                <div class="text-center">
+                                    <i class="fas fa-image text-gray-400 text-4xl mb-2"></i>
+                                    <p class="text-gray-500 font-medium">About banner image</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    ${window.location.pathname === '/public/about-us' ? `
-                    <!-- Mission, Vision, Values & Team Cards -->
-                    <div class="mt-16">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Mission & Vision Card -->
-                            <a href="/public/about-us/mission-vision" class="block">
-                                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                                    <i class="fas fa-bullseye text-white text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold text-[${secondaryColor}] mb-3">Our Mission & Vision</h3>
-                                <p class="text-gray-600 text-sm leading-relaxed">
-                                    Empowering students and shaping tomorrow's leaders.
-                                </p>
-                            </div>
-                            </a>
-                            
-                            <!-- Values Card -->
-                            <a href="/public/about-us/values-aims" class="block">
-                                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-[${secondaryColor}] to-[${primaryColor}] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                                    <i class="fas fa-heart text-white text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold text-[${secondaryColor}] mb-3">Our Values</h3>
-                                <p class="text-gray-600 text-sm leading-relaxed">
-                                    Excellence, Integrity, Respect, Innovation, and Community.
-                                </p>
-                            </div>
-                            </a>
-                            
-                            <!-- Team Card -->
-                            <a href="/public/about-us/our-team" class="block">
-                                <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-[${primaryColor}] to-[${secondaryColor}] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                                    <i class="fas fa-users text-white text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-semibold text-[${secondaryColor}] mb-3">Our Team</h3>
-                                <p class="text-gray-600 text-sm leading-relaxed">
-                                    Dedicated educators committed to nurturing student potential.
-                                </p>
-                            </div>
-                            </a>
-                        </div>
-                    </div>
-                    ` : ''}
+                </div>
             </section>
         `;
     }
