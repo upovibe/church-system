@@ -227,7 +227,7 @@ class EventSettingsModal extends HTMLElement {
                                 data-field="category"
                                 placeholder="Select category"
                                 class="w-full">
-                                <ui-option value="service">Worship Service</ui-option>
+                                <ui-option value="service">Service</ui-option>
                                 <ui-option value="bible_study">Bible Study</ui-option>
                                 <ui-option value="prayer">Prayer Meeting</ui-option>
                                 <ui-option value="fellowship">Fellowship</ui-option>
