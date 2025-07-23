@@ -1,6 +1,7 @@
 import '@/components/ui/Modal.js';
 import '@/components/ui/Toast.js';
 import '@/components/ui/Badge.js';
+import api from '@/services/api.js';
 
 /**
  * Sermon View Modal Component
@@ -108,30 +109,54 @@ class SermonViewModal extends HTMLElement {
     }
 
     // Delete image
-    deleteImage(imageIndex) {
-        this.dispatchEvent(new CustomEvent('sermon-image-deleted', {
-            detail: { sermon: this.sermonData, imageIndex },
-            bubbles: true,
-            composed: true
-        }));
+    async deleteImage(imageIndex) {
+        if (!this.sermonData || typeof imageIndex !== 'number') return;
+        const token = localStorage.getItem('token');
+        if (!token) {
+            Toast.show({ title: 'Auth Error', message: 'Please log in', variant: 'error' });
+            return;
+        }
+        try {
+            const response = await api.withToken(token).delete(`/sermons/${this.sermonData.id}/images/${imageIndex}`);
+            Toast.show({ title: 'Success', message: 'Image deleted', variant: 'success' });
+            this.setSermonData(response.data.data);
+        } catch (error) {
+            Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to delete image', variant: 'error' });
+        }
     }
 
     // Delete audio
-    deleteAudio(audioIndex) {
-        this.dispatchEvent(new CustomEvent('sermon-audio-deleted', {
-            detail: { sermon: this.sermonData, audioIndex },
-            bubbles: true,
-            composed: true
-        }));
+    async deleteAudio(audioIndex) {
+        if (!this.sermonData || typeof audioIndex !== 'number') return;
+        const token = localStorage.getItem('token');
+        if (!token) {
+            Toast.show({ title: 'Auth Error', message: 'Please log in', variant: 'error' });
+            return;
+        }
+        try {
+            const response = await api.withToken(token).delete(`/sermons/${this.sermonData.id}/audio/${audioIndex}`);
+            Toast.show({ title: 'Success', message: 'Audio deleted', variant: 'success' });
+            this.setSermonData(response.data.data);
+        } catch (error) {
+            Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to delete audio', variant: 'error' });
+        }
     }
 
     // Delete video
-    deleteVideo(videoIndex) {
-        this.dispatchEvent(new CustomEvent('sermon-video-deleted', {
-            detail: { sermon: this.sermonData, videoIndex },
-            bubbles: true,
-            composed: true
-        }));
+    async deleteVideo(videoIndex) {
+        if (!this.sermonData || typeof videoIndex !== 'number') return;
+        const token = localStorage.getItem('token');
+        if (!token) {
+            Toast.show({ title: 'Auth Error', message: 'Please log in', variant: 'error' });
+            return;
+        }
+        try {
+            const response = await api.withToken(token).delete(`/sermons/${this.sermonData.id}/videos/${videoIndex}`);
+            Toast.show({ title: 'Success', message: 'Video deleted', variant: 'success' });
+            this.setSermonData(response.data.data);
+        } catch (error) {
+            Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to delete video', variant: 'error' });
+        }
     }
 
     render() {
