@@ -3,11 +3,10 @@ import '@/components/ui/Table.js';
 import '@/components/ui/Button.js';
 import '@/components/ui/Toast.js';
 import '@/components/ui/Skeleton.js';
-// Placeholders for modals/dialogs (to be implemented)
-// import '@/components/layout/adminLayout/SermonSettingsModal.js';
-// import '@/components/layout/adminLayout/SermonUpdateModal.js';
-// import '@/components/layout/adminLayout/SermonViewModal.js';
-// import '@/components/layout/adminLayout/SermonDeleteDialog.js';
+import '@/components/layout/adminLayout/SermonSettingsModal.js';
+import '@/components/layout/adminLayout/SermonUpdateModal.js';
+import '@/components/layout/adminLayout/SermonViewModal.js';
+import '@/components/layout/adminLayout/SermonDeleteDialog.js';
 import api from '@/services/api.js';
 
 /**
@@ -163,7 +162,13 @@ class SermonsPage extends App {
             this.closeAllModals();
             this.set('viewSermonData', viewSermon);
             this.set('showViewModal', true);
-            // setTimeout for modal data if needed
+            setTimeout(() => {
+                const viewModal = this.querySelector('sermon-view-modal');
+                if (viewModal) {
+                    viewModal.setSermonData(viewSermon);
+                    viewModal.open();
+                }
+            }, 0);
         }
     }
 
@@ -174,7 +179,13 @@ class SermonsPage extends App {
             this.closeAllModals();
             this.set('updateSermonData', editSermon);
             this.set('showUpdateModal', true);
-            // setTimeout for modal data if needed
+            setTimeout(() => {
+                const updateModal = this.querySelector('sermon-update-modal');
+                if (updateModal) {
+                    updateModal.setSermonData(editSermon);
+                    updateModal.open();
+                }
+            }, 0);
         }
     }
 
@@ -185,7 +196,13 @@ class SermonsPage extends App {
             this.closeAllModals();
             this.set('deleteSermonData', deleteSermon);
             this.set('showDeleteDialog', true);
-            // setTimeout for modal data if needed
+            setTimeout(() => {
+                const deleteDialog = this.querySelector('sermon-delete-dialog');
+                if (deleteDialog) {
+                    deleteDialog.setSermonData(deleteSermon);
+                    deleteDialog.open();
+                }
+            }, 0);
         }
     }
 
@@ -300,14 +317,11 @@ class SermonsPage extends App {
                         `}
                     </div>
                 `}
-            </div>
-            <!-- Modals and Dialogs (to be implemented) -->
-            <!--
+            </div>          
             <sermon-settings-modal ${showAddModal ? 'open' : ''}></sermon-settings-modal>
             <sermon-update-modal ${showUpdateModal ? 'open' : ''}></sermon-update-modal>
             <sermon-view-modal id="view-modal" ${showViewModal ? 'open' : ''}></sermon-view-modal>
             <sermon-delete-dialog ${showDeleteDialog ? 'open' : ''}></sermon-delete-dialog>
-            -->
         `;
     }
 }

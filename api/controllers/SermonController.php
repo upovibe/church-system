@@ -46,9 +46,8 @@ class SermonController {
             $rawData = file_get_contents('php://input');
 
             if (strpos($content_type, 'multipart/form-data') !== false) {
-                $parsed = MultipartFormParser::parse($rawData, $content_type);
-                $data = $parsed['data'] ?? [];
-                $_FILES = $parsed['files'] ?? [];
+                $data = $_POST;
+                // $_FILES is already available globally
             } else {
                 $data = json_decode($rawData, true) ?? [];
             }
@@ -60,6 +59,16 @@ class SermonController {
             }
             if (!isset($data['is_active'])) {
                 $data['is_active'] = 1;
+            }
+
+            // Server-side validation for required fields
+            $requiredFields = ['title', 'speaker', 'date_preached', 'content'];
+            foreach ($requiredFields as $field) {
+                if (empty($data[$field])) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => ucfirst(str_replace('_', ' ', $field)) . ' is required']);
+                    return;
+                }
             }
 
             // Handle image uploads
