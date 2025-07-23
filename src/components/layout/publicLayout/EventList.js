@@ -88,6 +88,21 @@ class EventList extends App {
         });
     }
 
+    filterByStatus(status) {
+        const eventCards = this.querySelectorAll('.event-card');
+        
+        eventCards.forEach(card => {
+            const eventStatus = card.getAttribute('data-status') || '';
+            const normalizedStatus = this.normalizeStatus(eventStatus);
+            
+            if (status === '' || normalizedStatus === status) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
     openEventPage(slugOrId) {
         // Navigate to the event page using SPA router
         const eventUrl = `/public/community/events/${slugOrId}`;
@@ -202,19 +217,40 @@ class EventList extends App {
         const secondaryColor = this.get('secondary_color');
 
         return `
-            <!-- Simple Search Bar -->
+            <!-- Search and Filter Bar -->
             <div class="mb-10">
-                <div class="relative max-w-xl mx-auto">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-white/70"></i>
+                <div class="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
+                    <!-- Search Bar -->
+                    <div class="relative flex-1">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-white/70"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="event-search"
+                            placeholder="Search events..." 
+                            class="block w-full pl-10 pr-10 py-2 bg-transparent border border-gray-300 rounded-xl text-white placeholder-white/70 text-sm"
+                            oninput="this.closest('event-list').searchEvents(this.value)"
+                        >
                     </div>
-                    <input 
-                        type="text" 
-                        id="event-search"
-                        placeholder="Search events..." 
-                        class="block w-full pl-10 pr-10 py-2 bg-transparent border border-gray-300 rounded-xl text-white placeholder-white/70 text-sm"
-                        oninput="this.closest('event-list').searchEvents(this.value)"
-                    >
+                    
+                    <!-- Status Filter -->
+                    <div class="relative">
+                        <select 
+                            id="status-filter"
+                            class="block w-full md:w-48 pl-4 pr-10 py-2 bg-transparent border border-gray-300 rounded-xl text-white text-sm appearance-none cursor-pointer"
+                            onchange="this.closest('event-list').filterByStatus(this.value)"
+                        >
+                            <option value="" class="bg-gray-800 text-white">All Status</option>
+                            <option value="upcoming" class="bg-gray-800 text-white">Upcoming</option>
+                            <option value="ongoing" class="bg-gray-800 text-white">Ongoing</option>
+                            <option value="completed" class="bg-gray-800 text-white">Completed</option>
+                            <option value="cancelled" class="bg-gray-800 text-white">Cancelled</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <i class="fas fa-chevron-down text-white/70"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -246,6 +282,7 @@ class EventList extends App {
                         <div class="rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 border-l-4 border-[${primaryColor}] cursor-pointer h-64 relative overflow-hidden event-card" 
                              style="${backgroundStyle}"
                              data-title="${event.title || 'Untitled Event'}"
+                             data-status="${event.status || ''}"
                              onclick="this.closest('event-list').openEventPage('${event.slug || event.id}')">
                             <!-- Dark overlay for better text readability -->
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
