@@ -208,7 +208,7 @@
       // Navigation links array (customize for church if needed)
       const navigationLinks = [
         { href: '/', label: 'Home' },
-        { href: '/public/about-us', label: 'About Us' },
+        { href: '/public/about', label: 'About Us' },
         { href: '/public/ministries', label: 'Ministries' },
         { href: '/public/service-events', label: 'Service & Events' },
         { href: '/public/gallery', label: 'Gallery' },
