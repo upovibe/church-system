@@ -227,14 +227,17 @@ class EventUpdateModal extends HTMLElement {
                                 placeholder="Select category"
                                 value="${this.eventData?.category || ''}"
                                 class="w-full">
-                                <ui-option value="sports">Sports</ui-option>
-                                <ui-option value="academic">Academic</ui-option>
-                                <ui-option value="arts">Arts</ui-option>
-                                <ui-option value="career">Career</ui-option>
-                                <ui-option value="technology">Technology</ui-option>
-                                <ui-option value="community">Community</ui-option>
-                                <ui-option value="meeting">Meeting</ui-option>
-                                <ui-option value="ceremony">Ceremony</ui-option>
+                                <ui-option value="service">Worship Service</ui-option>
+                                <ui-option value="bible_study">Bible Study</ui-option>
+                                <ui-option value="prayer">Prayer Meeting</ui-option>
+                                <ui-option value="fellowship">Fellowship</ui-option>
+                                <ui-option value="youth">Youth Event</ui-option>
+                                <ui-option value="children">Children's Event</ui-option>
+                                <ui-option value="outreach">Outreach/Missions</ui-option>
+                                <ui-option value="training">Training</ui-option>
+                                <ui-option value="special">Special Event</ui-option>
+                                <ui-option value="missions">Missions Trip</ui-option>
+                                <ui-option value="concert">Concert/Worship Night</ui-option>
                             </ui-dropdown>
                         </div>
 

@@ -1,5 +1,5 @@
 <?php
-// api/database/seeders/event_seeder.php - Event seeder
+// api/database/seeders/event_seeder.php - Church Event Seeder
 
 require_once __DIR__ . '/../connection.php';
 require_once __DIR__ . '/../../models/EventModel.php';
@@ -15,116 +15,53 @@ class EventSeeder {
     }
 
     public function run() {
-        echo "Seeding events...\n";
+        echo "Seeding church events...\n";
         
         $events = [
             [
-                'title' => 'Annual Sports Day',
-                'description' => 'Join us for our annual sports day celebration featuring various athletic competitions, team sports, and fun activities for all students. This event promotes physical fitness, teamwork, and school spirit.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+2 weeks')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+2 weeks +6 hours')),
-                'category' => 'sports',
+                'title' => 'Sunday Worship Service',
+                'description' => 'Join us for our weekly worship service featuring prayer, praise, and biblical teaching. All are welcome!',
+                'start_date' => date('Y-m-d 09:00:00', strtotime('next Sunday')),
+                'end_date' => date('Y-m-d 11:00:00', strtotime('next Sunday')),
+                'category' => 'service',
                 'status' => 'upcoming',
-                'location' => 'School Sports Complex'
+                'location' => 'Main Sanctuary'
             ],
             [
-                'title' => 'Science Fair 2024',
-                'description' => 'Explore the amazing world of science through student projects, experiments, and demonstrations. This year\'s theme focuses on environmental sustainability and renewable energy solutions.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+1 month')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+1 month +8 hours')),
-                'category' => 'academic',
+                'title' => 'Bible Study Fellowship',
+                'description' => 'Mid-week Bible study for adults exploring the book of Romans. Come grow in your faith and fellowship.',
+                'start_date' => date('Y-m-d 19:00:00', strtotime('next Wednesday')),
+                'end_date' => date('Y-m-d 20:30:00', strtotime('next Wednesday')),
+                'category' => 'bible_study',
                 'status' => 'upcoming',
-                'location' => 'School Auditorium'
+                'location' => 'Fellowship Hall'
             ],
             [
-                'title' => 'Parent-Teacher Conference',
-                'description' => 'Meet with your child\'s teachers to discuss academic progress, goals, and ways to support learning at home. Individual appointments available throughout the day.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+3 days')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+3 days +4 hours')),
-                'category' => 'meeting',
+                'title' => 'Youth Group Meeting',
+                'description' => 'Teens join us for games, worship, and relevant Bible teaching just for you!',
+                'start_date' => date('Y-m-d 18:00:00', strtotime('next Friday')),
+                'end_date' => date('Y-m-d 20:00:00', strtotime('next Friday')),
+                'category' => 'youth',
                 'status' => 'upcoming',
-                'location' => 'School Classrooms'
+                'location' => 'Youth Center'
             ],
             [
-                'title' => 'Music Concert: Spring Melodies',
-                'description' => 'Enjoy an evening of beautiful music performed by our talented students. The concert will feature choir performances, instrumental solos, and ensemble pieces.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+1 week')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+1 week +2 hours')),
-                'category' => 'arts',
+                'title' => 'Men\'s Prayer Breakfast',
+                'description' => 'Fellowship and prayer time for men of all ages. Breakfast provided.',
+                'start_date' => date('Y-m-d 08:00:00', strtotime('next Saturday')),
+                'end_date' => date('Y-m-d 09:30:00', strtotime('next Saturday')),
+                'category' => 'fellowship',
                 'status' => 'upcoming',
-                'location' => 'School Auditorium'
+                'location' => 'Church Cafeteria'
             ],
             [
-                'title' => 'Career Day Workshop',
-                'description' => 'Students will have the opportunity to learn about various career paths from professionals in different fields. Interactive sessions and Q&A with industry experts.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+2 months')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+2 months +5 hours')),
-                'category' => 'career',
+                'title' => 'Women\'s Ministry Gathering',
+                'description' => 'Monthly meeting for women featuring guest speaker on "Finding Peace in Busy Seasons".',
+                'start_date' => date('Y-m-d 10:00:00', strtotime('+2 weeks Saturday')),
+                'end_date' => date('Y-m-d 12:00:00', strtotime('+2 weeks Saturday')),
+                'category' => 'fellowship',
                 'status' => 'upcoming',
-                'location' => 'School Library'
-            ],
-            [
-                'title' => 'Math Olympiad Competition',
-                'description' => 'Test your mathematical skills in this challenging competition. Open to all students with different difficulty levels for various age groups.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+3 weeks')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+3 weeks +3 hours')),
-                'category' => 'academic',
-                'status' => 'upcoming',
-                'location' => 'School Computer Lab'
-            ],
-            [
-                'title' => 'Art Exhibition: Student Creativity',
-                'description' => 'Celebrate the artistic talents of our students through this beautiful exhibition featuring paintings, sculptures, digital art, and mixed media works.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+1.5 months')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+1.5 months +6 hours')),
-                'category' => 'arts',
-                'status' => 'upcoming',
-                'location' => 'School Art Gallery'
-            ],
-            [
-                'title' => 'Community Service Day',
-                'description' => 'Join us in giving back to our community through various service activities. Students, parents, and staff will work together on meaningful projects.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+1 month +1 week')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+1 month +1 week +4 hours')),
-                'category' => 'community',
-                'status' => 'upcoming',
-                'location' => 'Various Community Locations'
-            ],
-            [
-                'title' => 'Technology Workshop: Coding for Kids',
-                'description' => 'Introduce your child to the world of programming through fun, interactive coding activities. Suitable for beginners with no prior experience required.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+2 weeks +3 days')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+2 weeks +3 days +2 hours')),
-                'category' => 'technology',
-                'status' => 'upcoming',
-                'location' => 'School Computer Lab'
-            ],
-            [
-                'title' => 'Graduation Ceremony 2024',
-                'description' => 'Celebrate the achievements of our graduating class in this special ceremony. Family and friends are welcome to attend this memorable event.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+3 months')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+3 months +3 hours')),
-                'category' => 'ceremony',
-                'status' => 'upcoming',
-                'location' => 'School Auditorium'
-            ],
-            [
-                'title' => 'Book Fair and Reading Week',
-                'description' => 'Discover new books and foster a love for reading. The book fair will feature a wide selection of age-appropriate books, author visits, and reading activities.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+1 month +2 weeks')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+1 month +2 weeks +7 days')),
-                'category' => 'academic',
-                'status' => 'upcoming',
-                'location' => 'School Library'
-            ],
-            [
-                'title' => 'Drama Club Performance: Shakespeare in the Park',
-                'description' => 'Experience the magic of live theater with our drama club\'s outdoor performance of a classic Shakespeare play. Bring a blanket and enjoy the show under the stars.',
-                'start_date' => date('Y-m-d H:i:s', strtotime('+2 months +1 week')),
-                'end_date' => date('Y-m-d H:i:s', strtotime('+2 months +1 week +2.5 hours')),
-                'category' => 'arts',
-                'status' => 'upcoming',
-                'location' => 'School Garden'
+                'location' => 'Fellowship Hall'
             ]
         ];
 
@@ -149,7 +86,7 @@ class EventSeeder {
             }
         }
         
-        echo "Successfully seeded {$insertedCount} events.\n";
+        echo "Successfully seeded {$insertedCount} church events.\n";
     }
 
     public function clear() {
@@ -175,4 +112,4 @@ if (php_sapi_name() === 'cli') {
         $seeder->run();
     }
 }
-?> 
+?>
