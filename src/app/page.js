@@ -43,10 +43,13 @@ class RootPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load only home and about page data in parallel
-            const [homePageData, aboutPageData] = await Promise.all([
+            // Load home, about, testimonials, sermons, and events page data in parallel
+            const [homePageData, aboutPageData, testimonialsPageData, sermonsPageData, eventsPageData] = await Promise.all([
                 this.fetchPageData('home'),
-                this.fetchPageData('about-us')
+                this.fetchPageData('about-us'),
+                this.fetchPageData('testimonials'),
+                this.fetchPageData('sermons'),
+                this.fetchPageData('events')
             ]);
 
             // Load only relevant settings
@@ -57,7 +60,10 @@ class RootPage extends App {
                 colors,
                 pages: {
                     home: homePageData,
-                    about: aboutPageData
+                    about: aboutPageData,
+                    testimonials: testimonialsPageData,
+                    sermons: sermonsPageData,
+                    events: eventsPageData
                 },
                 settings: settingsData
             };
@@ -163,7 +169,8 @@ class RootPage extends App {
 
                 <!-- Highlights Section Component -->
                 <highlights-section 
-                    colors='${colorsData}'>
+                    colors='${colorsData}'
+                    pages='${escapeJsonForAttribute({ testimonials: allData.pages.testimonials, sermons: allData.pages.sermons, events: allData.pages.events })}'>
                 </highlights-section>
             </div>
         `;

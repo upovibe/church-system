@@ -213,6 +213,31 @@ class PageSeeder
                 'sort_order' => 15,
                 'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
             ],
+            // ===== HIGHLIGHTS PAGES =====
+            [
+                'slug' => 'testimonials',
+                'name' => 'Testimonials',
+                'subtitle' => 'Stories of faith and transformation',
+                'title' => 'Testimonials',
+                'content' => '<h2>Testimonials</h2><p>Read inspiring stories and testimonies from members of our community. Discover how faith, events, and fellowship have impacted lives and brought about transformation.</p>',
+                'meta_description' => 'Inspiring testimonials and stories of faith from our church community.',
+                'category' => 'highlights',
+                'is_active' => 1,
+                'sort_order' => 21,
+                'banner_image' => json_encode(['uploads/pages/testimonials_default.jpg'])
+            ],
+            [
+                'slug' => 'sermons',
+                'name' => 'Sermons',
+                'subtitle' => 'Messages and teachings',
+                'title' => 'Sermons',
+                'content' => '<h2>Sermons</h2><p>Explore our collection of sermons and messages delivered by our pastors and guest speakers. Be encouraged and challenged by biblical teaching and practical insights for daily living.</p>',
+                'meta_description' => 'Browse sermons and messages from our church, featuring biblical teaching and encouragement.',
+                'category' => 'highlights',
+                'is_active' => 1,
+                'sort_order' => 22,
+                'banner_image' => json_encode(['uploads/pages/sermons_default.jpg'])
+            ],
             [
                 'slug' => 'photos',
                 'name' => 'Photos',

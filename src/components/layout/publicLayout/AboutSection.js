@@ -21,7 +21,6 @@ class AboutSection extends App {
         // Get data from props/attributes
         const colorsAttr = this.getAttribute('colors');
         const pageDataAttr = this.getAttribute('page-data');
-        const settingsAttr = this.getAttribute('settings');
 
         if (colorsAttr) {
             try {
@@ -38,14 +37,6 @@ class AboutSection extends App {
             const pageData = unescapeJsonFromAttribute(pageDataAttr);
             if (pageData) {
                 this.set('pageData', pageData);
-            }
-        }
-
-        if (settingsAttr) {
-            const settings = unescapeJsonFromAttribute(settingsAttr);
-            if (settings) {
-                if (settings.about_title) this.set('aboutTitle', settings.about_title);
-                if (settings.about_subtitle) this.set('aboutSubtitle', settings.about_subtitle);
             }
         }
 
