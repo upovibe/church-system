@@ -67,6 +67,7 @@ class EventList extends App {
     searchEvents(query) {
         const searchTerm = query.toLowerCase().trim();
         const eventCards = this.querySelectorAll('.event-card');
+        let visibleCount = 0;
         
         eventCards.forEach(card => {
             const eventTitle = card.getAttribute('data-title') || '';
@@ -74,6 +75,7 @@ class EventList extends App {
             
             if (searchTerm === '') {
                 card.style.display = 'block';
+                visibleCount++;
             } else {
                 // Split title into words and check if any word starts with the search term
                 const titleWords = titleLower.split(/\s+/);
@@ -81,15 +83,19 @@ class EventList extends App {
                 
                 if (hasMatch) {
                     card.style.display = 'block';
+                    visibleCount++;
                 } else {
                     card.style.display = 'none';
                 }
             }
         });
+        
+        this.showNoResultsMessage(visibleCount === 0, `No events found for "${query}"`);
     }
 
     filterByStatus(status) {
         const eventCards = this.querySelectorAll('.event-card');
+        let visibleCount = 0;
         
         eventCards.forEach(card => {
             const eventStatus = card.getAttribute('data-status') || '';
@@ -97,10 +103,61 @@ class EventList extends App {
             
             if (status === '' || normalizedStatus === status) {
                 card.style.display = 'block';
+                visibleCount++;
             } else {
                 card.style.display = 'none';
             }
         });
+        
+        const statusText = status ? status.charAt(0).toUpperCase() + status.slice(1) : 'All';
+        this.showNoResultsMessage(visibleCount === 0, `No ${status} events available`);
+    }
+
+    showNoResultsMessage(show, message) {
+        let noResultsDiv = this.querySelector('.no-results-message');
+        
+        if (show) {
+            if (!noResultsDiv) {
+                noResultsDiv = document.createElement('div');
+                noResultsDiv.className = 'no-results-message col-span-full text-center py-8 text-gray-500';
+                noResultsDiv.innerHTML = `
+                    <i class="fas fa-search text-2xl mb-2"></i>
+                    <p>${message}</p>
+                `;
+                this.querySelector('#events-grid').appendChild(noResultsDiv);
+            } else {
+                noResultsDiv.innerHTML = `
+                    <i class="fas fa-search text-2xl mb-2"></i>
+                    <p>${message}</p>
+                `;
+                noResultsDiv.style.display = 'block';
+            }
+        } else if (noResultsDiv) {
+            noResultsDiv.style.display = 'none';
+        }
+    }
+
+    clearFilters() {
+        // Clear search input
+        const searchInput = this.querySelector('#event-search');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        
+        // Reset status filter
+        const statusFilter = this.querySelector('#status-filter');
+        if (statusFilter) {
+            statusFilter.value = '';
+        }
+        
+        // Show all events
+        const eventCards = this.querySelectorAll('.event-card');
+        eventCards.forEach(card => {
+            card.style.display = 'block';
+        });
+        
+        // Hide no results message
+        this.showNoResultsMessage(false);
     }
 
     openEventPage(slugOrId) {
