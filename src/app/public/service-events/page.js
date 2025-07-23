@@ -25,8 +25,8 @@ class ServiceEventsPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load service-events page data
-            const serviceEventsPageData = await this.fetchPageData('service-events');
+            // Load events page data
+            const serviceEventsPageData = await this.fetchPageData('events');
 
             // Combine all data
             const allData = {
