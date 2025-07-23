@@ -8,6 +8,7 @@ import '@/components/layout/publicLayout/AboutSection.js';
 import '@/components/layout/publicLayout/AcademicsSection.js';
 import '@/components/layout/publicLayout/CommunitySection.js';
 import '@/components/layout/publicLayout/ContactSection.js';
+import '@/components/layout/publicLayout/HighlightsSection.js';
 import '@/components/layout/DbSetupDialog.js';
 
 /**
@@ -159,6 +160,11 @@ class RootPage extends App {
                     colors='${colorsData}'
                     page-data='${escapeJsonForAttribute(allData.pages.about)}'>
                 </about-section>
+
+                <!-- Highlights Section Component -->
+                <highlights-section 
+                    colors='${colorsData}'>
+                </highlights-section>
             </div>
         `;
     }
