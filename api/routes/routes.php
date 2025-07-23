@@ -138,6 +138,14 @@ Router::delete('/sermons/{id}/images/{imageIndex}', 'SermonController@removeImag
 Router::delete('/sermons/{id}/audio/{audioIndex}', 'SermonController@removeAudio');
 Router::delete('/sermons/{id}/videos/{videoIndex}', 'SermonController@removeVideoLink');
 
+// Testimonials
+Router::get('/testimonials', 'TestimonialController@index'); // admin only
+Router::post('/testimonials', 'TestimonialController@store'); // admin only
+Router::get('/testimonials/{id}', 'TestimonialController@show'); // public
+Router::put('/testimonials/{id}', 'TestimonialController@update'); // admin only
+Router::delete('/testimonials/{id}', 'TestimonialController@destroy'); // admin only
+Router::get('/public/testimonials', 'TestimonialController@getPublic'); // public
+
 // DB setup endpoints
 Router::get('/db/test', 'DbController@test');
 Router::get('/db/check', 'DbController@check');
