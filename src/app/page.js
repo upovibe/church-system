@@ -42,16 +42,13 @@ class RootPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load all page data in parallel
-            const [homePageData, aboutPageData, academicsPageData, communityPageData, contactPageData] = await Promise.all([
+            // Load only home and about page data in parallel
+            const [homePageData, aboutPageData] = await Promise.all([
                 this.fetchPageData('home'),
-                this.fetchPageData('about-us'),
-                this.fetchPageData('academics'),
-                this.fetchPageData('community'),
-                this.fetchPageData('contact')
+                this.fetchPageData('about-us')
             ]);
 
-            // Load all settings in parallel
+            // Load only relevant settings
             const settingsData = await this.loadAllSettings();
 
             // Combine all data
@@ -59,10 +56,7 @@ class RootPage extends App {
                 colors,
                 pages: {
                     home: homePageData,
-                    about: aboutPageData,
-                    academics: academicsPageData,
-                    community: communityPageData,
-                    contact: contactPageData
+                    about: aboutPageData
                 },
                 settings: settingsData
             };
@@ -93,11 +87,6 @@ class RootPage extends App {
     async loadAllSettings() {
         try {
             const settingsKeys = [
-                'hero_title', 'hero_subtitle',
-                'about_title', 'about_subtitle',
-                'academics_title', 'academics_subtitle',
-                'community_title', 'community_subtitle',
-                'contact_title', 'contact_subtitle',
                 'application_logo', 'contact_email', 'contact_phone',
                 'facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url', 'youtube_url'
             ];
@@ -162,52 +151,14 @@ class RootPage extends App {
                 <!-- Hero Section Component -->
                 <hero-section 
                     colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.home)}'
-                    settings='${escapeJsonForAttribute({
-                        hero_title: allData.settings.hero_title,
-                        hero_subtitle: allData.settings.hero_subtitle
-                    })}'>
+                    page-data='${escapeJsonForAttribute(allData.pages.home)}'>
                 </hero-section>
                 
                 <!-- About Section Component -->
                 <about-section 
                     colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.about)}'
-                    settings='${escapeJsonForAttribute({
-                        about_title: allData.settings.about_title,
-                        about_subtitle: allData.settings.about_subtitle
-                    })}'>
+                    page-data='${escapeJsonForAttribute(allData.pages.about)}'>
                 </about-section>
-                
-                <!-- Academics Section Component -->
-                <academics-section 
-                    colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.academics)}'
-                    settings='${escapeJsonForAttribute({
-                        academics_title: allData.settings.academics_title,
-                        academics_subtitle: allData.settings.academics_subtitle
-                    })}'>
-                </academics-section>
-                
-                <!-- Community Section Component -->
-                <community-section 
-                    colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.community)}'
-                    settings='${escapeJsonForAttribute({
-                        community_title: allData.settings.community_title,
-                        community_subtitle: allData.settings.community_subtitle
-                    })}'>
-                </community-section>
-
-                <!-- Contact Section Component -->
-                <contact-section 
-                    colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.contact)}'
-                    settings='${escapeJsonForAttribute({
-                        contact_title: allData.settings.contact_title,
-                        contact_subtitle: allData.settings.contact_subtitle,
-                    })}'>
-                </contact-section>
             </div>
         `;
     }
