@@ -64,6 +64,30 @@ class EventList extends App {
 
 
 
+    searchEvents(query) {
+        const searchTerm = query.toLowerCase().trim();
+        const eventCards = this.querySelectorAll('.event-card');
+        
+        eventCards.forEach(card => {
+            const eventTitle = card.getAttribute('data-title') || '';
+            const titleLower = eventTitle.toLowerCase();
+            
+            if (searchTerm === '') {
+                card.style.display = 'block';
+            } else {
+                // Split title into words and check if any word starts with the search term
+                const titleWords = titleLower.split(/\s+/);
+                const hasMatch = titleWords.some(word => word.startsWith(searchTerm));
+                
+                if (hasMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        });
+    }
+
     openEventPage(slugOrId) {
         // Navigate to the event page using SPA router
         const eventUrl = `/public/community/events/${slugOrId}`;
@@ -178,7 +202,24 @@ class EventList extends App {
         const secondaryColor = this.get('secondary_color');
 
         return `
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Simple Search Bar -->
+            <div class="mb-10">
+                <div class="relative max-w-xl mx-auto">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-white/70"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="event-search"
+                        placeholder="Search events..." 
+                        class="block w-full pl-10 pr-10 py-2 bg-transparent border border-gray-300 rounded-xl text-white placeholder-white/70 text-sm"
+                        oninput="this.closest('event-list').searchEvents(this.value)"
+                    >
+                </div>
+            </div>
+            
+            <!-- Events Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="events-grid">
                 ${loading ? `<event-list-skeleton></event-list-skeleton>` : events.length > 0 ? events.map(event => {
                     const statusBadge = this.getStatusBadge(event.status);
                     
@@ -202,8 +243,9 @@ class EventList extends App {
                         : 'background-color: white;';
 
                     return `
-                        <div class="rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 border-l-4 border-[${primaryColor}] cursor-pointer h-64 relative overflow-hidden" 
+                        <div class="rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 border-l-4 border-[${primaryColor}] cursor-pointer h-64 relative overflow-hidden event-card" 
                              style="${backgroundStyle}"
+                             data-title="${event.title || 'Untitled Event'}"
                              onclick="this.closest('event-list').openEventPage('${event.slug || event.id}')">
                             <!-- Dark overlay for better text readability -->
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
