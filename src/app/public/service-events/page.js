@@ -1,21 +1,22 @@
 import App from '@/core/App.js';
 import api from '@/services/api.js';
+import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
-import '@/components/layout/publicLayout/EventsSection.js';
+import '@/components/layout/publicLayout/ServiceEventsSection.js';
 
 /**
- * Events Page Component (/community/events)
+ * Service Events Page Component (/service-events)
  * 
- * This is the events page of the application.
- * It now uses the same centralized data loading approach as the community page.
- * File-based routing: /community/events → app/public/community/events/page.js
+ * This is the service events page of the application.
+ * It uses the same centralized data loading approach as other pages.
+ * File-based routing: /service-events → app/public/service-events/page.js
  */
-class EventsPage extends App {
+class ServiceEventsPage extends App {
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Events | UPO UI';
+        document.title = 'Service Events | Church System';
         this.loadAllData();
     }
 
@@ -24,25 +25,25 @@ class EventsPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load events page data
-            const eventsPageData = await this.fetchPageData('events');
+            // Load service-events page data
+            const serviceEventsPageData = await this.fetchPageData('service-events');
 
             // Combine all data
             const allData = {
                 colors,
-                page: eventsPageData
+                page: serviceEventsPageData
             };
-
+                
             // Cache in global store
-            store.setState({ eventsPageData: allData });
-            
+            store.setState({ serviceEventsPageData: allData });
+                
             // Set local state and render
             this.set('allData', allData);
             this.render();
 
         } catch (error) {
-            console.error('Error loading events data:', error);
-            this.set('error', 'Failed to load events page data');
+            console.error('Error loading service events data:', error);
+            this.set('error', 'Failed to load service events page data');
         }
     }
 
@@ -55,8 +56,6 @@ class EventsPage extends App {
             return null;
         }
     }
-
-
 
     render() {
         const allData = this.get('allData');
@@ -85,15 +84,15 @@ class EventsPage extends App {
 
         return `
             <div class="mx-auto">
-                <!-- Events Section Component -->
-                <events-section 
+                <!-- Service Events Section Component -->
+                <service-events-section 
                     colors='${colorsData}'
                     page-data='${escapeJsonForAttribute(allData.page)}'>
-                </events-section>
+                </service-events-section>
             </div>
         `;
     }
 }
 
-customElements.define('app-events-page', EventsPage);
-export default EventsPage; 
+customElements.define('app-service-events-page', ServiceEventsPage);
+export default ServiceEventsPage; 

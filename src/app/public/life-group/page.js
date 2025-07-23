@@ -1,21 +1,22 @@
 import App from '@/core/App.js';
 import api from '@/services/api.js';
+import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
-import '@/components/layout/publicLayout/NewsSection.js';
+import '@/components/layout/publicLayout/LifeGroupSection.js';
 
 /**
- * News Page Component (/community/news)
+ * Life Group Page Component (/life-group)
  * 
- * This is the news page of the application.
- * It now uses the same centralized data loading approach as the community page.
- * File-based routing: /community/news → app/public/community/news/page.js
+ * This is the life group page of the application.
+ * It uses the same centralized data loading approach as other pages.
+ * File-based routing: /life-group → app/public/life-group/page.js
  */
-class NewsPage extends App {
+class LifeGroupPage extends App {
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'News | UPO UI';
+        document.title = 'Life Group | Church System';
         this.loadAllData();
     }
 
@@ -24,25 +25,25 @@ class NewsPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load news page data
-            const newsPageData = await this.fetchPageData('news');
+            // Load life-group page data
+            const lifeGroupPageData = await this.fetchPageData('life-group');
 
             // Combine all data
             const allData = {
                 colors,
-                page: newsPageData
+                page: lifeGroupPageData
             };
-
+                
             // Cache in global store
-            store.setState({ newsPageData: allData });
-            
+            store.setState({ lifeGroupPageData: allData });
+                
             // Set local state and render
             this.set('allData', allData);
             this.render();
 
         } catch (error) {
-            console.error('Error loading news data:', error);
-            this.set('error', 'Failed to load news page data');
+            console.error('Error loading life group data:', error);
+            this.set('error', 'Failed to load life group page data');
         }
     }
 
@@ -83,15 +84,15 @@ class NewsPage extends App {
 
         return `
             <div class="mx-auto">
-                <!-- News Section Component -->
-                <news-section 
+                <!-- Life Group Section Component -->
+                <life-group-section 
                     colors='${colorsData}'
                     page-data='${escapeJsonForAttribute(allData.page)}'>
-                </news-section>
+                </life-group-section>
             </div>
         `;
     }
 }
 
-customElements.define('app-news-page', NewsPage);
-export default NewsPage; 
+customElements.define('app-life-group-page', LifeGroupPage);
+export default LifeGroupPage; 

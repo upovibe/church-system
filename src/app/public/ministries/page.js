@@ -1,22 +1,22 @@
 import App from '@/core/App.js';
 import api from '@/services/api.js';
-import PageLoader from '@/components/common/PageLoader.js';
+import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
-import '@/components/layout/publicLayout/ValuesAimsSection.js';
+import '@/components/layout/publicLayout/MinistriesSection.js';
 
 /**
- * Values & Aims Page Component (/about-us/values-aims)
+ * Ministries Page Component (/ministries)
  * 
- * This is the values and aims page of the application.
- * It now uses the same centralized data loading approach as other pages.
- * File-based routing: /about-us/values-aims → app/public/about-us/values-aims/page.js
+ * This is the ministries page of the application.
+ * It uses the same centralized data loading approach as other pages.
+ * File-based routing: /ministries → app/public/ministries/page.js
  */
-class ValuesAimsPage extends App {
+class MinistriesPage extends App {
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Values & Aims | UPO UI';
+        document.title = 'Ministries | Church System';
         this.loadAllData();
     }
 
@@ -25,48 +25,34 @@ class ValuesAimsPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load values aims page data
-            const pageData = await this.fetchPageData();
+            // Load ministries page data
+            const ministriesPageData = await this.fetchPageData('ministries');
 
             // Combine all data
             const allData = {
                 colors,
-                page: pageData
+                page: ministriesPageData
             };
-
+                
             // Cache in global store
-            store.setState({ valuesAimsPageData: allData });
-            
+            store.setState({ ministriesPageData: allData });
+                
             // Set local state and render
             this.set('allData', allData);
             this.render();
 
         } catch (error) {
-            console.error('Error loading values aims data:', error);
-            this.set('error', 'Failed to load values aims page data');
+            console.error('Error loading ministries data:', error);
+            this.set('error', 'Failed to load ministries page data');
         }
     }
 
-    async fetchPageData() {
-        // Check if data is already cached in global store
-        const globalState = store.getState();
-        if (globalState.valuesAimsPageContentData) {
-            return globalState.valuesAimsPageContentData;
-        }
-
-        // If not cached, fetch from API
+    async fetchPageData(slug) {
         try {
-            const response = await api.get('/pages/slug/values-aims');
-            if (response.data.success) {
-                const pageData = response.data.data;
-                
-                // Cache the data in global store
-                store.setState({ valuesAimsPageContentData: pageData });
-                
-                return pageData;
-            }
+            const response = await api.get(`/pages/slug/${slug}`);
+            return response.data.success ? response.data.data : null;
         } catch (error) {
-            console.error('Error fetching values aims page data:', error);
+            console.error(`Error fetching ${slug} page data:`, error);
             return null;
         }
     }
@@ -98,15 +84,15 @@ class ValuesAimsPage extends App {
 
         return `
             <div class="mx-auto">
-                <!-- Values & Aims Section Component -->
-                <values-aims-section 
+                <!-- Ministries Section Component -->
+                <ministries-section 
                     colors='${colorsData}'
                     page-data='${escapeJsonForAttribute(allData.page)}'>
-                </values-aims-section>
+                </ministries-section>
             </div>
         `;
     }
 }
 
-customElements.define('app-values-aims-page', ValuesAimsPage);
-export default ValuesAimsPage;
+customElements.define('app-ministries-page', MinistriesPage);
+export default MinistriesPage; 
