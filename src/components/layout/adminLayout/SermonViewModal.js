@@ -137,6 +137,11 @@ class SermonViewModal extends HTMLElement {
             const response = await api.withToken(token).delete(`/sermons/${this.sermonData.id}/audio/${audioIndex}`);
             Toast.show({ title: 'Success', message: 'Audio deleted', variant: 'success' });
             this.setSermonData(response.data.data);
+            this.dispatchEvent(new CustomEvent('sermon-updated', {
+                detail: { sermon: response.data.data },
+                bubbles: true,
+                composed: true
+            }));
         } catch (error) {
             Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to delete audio', variant: 'error' });
         }
@@ -154,6 +159,11 @@ class SermonViewModal extends HTMLElement {
             const response = await api.withToken(token).delete(`/sermons/${this.sermonData.id}/videos/${videoIndex}`);
             Toast.show({ title: 'Success', message: 'Video deleted', variant: 'success' });
             this.setSermonData(response.data.data);
+            this.dispatchEvent(new CustomEvent('sermon-updated', {
+                detail: { sermon: response.data.data },
+                bubbles: true,
+                composed: true
+            }));
         } catch (error) {
             Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to delete video', variant: 'error' });
         }
