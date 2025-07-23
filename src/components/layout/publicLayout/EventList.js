@@ -162,7 +162,7 @@ class EventList extends App {
 
     openEventPage(slugOrId) {
         // Navigate to the event page using SPA router
-        const eventUrl = `/public/community/events/${slugOrId}`;
+        const eventUrl = `/public/service-events/${slugOrId}`;
         if (window.router) {
             window.router.navigate(eventUrl);
         } else {

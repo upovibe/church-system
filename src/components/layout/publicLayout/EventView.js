@@ -1,67 +1,26 @@
 import App from '@/core/App.js';
-import Toast from '@/components/ui/Toast.js';
-import '@/components/layout/publicLayout/EventList.js';
-import { fetchColorSettings } from '@/utils/colorSettings.js';
-import '@/components/common/PageLoader.js';
-import '@/components/ui/ContentDisplay.js';
 
 /**
  * Event View Component
  * 
- * Displays detailed information for a specific event
- * Can be used in individual event pages or modals
+ * Displays detailed event information with banner and content sections.
+ * Accepts slug via 'slug' attribute and fetches event data.
  */
 class EventView extends App {
     constructor() {
         super();
-        // Initialize with loading state
-        this.set('loading', true);
-        this.set('colorsLoaded', false);
         this.set('event', null);
+        this.set('loading', true);
         this.set('error', null);
     }
 
-    // Method to copy event URL to clipboard and show toast
-    copyEventUrl() {
-        const event = this.get('event');
-        const eventTitle = event?.title ? event.title.charAt(0).toUpperCase() + event.title.slice(1) : 'Event';
-        
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            Toast.show({ 
-                message: `${eventTitle} copied to clipboard!`, 
-                variant: 'success', 
-                duration: 3000 
-            });
-        });
-    }
-
-    async connectedCallback() {
+    connectedCallback() {
         super.connectedCallback();
-        
-        // Load colors from settings
-        await this.loadColorsFromSettings();
         
         // Check if slug attribute is provided and load data
         const slug = this.getAttribute('slug');
         if (slug) {
             this.loadEventData(slug);
-        }
-    }
-
-    async loadColorsFromSettings() {
-        try {
-            // Fetch colors from API
-            const colors = await fetchColorSettings();
-            
-            // Set colors in component state
-            Object.entries(colors).forEach(([key, value]) => {
-                this.set(key, value);
-            });
-            
-            // Mark colors as loaded
-            this.set('colorsLoaded', true);
-        } catch (error) {
-            this.set('colorsLoaded', true);
         }
     }
 
@@ -76,7 +35,7 @@ class EventView extends App {
         }
     }
 
-    // Method to load event data (can be called externally)
+    // Method to load event data
     async loadEventData(slug) {
         try {
             if (!slug) {
@@ -85,22 +44,29 @@ class EventView extends App {
                 return;
             }
 
+            console.log('Fetching event data for slug:', slug);
+            
             // Fetch event data by slug
             const apiUrl = `/api/events/slug/${slug}`;
-            
             const response = await fetch(apiUrl);
             
             if (response.ok) {
                 const data = await response.json();
+                console.log('Event API Response:', data);
+                
                 if (data.success && data.data) {
+                    console.log('Event Data:', data.data);
+                    console.log('Event Banner Image:', data.data.banner_image);
                     this.set('event', data.data);
                 } else {
+                    console.log('No event data found for slug:', slug);
                     this.set('error', 'Event not found');
                 }
             } else {
                 this.set('error', 'Failed to load event');
             }
         } catch (error) {
+            console.error('Error loading event:', error);
             this.set('error', 'Error loading event');
         }
         
@@ -128,91 +94,75 @@ class EventView extends App {
         return baseUrl + apiPath + '/' + imagePath;
     }
 
-    // Helper function to get status badge styling
-    getStatusBadge(status) {
-        switch (status?.toLowerCase()) {
-            case 'upcoming':
-                return {
-                    class: 'bg-blue-100 text-blue-800',
-                    icon: 'fas fa-clock',
-                    text: 'Upcoming'
-                };
-            case 'ongoing':
-                return {
-                    class: 'bg-green-100 text-green-800',
-                    icon: 'fas fa-play',
-                    text: 'Ongoing'
-                };
-            case 'completed':
-                return {
-                    class: 'bg-gray-100 text-gray-800',
-                    icon: 'fas fa-check',
-                    text: 'Completed'
-                };
-            case 'cancelled':
-                return {
-                    class: 'bg-red-100 text-red-800',
-                    icon: 'fas fa-times',
-                    text: 'Cancelled'
-                };
-            default:
-                return {
-                    class: 'bg-gray-100 text-gray-800',
-                    icon: 'fas fa-circle',
-                    text: status || 'Unknown'
-                };
+    // Helper method to parse banner images from various formats
+    getBannerImages(event) {
+        if (!event || !event.banner_image) {
+            return [];
         }
+
+        let bannerImages = event.banner_image;
+
+        // If it's a string, try to parse as JSON
+        if (typeof bannerImages === 'string') {
+            try {
+                const parsed = JSON.parse(bannerImages);
+                if (Array.isArray(parsed)) {
+                    bannerImages = parsed;
+                } else {
+                    bannerImages = [bannerImages];
+                }
+            } catch (e) {
+                // If parsing fails, treat as single path
+                bannerImages = [bannerImages];
+            }
+        } else if (!Array.isArray(bannerImages)) {
+            // If it's not an array, wrap in array
+            bannerImages = [bannerImages];
+        }
+
+        // Filter out empty/null values
+        return bannerImages.filter(img => img && img.trim() !== '');
     }
 
-    // Helper function to format date
+    // Helper method to format date
     formatDate(dateString) {
-        if (!dateString) return 'TBD';
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) {
-                return dateString;
-            }
-            return date.toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        } catch (error) {
-            return dateString;
-        }
+        if (!dateString) return '';
+        
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     }
 
-    // Helper function to format time
-    formatTime(timeString) {
-        if (!timeString) return 'TBD';
-        try {
-            if (timeString.includes(' ')) {
-                const timePart = timeString.split(' ')[1];
-                return timePart.substring(0, 5);
-            }
-            return timeString;
-        } catch (error) {
-            return timeString;
-        }
+    // Helper method to format time
+    formatTime(dateString) {
+        if (!dateString) return '';
+        
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
     }
 
     render() {
         const loading = this.get('loading');
-        const colorsLoaded = this.get('colorsLoaded');
         const error = this.get('error');
         const event = this.get('event');
         
-        // Get colors from state
-        const primaryColor = this.get('primary_color');
-        const secondaryColor = this.get('secondary_color');
-        const accentColor = this.get('accent_color');
-        const textColor = this.get('text_color');
-        const darkColor = this.get('dark_color');
-        
-        // Show loading if either colors or event data is still loading
-        if (loading || !colorsLoaded) {
-            return `<page-loader></page-loader>`;
+        if (loading) {
+            return `
+                <div class="min-h-screen flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <p class="text-gray-600">Loading event...</p>
+                    </div>
+                </div>
+            `;
         }
 
         if (!loading && (error || !event)) {
@@ -222,8 +172,8 @@ class EventView extends App {
                         <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
                         <h1 class="text-2xl font-bold text-gray-800 mb-2">Event Not Found</h1>
                         <p class="text-gray-600 mb-6">The event you're looking for doesn't exist or has been removed.</p>
-                        <a href="/public/community/events" 
-                           class="inline-flex items-center gap-2 px-6 py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-colors">
+                        <a href="/public/service-events" 
+                           class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="fas fa-arrow-left"></i>
                             Back to Events
                         </a>
@@ -232,141 +182,119 @@ class EventView extends App {
             `;
         }
 
-        const statusBadge = this.getStatusBadge(event.status);
+        // Get banner images from event
+        const bannerImages = this.getBannerImages(event) || [];
+        const showImages = bannerImages.length > 0;
+
+        // Get event details
+        const eventTitle = event.title || 'Event Details';
+        const eventDescription = event.description || 'No description available';
+        const eventCategory = event.category || 'Church Event';
+        const eventLocation = event.location || 'TBD';
+        const eventStatus = event.status || 'upcoming';
+        
+        // Format dates
+        const startDate = this.formatDate(event.start_date);
+        const startTime = this.formatTime(event.start_date);
+        const endTime = this.formatTime(event.end_date);
 
         return `
-            <!-- Breadcrumb -->
-            <ui-breadcrumb separator="chevron" color="primary">
-                <ui-breadcrumb-item href="/">Home</ui-breadcrumb-item>
-                <ui-breadcrumb-item href="/public/community">Community</ui-breadcrumb-item>
-                <ui-breadcrumb-item href="/public/community/events">Events</ui-breadcrumb-item>
-                <ui-breadcrumb-item>${event.title ? event.title.charAt(0).toUpperCase() + event.title.slice(1) : 'Event Details'}</ui-breadcrumb-item>
-            </ui-breadcrumb>
-
-            <!-- Event Banner - Always show (placeholder if no image) -->
-            <div class="relative w-full h-96 rounded-2xl overflow-hidden shadow-lg my-6">
-                ${event.banner_image ? `
-                    <img src="/api/${event.banner_image}" 
-                         alt="${event.title}" 
-                         class="w-full h-full object-cover"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                ` : ''}
-                <div class="absolute inset-0 ${event.banner_image ? 'hidden' : 'flex'} items-center justify-center bg-gray-100">
-                    <div class="text-center">
-                        <i class="fas fa-calendar-alt text-gray-400 text-6xl mb-4"></i>
-                        <h2 class="text-2xl font-bold text-gray-700 mb-2">${event.title ? event.title.charAt(0).toUpperCase() + event.title.slice(1) : 'Event'}</h2>
-                        <p class="text-lg text-gray-600">${event.category ? event.category.charAt(0).toUpperCase() + event.category.slice(1) : 'Event'} • ${this.formatDate(event.start_date || event.event_date)}</p>
-                    </div>
-                </div>
-                
-                <!-- Status Badge - Absolute positioned at top-right corner -->
-                <div class="absolute top-4 right-4 z-10">
-                    <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[${primaryColor}] bg-opacity-10 text-[${primaryColor}] shadow-lg">
-                        <i class="${statusBadge.icon} mr-2"></i>
-                        ${statusBadge.text}
-                    </span>
-                </div>
-                
-                <!-- Location - Absolute positioned at bottom-left corner -->
-                ${event.location ? `
-                    <div class="absolute bottom-4 left-4 z-10">
-                        <div class="bg-[${darkColor}] bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-2 text-[${textColor}]">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-map-marker-alt text-[${primaryColor}]"></i>
-                                <span class="text-sm font-medium">${event.location}</span>
-                            </div>
+            <div class="min-h-screen">
+                <!-- Banner Section with Event Image -->
+                <div class="relative w-full h-[500px] lg:h-[45vh] overflow-hidden">
+                    ${showImages ? bannerImages.map((img, idx) => `
+                        <div
+                             class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                             style="background-image: url('${this.getImageUrl(img)}'); transition-property: opacity;">
                         </div>
-                    </div>
-                ` : ''}
-                
-                <!-- Dark gradient overlay for images -->
-                ${event.banner_image ? `
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                ` : ''}
-            </div>
-
-            <!-- Two Container Layout Under Banner -->
-            <div class="mx-auto px-4">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    `).join('') : `
+                        <div class="absolute inset-0 bg-gray-300"></div>
+                    `}
                     
-                    <!-- Left Container -->
-                    <div class="space-y-6">
-                        <!-- Title with Share/Copy buttons -->
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h1 class="text-3xl font-bold text-[${secondaryColor}] mb-2">${event.title ? event.title.charAt(0).toUpperCase() + event.title.slice(1) : 'Untitled Event'}</h1>
-                                ${event.subtitle ? `<p class="text-lg text-gray-600">${event.subtitle}</p>` : ''}
-                            </div>
-                            <div class="flex gap-3 ml-4">
-                                <i onclick="navigator.share ? navigator.share({title: '${event.title}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
-                                   class="fas fa-share size-8 text-gray-600 hover:text-[${primaryColor}] cursor-pointer transition-colors border border-gray-300 rounded-lg p-1.5"></i>
-                                <i onclick="this.closest('app-event-view').copyEventUrl()" 
-                                   class="fas fa-copy size-8 text-gray-600 hover:text-gray-800 cursor-pointer transition-colors border border-gray-300 rounded-lg p-1.5"></i>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        ${event.description ? `
-                            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                                <h3 class="text-lg font-semibold text-[${secondaryColor}] mb-3">Description</h3>
-                                <content-display 
-                                    content="${event.description.replace(/"/g, '&quot;')}"
-                                    no-styles>
-                                </content-display>
-                            </div>
-                        ` : ''}
-
-                        <!-- Dates and Category -->
-                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                            <div class="space-y-4">
-                                <!-- Start Date & Time -->
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-[${primaryColor}] bg-opacity-10 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-calendar text-[${primaryColor}]"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600">Start Date & Time</p>
-                                        <div class="flex items-center gap-2">
-                                            <p class="font-semibold text-[${secondaryColor}]">${this.formatDate(event.start_date)}</p>
-                                            <p class="text-sm text-gray-600 font-semibold bg-gray-100 px-2 py-1 rounded-md">${this.formatTime(event.start_date)}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- End Date & Time -->
-                                ${event.end_date ? `
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-[${accentColor}] bg-opacity-10 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-calendar-times text-[${accentColor}]"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm text-gray-600">End Date & Time</p>
-                                            <div class="flex items-center gap-2">
-                                                <p class="font-semibold text-[${secondaryColor}]">${this.formatDate(event.end_date)}</p>
-                                                <p class="text-sm text-gray-600 font-semibold bg-gray-100 px-2 py-1 rounded-md">${this.formatTime(event.end_date)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ` : ''}
-
-                                <!-- Category -->
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-[${darkColor}] bg-opacity-10 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-tag text-[${darkColor}]"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600">Category</p>
-                                        <p class="font-semibold text-[${secondaryColor}]">${event.category || 'General'}</p>
-                                    </div>
-                                </div>
+                    <!-- Dark gradient overlay from bottom to top -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
+                    
+                    <!-- Content Overlay -->
+                    <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
+                        <div class="text-left text-white px-4 lg:px-8 max-w-4xl space-y-6">
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg pb-2 border-b-4 border-blue-400 w-fit" style="line-height: 1.1">
+                                ${eventTitle}
+                            </h1>
+                            <p class="text-lg md:text-xl lg:text-2xl opacity-95 leading-relaxed drop-shadow-md">
+                                ${eventDescription}
+                            </p>
+                            <div class="flex flex-row gap-2 sm:gap-4 justify-start w-fit">
+                                <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm">
+                                    <i class="fas fa-calendar mr-2"></i>
+                                    ${eventCategory}
+                                </span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Right Container -->
-                    <div class="space-y-6">
-                        <!-- Event List -->
-                        <event-list></event-list>
+                <!-- Event Details Section -->
+                <div class="container mx-auto px-4 py-8">
+                    <div class="max-w-4xl mx-auto">
+                        <!-- Event Info Cards -->
+                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                                <div class="flex items-center">
+                                    <i class="fas fa-calendar-alt text-blue-500 text-2xl mr-4"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Date</h3>
+                                        <p class="text-gray-600">${startDate}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-green-500 text-2xl mr-4"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Time</h3>
+                                        <p class="text-gray-600">${startTime} - ${endTime}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                                <div class="flex items-center">
+                                    <i class="fas fa-map-marker-alt text-purple-500 text-2xl mr-4"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Location</h3>
+                                        <p class="text-gray-600">${eventLocation}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
+                                <div class="flex items-center">
+                                    <i class="fas fa-info-circle text-orange-500 text-2xl mr-4"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Status</h3>
+                                        <p class="text-gray-600 capitalize">${eventStatus}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event Description -->
+                        <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">About This Event</h2>
+                            <div class="prose max-w-none">
+                                <p class="text-gray-700 leading-relaxed">${eventDescription}</p>
+                            </div>
+                        </div>
+
+                        <!-- Back Button -->
+                        <div class="text-center">
+                            <a href="/public/service-events" 
+                               class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to Events
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -374,5 +302,5 @@ class EventView extends App {
     }
 }
 
-customElements.define('app-event-view', EventView);
+customElements.define('event-view', EventView);
 export default EventView; 

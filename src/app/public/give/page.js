@@ -24,7 +24,7 @@ class GivePage extends App {
         try {
             // Load colors first
             const colors = await fetchColorSettings();
-            
+
             // Load give page data
             const givePageData = await this.fetchPageData('give');
 
@@ -33,7 +33,7 @@ class GivePage extends App {
                 colors,
                 page: givePageData
             };
-                
+
             // Cache in global store
             store.setState({ givePageData: allData });
                 

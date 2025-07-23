@@ -106,7 +106,7 @@ class PageSeeder
                 'content' => '<h2>Leadership Team</h2><p>Our experienced pastoral team provides spiritual leadership and guidance, ensuring that our church remains faithful to God\'s Word and mission.</p><h3>Pastoral Staff</h3><p>Our dedicated pastors and ministry leaders work tirelessly to shepherd our congregation and provide excellent spiritual care and teaching.</p><h3>Ministry Leaders</h3><p>Our qualified and experienced ministry leaders are passionate about serving God and committed to helping each member grow in their faith. They bring diverse gifts and expertise to create meaningful ministry experiences.</p><h3>Support Staff</h3><p>Our support staff plays a crucial role in maintaining a welcoming, organized, and nurturing environment for our church family.</p>',
                 'meta_description' => 'Meet our dedicated team of pastors, ministry leaders, and support staff who work together to serve our church community.',
                 'category' => 'about',
-                'is_active' => 1, 
+                'is_active' => 1,
                 'sort_order' => 7,
                 'banner_image' => json_encode(['uploads/pages/Values_1752713324_68784868g'])
             ],
