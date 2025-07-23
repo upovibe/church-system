@@ -84,7 +84,10 @@ class HighlightsSection extends App {
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
                     <!-- Sermon Card -->
                     <div class="bg-white rounded-xl shadow relative flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0">
-                        ${bannerImg ? `<img src="/api/${bannerImg}" alt="Sermon Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : ''}
+                        ${bannerImg ? `<img src="/api/${bannerImg}" alt="Sermon Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : `
+                        <div class='absolute inset-0 flex items-center justify-center bg-[${accentColor}] rounded-xl'>
+                            <i class='fas fa-image text-white text-5xl'></i>
+                        </div>`}
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
                         <div class="absolute bottom-0 left-0 w-full flex flex-col items-start p-4 z-20">
                             <div class="flex items-start gap-2">
@@ -100,7 +103,10 @@ class HighlightsSection extends App {
                     </div>
                     <!-- Event Card -->
                     <div class="bg-white rounded-xl shadow relative flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0">
-                        ${eventBanner ? `<img src="/api/${eventBanner}" alt="Event Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : ''}
+                        ${eventBanner ? `<img src="/api/${eventBanner}" alt="Event Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : `
+                        <div class='absolute inset-0 flex items-center justify-center bg-[${accentColor}] rounded-xl'>
+                            <i class='fas fa-image text-white text-5xl'></i>
+                        </div>`}
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
                         <div class="absolute bottom-0 left-0 w-full flex flex-col items-start p-4 z-20">
                             <div class="flex items-start gap-2">
