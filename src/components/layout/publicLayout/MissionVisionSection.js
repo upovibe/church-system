@@ -74,7 +74,7 @@ class MissionVisionSection extends App {
                     <img src="/api/${bannerImage}" alt="Mission Vision Banner" class="w-full h-full object-cover object-center">
                     ` : `
                     <div class="w-full h-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center">
-                        <div class="text-center text-white">
+                        <div class="text-center text-gray-400">
                             <i class="fas fa-image text-6xl mb-4 opacity-50"></i>
                             <p class="text-xl opacity-75">Banner Image</p>
                         </div>
@@ -82,14 +82,14 @@ class MissionVisionSection extends App {
                     `}
                     <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"></div>
                     <div class="absolute top-0 left-0 w-full p-8">
-                        <h1 class="text-5xl lg:text-8xl font-black text-white mb-3 drop-shadow-lg">${pageData.title || 'Mission & Vision'}</h1>
-                        <p class="text-xl text-white/90 drop-shadow-lg mb-4">${pageData.subtitle || 'Our guiding principles and future aspirations'}</p>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-[${textColor}] mb-3 drop-shadow-lg">${pageData.title || 'Mission & Vision'}</h1>
+                        <p class="text-xl text-[${textColor}]/90 drop-shadow-lg mb-4">${pageData.subtitle || 'Our guiding principles and future aspirations'}</p>
                         <div class="flex flex-wrap gap-3 max-w-sm">
-                            <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-white/30">Youth & Kids</span>
-                            <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-white/30">Outreach & Mission</span>
-                            <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-white/30">Women's Group</span>
-                            <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-white/30">Men's Group</span>
-                            <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-white/30">Prayer Group</span>
+                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-sm font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Youth & Kids</span>
+                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-sm font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Outreach & Mission</span>
+                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-sm font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Women's Group</span>
+                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-sm font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Men's Group</span>
+                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-sm font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Prayer Group</span>
                         </div>
                     </div>
                 </div>

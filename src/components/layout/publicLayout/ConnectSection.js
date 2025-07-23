@@ -73,18 +73,18 @@ class ConnectSection extends App {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                     <!-- Left: Title and Subtitle -->
                     <div class="flex flex-col justify-center">
-                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">${pageData.title || 'Connect With Us'}</h2>
-                        <p class="text-xl text-slate-200 leading-relaxed">${pageData.subtitle || 'Join our community and be part of something meaningful. Connect with us through various channels and get involved in our ministries.'}</p>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-[${textColor}] mb-6">${pageData.title || 'Connect With Us'}</h2>
+                        <p class="text-xl text-[${textColor}]/80 leading-relaxed">${pageData.subtitle || 'Join our community and be part of something meaningful. Connect with us through various channels and get involved in our ministries.'}</p>
                     </div>
 
                     <!-- Right: Banner Images in Cards -->
                     <div class="relative flex items-center justify-center mx-auto w-full h-full">
                         ${bannerImages.length > 0 ? bannerImages.map((image, index) => `
-                            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:z-50 transition-all duration-300 ${index === 1 ? 'absolute top-8 left-8 z-0' : 'relative z-10'} size-[16rem]">
+                            <div class="bg-gray-200 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:z-50 transition-all duration-300 ${index === 1 ? 'absolute top-8 left-8 z-0' : 'relative z-10'} size-[16rem]">
                                 <img src="/api/${image}" alt="Connect Banner ${index + 1}" class="w-full h-full object-cover">
                             </div>
                         `).join('') : `
-                            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:z-50 transition-all duration-300 relative z-0 size-[16rem]">
+                            <div class="bg-gray-200 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:z-50 transition-all duration-300 relative z-0 size-[16rem]">
                                 <div class="w-full h-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center">
                                     <div class="text-center text-slate-600">
                                         <i class="fas fa-image text-2xl mb-1"></i>
@@ -92,7 +92,7 @@ class ConnectSection extends App {
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:z-50 transition-all duration-300 absolute top-8 left-8 z-10 size-[16rem]">
+                            <div class="bg-gray-200 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 hover:z-50 transition-all duration-300 absolute top-8 left-8 z-10 size-[16rem]">
                                 <div class="w-full h-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center">
                                     <div class="text-center text-slate-600">
                                         <i class="fas fa-image text-2xl mb-1"></i>
