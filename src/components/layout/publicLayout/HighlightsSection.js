@@ -85,31 +85,33 @@ class HighlightsSection extends App {
                     <!-- Sermon Card -->
                     <div class="bg-white rounded-xl shadow relative flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0">
                         ${bannerImg ? `<img src="/api/${bannerImg}" alt="Sermon Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : ''}
-                        <div class="absolute bottom-0 left-0 w-full flex flex-col items-start p-4 z-10">
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-circle-play text- text-2xl mt-2 text-[${accentColor}]"></i>
-                            <div class="flex flex-col items-start">
-                                <h2 class="text-3xl lg:text-4xl font-extrabold italic text-white drop-shadow-lg mb-1 flex items-center gap-2">
-                                ${sermon.title || 'Sermon'}
-                            </h2>
-                            <span class="inline-block bg-[${primaryColor}] bg-opacity-80 text-white text-xs font-semibold px-3 py-1 rounded shadow">Watch now</span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                        <div class="absolute bottom-0 left-0 w-full flex flex-col items-start p-4 z-20">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-circle-play text- text-2xl mt-2 text-[${accentColor}]"></i>
+                                <div class="flex flex-col items-start">
+                                    <h2 class="text-3xl lg:text-4xl font-extrabold italic text-white drop-shadow-lg mb-1 flex items-center gap-2">
+                                    ${sermon.title || 'Sermon'}
+                                    </h2>
+                                    <span class="inline-block bg-[${primaryColor}] bg-opacity-80 text-white text-xs font-semibold px-3 py-1 rounded shadow">Watch now</span>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                     <!-- Event Card -->
                     <div class="bg-white rounded-xl shadow relative flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0">
-                        ${bannerImg ? `<img src="/api/${bannerImg}" alt="Sermon Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : ''}
-                        <div class="absolute bottom-0 left-0 w-full flex flex-col items-start p-4 z-10">
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-calendar-alt text- text-2xl mt-2 text-[${accentColor}]"></i>
-                            <div class="flex flex-col items-start">
-                                <h2 class="text-3xl lg:text-4xl font-extrabold italic text-white drop-shadow-lg mb-1 flex items-center gap-2">
-                                ${sermon.title || 'Events'}
-                            </h2>
-                            <span class="inline-block bg-[${primaryColor}] bg-opacity-80 text-white text-xs font-semibold px-3 py-1 rounded shadow">Watch now</span>
+                        ${eventBanner ? `<img src="/api/${eventBanner}" alt="Event Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : ''}
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                        <div class="absolute bottom-0 left-0 w-full flex flex-col items-start p-4 z-20">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-calendar-alt text- text-2xl mt-2 text-[${accentColor}]"></i>
+                                <div class="flex flex-col items-start">
+                                    <h2 class="text-3xl lg:text-4xl font-extrabold italic text-white drop-shadow-lg mb-1 flex items-center gap-2">
+                                    ${event.title || 'Events'}
+                                    </h2>
+                                    <span class="inline-block bg-[${primaryColor}] bg-opacity-80 text-white text-xs font-semibold px-3 py-1 rounded shadow">See events</span>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                     <!-- Placeholder/Testimonial/Other -->
