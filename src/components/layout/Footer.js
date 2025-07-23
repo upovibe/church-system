@@ -267,15 +267,6 @@ class Footer extends App {
                                 <div class="flex space-x-4">
                                     ${renderSocialIcons()}
                                 </div>
-                                
-                                <!-- Apply Now Button -->
-                                <div class="pt-2">
-                                    <ui-link href="/public/apply" 
-                                             class="inline-flex items-center justify-center px-6 py-3 bg-[${accentColor}] text-white font-bold rounded-full shadow-lg hover:bg-[${primaryColor}] focus:outline-none focus:ring-2 focus:ring-[${primaryColor}] focus:ring-offset-2 transition-all duration-300 group">
-                                        <span class="mr-2">Apply Now</span>
-                                        <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"></i>
-                                    </ui-link>
-                                </div>
                             </div>
                         </div>
                     </div>
