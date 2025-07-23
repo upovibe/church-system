@@ -188,6 +188,13 @@ class SermonModel extends BaseModel {
                 return true;
             }
 
+            // Encode arrays to JSON for the appropriate fields
+            foreach (['images', 'audio_links', 'video_links'] as $jsonField) {
+                if (isset($fillableData[$jsonField]) && is_array($fillableData[$jsonField])) {
+                    $fillableData[$jsonField] = json_encode($fillableData[$jsonField]);
+                }
+            }
+
             // Build the SET clause dynamically
             $setClause = [];
             $values = [];
@@ -203,7 +210,7 @@ class SermonModel extends BaseModel {
             // Add the ID to the values array
             $values[] = $id;
             
-            $sql = "UPDATE {$this->table} SET " . implode(', ', $setClause) . " WHERE id = ?";
+            $sql = "UPDATE " . static::$table . " SET " . implode(', ', $setClause) . " WHERE id = ?";
             $stmt = $this->pdo->prepare($sql);
             
             return $stmt->execute($values);
