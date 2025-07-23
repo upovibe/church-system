@@ -78,6 +78,17 @@ class HighlightsSection extends App {
             } catch {}
         }
 
+        const testimonial = (pages.testimonials && Array.isArray(pages.testimonials) ? pages.testimonials[0] : pages.testimonials) || {};
+        let testimonialBanner = '';
+        if (testimonial && testimonial.banner_image) {
+            try {
+                const banners = typeof testimonial.banner_image === 'string' ? JSON.parse(testimonial.banner_image) : testimonial.banner_image;
+                if (Array.isArray(banners) && banners.length > 0) {
+                    testimonialBanner = banners[0];
+                }
+            } catch {}
+        }
+
         return `
         <section class="py-10 bg-[${primaryColor}]">
             <div class="container mx-auto w-full flex flex-col items-center gap-8 px-4">
@@ -120,9 +131,30 @@ class HighlightsSection extends App {
                             </div>
                         </div>
                     </a>
-                    <!-- Placeholder/Testimonial/Other -->
-                    <div class="bg-white rounded-xl shadow flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] text-3xl font-bold text-[${primaryColor}]">3</div>
-                    <div class="bg-white rounded-xl shadow flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] text-3xl font-bold text-[${primaryColor}]">4</div>
+                </div>
+
+                <!-- Testimonial Section -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+                    <!-- Left: Text -->
+                    <div class="flex-1 p-8 min-h-[18rem]">
+                        <div class="flex flex-col justify-center items-start pr-6">
+                            <div class="flex-col justify-center items-start border-r-4 border-[${accentColor}] pr-6 w-full">
+                            <h3 class="text-5xl lg:text-6xl font-black text-[${textColor}] mb-4">${testimonial.title || 'Testimonial'}</h3>
+                            <p class="text-xl italic text-[${textColor}]/90 mb-6">"${testimonial.meta_description || 'No testimonial available.'}"</p>                        
+                        </div>
+                            <div class="flex gap-4 mt-2">
+                                <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all"><i class="fas fa-chevron-left"></i></button>
+                                <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all"><i class="fas fa-chevron-right"></i></button>
+                            </div>                    
+                        </div>
+                    </div>
+                    <!-- Right: Banner -->
+                    <div class="flex-1 flex items-center justify-center min-h-[18rem]">
+                        ${testimonialBanner ? `<img src="/api/${testimonialBanner}" alt="Testimonial Banner" class="w-full h-full object-cover rounded-xl max-h-72">` : `
+                        <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem]'>
+                            <i class='fas fa-image text-white text-5xl'></i>
+                        </div>`}
+                    </div>
                 </div>
             </div>
         </section>
