@@ -148,7 +148,7 @@ class HighlightsSection extends App {
                 </div>
 
                 <!-- Testimonial Section -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-600 backdrop-blur-sm bg-opacity-95">
                     <!-- Left: Text -->
                     <div class="flex-1 p-8 min-h-[18rem]">
                         <div class="flex flex-col justify-center items-start pr-6">
@@ -165,8 +165,16 @@ class HighlightsSection extends App {
                     <!-- Right: Banner/Description -->
                     <div class="flex-1 flex items-center justify-center min-h-[18rem]" id="testimonial-right-content">
                         ${this.isNavigating && testimonialsData.length > 0 ? `
-                        <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem] p-8'>
-                            <p class="text-white text-2xl italic text-center leading-relaxed">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                        <div class='flex items-center justify-center w-full h-full min-h-[18rem] p-8'>
+                            <div class="bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-600 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm bg-opacity-95">
+                                <div class="flex items-center justify-center mb-4">
+                                    <i class="fas fa-quote-left text-4xl text-slate-400"></i>
+                                </div>
+                                <p class="text-slate-100 text-xl italic text-center leading-relaxed font-medium">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                                <div class="flex items-center justify-center mt-4">
+                                    <i class="fas fa-quote-right text-4xl text-slate-400"></i>
+                                </div>
+                            </div>
                         </div>` : testimonialBanner ? `<img src="/api/${testimonialBanner}" alt="Testimonial Banner" class="w-full h-full object-cover rounded-xl max-h-72">` : `
                         <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem]'>
                             <i class='fas fa-image text-white text-5xl'></i>
@@ -210,10 +218,17 @@ class HighlightsSection extends App {
         }
         
         if (rightContentElement) {
-            const accentColor = this.get('accent_color');
             rightContentElement.innerHTML = `
-                <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem] p-8'>
-                    <p class="text-white text-2xl italic text-center leading-relaxed">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                <div class='flex items-center justify-center w-full h-full min-h-[18rem]'>
+                    <div class="bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-600 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm bg-opacity-95">
+                        <div class="flex items-center justify-center mb-4">
+                            <i class="fas fa-quote-left text-4xl text-slate-400"></i>
+                        </div>
+                        <p class="text-slate-100 text-xl italic text-center leading-relaxed font-medium">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                        <div class="flex items-center justify-center mt-4">
+                            <i class="fas fa-quote-right text-4xl text-slate-400"></i>
+                        </div>
+                    </div>
                 </div>
             `;
         }
