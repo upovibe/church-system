@@ -9,6 +9,7 @@ import '@/components/layout/publicLayout/AcademicsSection.js';
 import '@/components/layout/publicLayout/CommunitySection.js';
 import '@/components/layout/publicLayout/ContactSection.js';
 import '@/components/layout/publicLayout/HighlightsSection.js';
+import '@/components/layout/publicLayout/MissionVisionSection.js';
 import '@/components/layout/DbSetupDialog.js';
 
 /**
@@ -43,13 +44,14 @@ class RootPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load home, about, testimonials, sermons, and events page data in parallel
-            const [homePageData, aboutPageData, testimonialsPageData, sermonsPageData, eventsPageData, testimonialsData] = await Promise.all([
+            // Load home, about, testimonials, sermons, events, and mission-vision page data in parallel
+            const [homePageData, aboutPageData, testimonialsPageData, sermonsPageData, eventsPageData, missionVisionPageData, testimonialsData] = await Promise.all([
                 this.fetchPageData('home'),
                 this.fetchPageData('about-us'),
                 this.fetchPageData('testimonials'),
                 this.fetchPageData('sermons'),
                 this.fetchPageData('events'),
+                this.fetchPageData('mission-vision'),
                 this.fetchTestimonials()
             ]);
 
@@ -64,7 +66,8 @@ class RootPage extends App {
                     about: aboutPageData,
                     testimonials: testimonialsPageData,
                     sermons: sermonsPageData,
-                    events: eventsPageData
+                    events: eventsPageData,
+                    missionVision: missionVisionPageData
                 },
                 testimonials: testimonialsData,
                 settings: settingsData
@@ -185,6 +188,12 @@ class RootPage extends App {
                     pages='${escapeJsonForAttribute({ testimonials: allData.pages.testimonials, sermons: allData.pages.sermons, events: allData.pages.events })}'
                     testimonials-data='${escapeJsonForAttribute(allData.testimonials)}'>
                 </highlights-section>
+
+                <!-- Mission Vision Section Component -->
+                <mission-vision-section 
+                    colors='${colorsData}'
+                    page-data='${escapeJsonForAttribute(allData.pages.missionVision)}'>
+                </mission-vision-section>
             </div>
         `;
     }
