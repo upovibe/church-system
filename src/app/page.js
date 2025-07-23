@@ -5,11 +5,9 @@ import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/HeroSection.js';
 import '@/components/layout/publicLayout/AboutSection.js';
-import '@/components/layout/publicLayout/AcademicsSection.js';
-import '@/components/layout/publicLayout/CommunitySection.js';
-import '@/components/layout/publicLayout/ContactSection.js';
 import '@/components/layout/publicLayout/HighlightsSection.js';
 import '@/components/layout/publicLayout/MissionVisionSection.js';
+import '@/components/layout/publicLayout/ConnectSection.js';
 import '@/components/layout/DbSetupDialog.js';
 
 /**
@@ -44,14 +42,15 @@ class RootPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load home, about, testimonials, sermons, events, and mission-vision page data in parallel
-            const [homePageData, aboutPageData, testimonialsPageData, sermonsPageData, eventsPageData, missionVisionPageData, testimonialsData] = await Promise.all([
+            // Load home, about, testimonials, sermons, events, mission-vision, and connect page data in parallel
+            const [homePageData, aboutPageData, testimonialsPageData, sermonsPageData, eventsPageData, missionVisionPageData, connectPageData, testimonialsData] = await Promise.all([
                 this.fetchPageData('home'),
                 this.fetchPageData('about-us'),
                 this.fetchPageData('testimonials'),
                 this.fetchPageData('sermons'),
                 this.fetchPageData('events'),
                 this.fetchPageData('mission-vision'),
+                this.fetchPageData('connect'),
                 this.fetchTestimonials()
             ]);
 
@@ -67,7 +66,8 @@ class RootPage extends App {
                     testimonials: testimonialsPageData,
                     sermons: sermonsPageData,
                     events: eventsPageData,
-                    missionVision: missionVisionPageData
+                    missionVision: missionVisionPageData,
+                    connect: connectPageData
                 },
                 testimonials: testimonialsData,
                 settings: settingsData
@@ -194,6 +194,12 @@ class RootPage extends App {
                     colors='${colorsData}'
                     page-data='${escapeJsonForAttribute(allData.pages.missionVision)}'>
                 </mission-vision-section>
+
+                <!-- Connect Section Component -->
+                <connect-section 
+                    colors='${colorsData}'
+                    page-data='${escapeJsonForAttribute(allData.pages.connect)}'>
+                </connect-section>
             </div>
         `;
     }

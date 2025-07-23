@@ -66,7 +66,7 @@ class MissionVisionSection extends App {
         }
 
         return `
-        <section class="py-16">
+        <section class="py-4">
             <div class="container mx-auto px-4">
                 <!-- Banner and Title -->
                 <div class="relative w-full h-[30rem] overflow-hidden rounded-2xl mb-8">
@@ -91,13 +91,6 @@ class MissionVisionSection extends App {
                             <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-white/30">Men's Group</span>
                             <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-2 rounded-full border border-white/30">Prayer Group</span>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Page Content -->
-                <div class="max-w-4xl mx-auto">
-                    <div class="prose prose-lg max-w-none">
-                        ${pageData.content || '<p>Mission and vision content will be displayed here.</p>'}
                     </div>
                 </div>
             </div>
