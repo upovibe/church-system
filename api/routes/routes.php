@@ -124,6 +124,20 @@ Router::get('/applications', 'ApplicationController@index');
 Router::get('/applications/{id}', 'ApplicationController@show');
 Router::post('/applications', 'ApplicationController@store');
 
+// Sermon Management Routes (admin only for create/update/delete, public for view)
+Router::get('/sermons', 'SermonController@index');
+Router::post('/sermons', 'SermonController@store');
+Router::get('/sermons/active', 'SermonController@getActive');
+Router::get('/sermons/recent', 'SermonController@getRecent');
+Router::get('/sermons/search', 'SermonController@search');
+Router::get('/sermons/slug/{slug}', 'SermonController@showBySlug');
+Router::get('/sermons/{id}', 'SermonController@show');
+Router::put('/sermons/{id}', 'SermonController@update');
+Router::delete('/sermons/{id}', 'SermonController@destroy');
+Router::delete('/sermons/{id}/images/{imageIndex}', 'SermonController@removeImage');
+Router::delete('/sermons/{id}/audio/{audioIndex}', 'SermonController@removeAudio');
+Router::delete('/sermons/{id}/videos/{videoIndex}', 'SermonController@removeVideoLink');
+
 // DB setup endpoints
 Router::get('/db/test', 'DbController@test');
 Router::get('/db/check', 'DbController@check');
