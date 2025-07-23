@@ -83,7 +83,7 @@ class HighlightsSection extends App {
             <div class="container mx-auto w-full flex flex-col items-center gap-8 px-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
                     <!-- Sermon Card -->
-                    <div class="bg-white rounded-xl shadow relative flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0">
+                    <a href="/sermons" class="rounded-xl shadow relative flex-1 items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0 no-underline hover:ring-2 hover:ring-[${accentColor}] transition-all cursor-pointer">
                         ${bannerImg ? `<img src="/api/${bannerImg}" alt="Sermon Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : `
                         <div class='absolute inset-0 flex items-center justify-center bg-[${accentColor}] rounded-xl'>
                             <i class='fas fa-image text-white text-5xl'></i>
@@ -100,9 +100,9 @@ class HighlightsSection extends App {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                     <!-- Event Card -->
-                    <div class="bg-white rounded-xl shadow relative flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0">
+                    <a href="/events" class="rounded-xl shadow relative flex-1 items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0 no-underline hover:ring-2 hover:ring-[${accentColor}] transition-all cursor-pointer">
                         ${eventBanner ? `<img src="/api/${eventBanner}" alt="Event Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : `
                         <div class='absolute inset-0 flex items-center justify-center bg-[${accentColor}] rounded-xl'>
                             <i class='fas fa-image text-white text-5xl'></i>
@@ -119,7 +119,7 @@ class HighlightsSection extends App {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                     <!-- Placeholder/Testimonial/Other -->
                     <div class="bg-white rounded-xl shadow flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] text-3xl font-bold text-[${primaryColor}]">3</div>
                     <div class="bg-white rounded-xl shadow flex-1 flex items-center justify-center h-[20rem] min-h-[20rem] text-3xl font-bold text-[${primaryColor}]">4</div>
