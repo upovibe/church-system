@@ -73,7 +73,7 @@ class ConnectSection extends App {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                     <!-- Left: Title and Subtitle -->
                     <div class="flex flex-col justify-center">
-                        <h2 class="text-5xl lg:text-7xl xl:text-8xl font-black text-white mb-6">${pageData.title || 'Connect With Us'}</h2>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">${pageData.title || 'Connect With Us'}</h2>
                         <p class="text-xl text-slate-200 leading-relaxed">${pageData.subtitle || 'Join our community and be part of something meaningful. Connect with us through various channels and get involved in our ministries.'}</p>
                     </div>
 

@@ -106,7 +106,7 @@ class HighlightsSection extends App {
         return `
         <section class="py-10 bg-[${primaryColor}]">
             <div class="container mx-auto w-full flex flex-col items-center gap-8 px-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                     <!-- Sermon Card -->
                     <a href="/public/sermons" class="rounded-xl shadow relative flex-1 items-center justify-center h-[20rem] min-h-[20rem] overflow-hidden p-0 no-underline hover:ring-2 hover:ring-[${accentColor}] transition-all cursor-pointer">
                         ${bannerImg ? `<img src="/api/${bannerImg}" alt="Sermon Banner" class="absolute inset-0 w-full h-full object-cover opacity-70">` : `
@@ -148,15 +148,15 @@ class HighlightsSection extends App {
                 </div>
 
                 <!-- Testimonial Section -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-600 backdrop-blur-sm bg-opacity-95">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-600 backdrop-blur-sm bg-opacity-95">
                     <!-- Left: Text -->
-                    <div class="flex-1 p-8 min-h-[18rem]">
-                        <div class="flex flex-col justify-center items-start pr-6">
-                            <div class="flex-col justify-center items-start border-r-4 border-[${accentColor}] pr-6 w-full">
-                            <h3 class="text-5xl lg:text-6xl font-black text-[${textColor}] mb-4" id="testimonial-title">${this.isNavigating ? (currentTestimonial.title || 'Testimonial') : (testimonial.title || 'Testimonial')}</h3>
-                            <p class="text-xl italic text-[${textColor}]/90 mb-6" id="testimonial-description" style="display: ${this.isNavigating ? 'none' : 'block'}">"${testimonial.meta_description || 'No testimonial available.'}"</p>                        
+                    <div class="flex-1 lg:p-8 min-h-[18rem]">
+                        <div class="flex flex-col justify-center items-start pl-3">
+                            <div class="flex-col justify-center items-start border-r-4 border-[${accentColor}] pr-1 w-full">
+                            <h3 class="text-4xl font-black text-[${textColor}] text-wrapmb-4" id="testimonial-title">${this.isNavigating ? (currentTestimonial.title || 'Testimonial') : (testimonial.title || 'Testimonial')}</h3>
+                            <p class="text-base sm:text-lg md:text-xl lg:text-2xl italic text-[${textColor}]/90" id="testimonial-description" style="display: ${this.isNavigating ? 'none' : 'block'}">"${testimonial.meta_description || 'No testimonial available.'}"</p>                        
                         </div>
-                            <div class="flex gap-4 mt-2">
+                            <div class="flex gap-4 mt-8">
                                 <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all" onclick="this.closest('highlights-section').navigateTestimonial(-1)"><i class="fas fa-chevron-left"></i></button>
                                 <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all" onclick="this.closest('highlights-section').navigateTestimonial(1)"><i class="fas fa-chevron-right"></i></button>
                             </div>                    
@@ -170,7 +170,7 @@ class HighlightsSection extends App {
                                 <div class="flex items-center justify-center mb-4">
                                     <i class="fas fa-quote-left text-4xl text-slate-400"></i>
                                 </div>
-                                <p class="text-slate-100 text-xl italic text-center leading-relaxed font-medium">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                                <p class="text-slate-100 text-base sm:text-lg md:text-xl lg:text-2xl italic text-center leading-relaxed font-medium">"${currentTestimonial.description || 'No testimonial available.'}"</p>
                                 <div class="flex items-center justify-center mt-4">
                                     <i class="fas fa-quote-right text-4xl text-slate-400"></i>
                                 </div>
@@ -224,7 +224,7 @@ class HighlightsSection extends App {
                         <div class="flex items-center justify-center mb-4">
                             <i class="fas fa-quote-left text-4xl text-slate-400"></i>
                         </div>
-                        <p class="text-slate-100 text-xl italic text-center leading-relaxed font-medium">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                        <p class="text-slate-100 text-base sm:text-lg md:text-xl lg:text-2xl italic text-center leading-relaxed font-medium">"${currentTestimonial.description || 'No testimonial available.'}"</p>
                         <div class="flex items-center justify-center mt-4">
                             <i class="fas fa-quote-right text-4xl text-slate-400"></i>
                         </div>

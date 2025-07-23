@@ -92,10 +92,10 @@ class AboutSection extends App {
 
         <!-- About Section -->
         <section class="py-10 bg-[${primaryColor}]">
-            <div class="container mx-auto w-full flex flex-col lg:flex-row items-center gap-8 px-4">
+            <div class="container mx-auto w-full flex flex-col md:flex-row items-center gap-8 px-4">
                 <!-- Left: Title and Subtitle -->
-                <div class="flex-1 flex flex-col gap-3 justify-center items-start text-[${secondaryColor}] max-w-md lg:pl-8">
-                    <h2 class="text-4xl lg:text-5xl font-bold" style="line-height: 1.2;">
+                <div class="flex-1 flex flex-col gap-3 justify-center items-start text-[${secondaryColor}] lg:max-w-md lg:pl-8">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold" style="line-height: 1.2;">
                         ${pageData.title || ''}
                     </h2>
                     <p class="text-lg opacity-80">
@@ -104,7 +104,7 @@ class AboutSection extends App {
                 </div>
                 <!-- Right: Octagon Banner Image -->
                 <div class="flex-1 flex justify-center items-center">
-                    <div class="octagon-container size-[30rem]">
+                    <div class="octagon-container w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[30rem] lg:h-[30rem] xl:w-[35rem] xl:h-[35rem]">
                         <div class="octagon-mask">
                             <img src="/api/${pageData.banner_image}"
                                  alt="About Our School"
@@ -112,8 +112,8 @@ class AboutSection extends App {
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="absolute inset-0 hidden items-center justify-center bg-gray-100">
                                 <div class="text-center">
-                                    <i class="fas fa-image text-gray-400 text-4xl mb-2"></i>
-                                    <p class="text-gray-500 font-medium">About banner image</p>
+                                    <i class="fas fa-image text-gray-400 text-2xl sm:text-3xl md:text-4xl mb-2"></i>
+                                    <p class="text-gray-500 font-medium text-sm sm:text-base md:text-lg">About banner image</p>
                                 </div>
                             </div>
                         </div>
