@@ -157,11 +157,12 @@ class Footer extends App {
         const navigationLinks = [
             { href: '/', label: 'Home' },
             { href: '/public/about-us', label: 'About Us' },
-            { href: '/public/academics', label: 'Academics' },
-            { href: '/public/community', label: 'Community' },
+            { href: '/public/ministries', label: 'Ministries' },
+            { href: '/public/service-events', label: 'Service & Events' },
             { href: '/public/gallery', label: 'Gallery' },
-            { href: '/public/contact', label: 'Contact' },
-            { href: '/public/apply', label: 'Apply Now' }
+            { href: '/public/life-group', label: 'Life Group' },
+            { href: '/public/give', label: 'Give' },
+            { href: '/public/contact', label: 'Contact' }
         ];
 
         // Social icons array

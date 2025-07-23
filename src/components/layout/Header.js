@@ -208,12 +208,12 @@
       // Navigation links array (customize for church if needed)
       const navigationLinks = [
         { href: '/', label: 'Home' },
-        { href: '/about', label: 'About' },
-        { href: '/ministries', label: 'Ministries' },
-        { href: '/events', label: 'Events' },
-        { href: '/gallery', label: 'Gallery' },
-        { href: '/give', label: 'Give' },
-        { href: '/contact', label: 'Contact' }
+        { href: '/public/about-us', label: 'About Us' },
+        { href: '/public/ministries', label: 'Ministries' },
+        { href: '/public/service-events', label: 'Service & Events' },
+        { href: '/public/gallery', label: 'Gallery' },
+        { href: '/public/life-group', label: 'Life Group' },
+        { href: '/public/give', label: 'Give' },
       ];
 
       // Helper function to render navigation links
@@ -265,7 +265,7 @@
                 ${renderNavLinks(false)}
               </nav>
               <!-- Contact Us button on the right -->
-              <a href="/contact" class="hidden lg:inline-flex items-center px-6 py-2 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 ml-4 space-x-2">
+              <a href="/public/contact" class="hidden lg:inline-flex items-center px-6 py-2 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 ml-4 space-x-2">
                 <i class="fas fa-phone"></i>
                 <span class="">Contact Us</span>
               </a>
@@ -291,7 +291,7 @@
               <nav class="flex flex-col items-center justify-center space-y-2 w-full">
                 ${renderNavLinks(true)}
               </nav>
-              <a href="/contact" class="mt-6 w-full inline-flex items-center justify-center px-6 py-3 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 space-x-2">
+              <a href="/public/contact" class="mt-6 w-full inline-flex items-center justify-center px-6 py-3 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 space-x-2">
                 <i class="fas fa-phone"></i>
                 <span class="">Contact Us</span>
               </a>
