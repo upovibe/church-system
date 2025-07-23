@@ -10,6 +10,8 @@ import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
 class HighlightsSection extends App {
     constructor() {
         super();
+        this.currentTestimonialIndex = 0;
+        this.isNavigating = false; // Track if user has started navigating
     }
 
     connectedCallback() {
@@ -21,6 +23,7 @@ class HighlightsSection extends App {
         // Get data from props/attributes
         const colorsAttr = this.getAttribute('colors');
         const pagesAttr = this.getAttribute('pages');
+        const testimonialsDataAttr = this.getAttribute('testimonials-data');
 
         if (colorsAttr) {
             try {
@@ -37,6 +40,13 @@ class HighlightsSection extends App {
             const pages = unescapeJsonFromAttribute(pagesAttr);
             if (pages) {
                 this.set('pages', pages);
+            }
+        }
+
+        if (testimonialsDataAttr) {
+            const testimonialsData = unescapeJsonFromAttribute(testimonialsDataAttr);
+            if (testimonialsData) {
+                this.set('testimonialsData', testimonialsData);
             }
         }
 
@@ -78,6 +88,10 @@ class HighlightsSection extends App {
             } catch {}
         }
 
+        // Get testimonials data
+        const testimonialsData = this.get('testimonialsData') || [];
+        const currentTestimonial = testimonialsData[this.currentTestimonialIndex] || {};
+        
         const testimonial = (pages.testimonials && Array.isArray(pages.testimonials) ? pages.testimonials[0] : pages.testimonials) || {};
         let testimonialBanner = '';
         if (testimonial && testimonial.banner_image) {
@@ -139,18 +153,21 @@ class HighlightsSection extends App {
                     <div class="flex-1 p-8 min-h-[18rem]">
                         <div class="flex flex-col justify-center items-start pr-6">
                             <div class="flex-col justify-center items-start border-r-4 border-[${accentColor}] pr-6 w-full">
-                            <h3 class="text-5xl lg:text-6xl font-black text-[${textColor}] mb-4">${testimonial.title || 'Testimonial'}</h3>
-                            <p class="text-xl italic text-[${textColor}]/90 mb-6">"${testimonial.meta_description || 'No testimonial available.'}"</p>                        
+                            <h3 class="text-5xl lg:text-6xl font-black text-[${textColor}] mb-4" id="testimonial-title">${this.isNavigating ? (currentTestimonial.title || 'Testimonial') : (testimonial.title || 'Testimonial')}</h3>
+                            <p class="text-xl italic text-[${textColor}]/90 mb-6" id="testimonial-description" style="display: ${this.isNavigating ? 'none' : 'block'}">"${testimonial.meta_description || 'No testimonial available.'}"</p>                        
                         </div>
                             <div class="flex gap-4 mt-2">
-                                <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all"><i class="fas fa-chevron-left"></i></button>
-                                <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all"><i class="fas fa-chevron-right"></i></button>
+                                <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all" onclick="this.closest('highlights-section').navigateTestimonial(-1)"><i class="fas fa-chevron-left"></i></button>
+                                <button class="flex items-center justify-center text-[${accentColor}] text-2xl border-2 border-[${accentColor}] rounded-full p-2 focus:outline-none size-10 hover:text-[${accentColor}]/50 hover:border-[${accentColor}]/50 transition-all" onclick="this.closest('highlights-section').navigateTestimonial(1)"><i class="fas fa-chevron-right"></i></button>
                             </div>                    
                         </div>
                     </div>
-                    <!-- Right: Banner -->
-                    <div class="flex-1 flex items-center justify-center min-h-[18rem]">
-                        ${testimonialBanner ? `<img src="/api/${testimonialBanner}" alt="Testimonial Banner" class="w-full h-full object-cover rounded-xl max-h-72">` : `
+                    <!-- Right: Banner/Description -->
+                    <div class="flex-1 flex items-center justify-center min-h-[18rem]" id="testimonial-right-content">
+                        ${this.isNavigating && testimonialsData.length > 0 ? `
+                        <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem] p-8'>
+                            <p class="text-white text-2xl italic text-center leading-relaxed">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                        </div>` : testimonialBanner ? `<img src="/api/${testimonialBanner}" alt="Testimonial Banner" class="w-full h-full object-cover rounded-xl max-h-72">` : `
                         <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem]'>
                             <i class='fas fa-image text-white text-5xl'></i>
                         </div>`}
@@ -159,6 +176,47 @@ class HighlightsSection extends App {
             </div>
         </section>
         `;
+    }
+
+    navigateTestimonial(direction) {
+        const testimonialsData = this.get('testimonialsData') || [];
+        if (testimonialsData.length === 0) return;
+
+        // Set navigating flag to true on first navigation
+        this.isNavigating = true;
+
+        this.currentTestimonialIndex += direction;
+        
+        // Wrap around
+        if (this.currentTestimonialIndex < 0) {
+            this.currentTestimonialIndex = testimonialsData.length - 1;
+        } else if (this.currentTestimonialIndex >= testimonialsData.length) {
+            this.currentTestimonialIndex = 0;
+        }
+
+        const currentTestimonial = testimonialsData[this.currentTestimonialIndex];
+        
+        // Update the title and description
+        const titleElement = this.querySelector('#testimonial-title');
+        const descriptionElement = this.querySelector('#testimonial-description');
+        const rightContentElement = this.querySelector('#testimonial-right-content');
+        
+        if (titleElement) {
+            titleElement.textContent = currentTestimonial.title || 'Testimonial';
+        }
+        
+        if (descriptionElement) {
+            descriptionElement.style.display = 'none'; // Hide the meta description when navigating
+        }
+        
+        if (rightContentElement) {
+            const accentColor = this.get('accent_color');
+            rightContentElement.innerHTML = `
+                <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem] p-8'>
+                    <p class="text-white text-2xl italic text-center leading-relaxed">"${currentTestimonial.description || 'No testimonial available.'}"</p>
+                </div>
+            `;
+        }
     }
 }
 

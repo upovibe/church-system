@@ -44,12 +44,13 @@ class RootPage extends App {
             const colors = await fetchColorSettings();
             
             // Load home, about, testimonials, sermons, and events page data in parallel
-            const [homePageData, aboutPageData, testimonialsPageData, sermonsPageData, eventsPageData] = await Promise.all([
+            const [homePageData, aboutPageData, testimonialsPageData, sermonsPageData, eventsPageData, testimonialsData] = await Promise.all([
                 this.fetchPageData('home'),
                 this.fetchPageData('about-us'),
                 this.fetchPageData('testimonials'),
                 this.fetchPageData('sermons'),
-                this.fetchPageData('events')
+                this.fetchPageData('events'),
+                this.fetchTestimonials()
             ]);
 
             // Load only relevant settings
@@ -65,6 +66,7 @@ class RootPage extends App {
                     sermons: sermonsPageData,
                     events: eventsPageData
                 },
+                testimonials: testimonialsData,
                 settings: settingsData
             };
 
@@ -88,6 +90,16 @@ class RootPage extends App {
         } catch (error) {
             console.error(`Error fetching ${slug} page data:`, error);
             return null;
+        }
+    }
+
+    async fetchTestimonials() {
+        try {
+            const response = await api.get('/public/testimonials');
+            return response.data.success ? response.data.data : [];
+        } catch (error) {
+            console.error('Error fetching testimonials:', error);
+            return [];
         }
     }
 
@@ -170,7 +182,8 @@ class RootPage extends App {
                 <!-- Highlights Section Component -->
                 <highlights-section 
                     colors='${colorsData}'
-                    pages='${escapeJsonForAttribute({ testimonials: allData.pages.testimonials, sermons: allData.pages.sermons, events: allData.pages.events })}'>
+                    pages='${escapeJsonForAttribute({ testimonials: allData.pages.testimonials, sermons: allData.pages.sermons, events: allData.pages.events })}'
+                    testimonials-data='${escapeJsonForAttribute(allData.testimonials)}'>
                 </highlights-section>
             </div>
         `;
