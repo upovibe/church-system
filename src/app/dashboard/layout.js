@@ -204,6 +204,7 @@ class DashboardLayout extends App {
                         { label: 'Applications', icon: 'fas fa-file-signature', href: '/dashboard/admin/applications' },
                         { label: 'Sermons', icon: 'fas fa-book-open', href: '/dashboard/admin/sermons' },
                         { label: 'Events', icon: 'fas fa-calendar-alt', href: '/dashboard/admin/events' },
+                        { label: 'Testimonials', icon: 'fas fa-comments', href: '/dashboard/admin/testimonials' },
                         { label: 'News', icon: 'fas fa-newspaper', href: '/dashboard/admin/news' },
                         { label: 'Gallery', icon: 'fas fa-images', href: '/dashboard/admin/galleries' },
                         { label: 'Video Gallery', icon: 'fas fa-video', href: '/dashboard/admin/video-galleries' },
