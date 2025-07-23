@@ -120,7 +120,7 @@ class ServiceEventsSection extends App {
         return `
         <!-- Service Events Banner Section with Background -->
         <div class="">
-            <div class="relative w-full h-[500px] lg:h-[70vh] overflow-hidden">
+            <div class="relative w-full h-[500px] lg:h-[45vh] overflow-hidden">
                 ${showImages ? bannerImages.map((img, idx) => `
                     <div
                          class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
@@ -132,10 +132,10 @@ class ServiceEventsSection extends App {
                 <!-- Content Overlay -->
                 <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
                     <div class="text-left text-white px-4 lg:px-8 max-w-4xl space-y-6">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black drop-shadow-lg pb-2 border-b-4 border-[${accentColor}] w-fit" style="line-height: 1.1">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg pb-2 border-b-4 border-[${accentColor}] w-fit" style="line-height: 1.1">
                             ${heroTitle}
                         </h1>
-                        <p class="text-xl md:text-2xl lg:text-4xl opacity-95 leading-relaxed drop-shadow-md">
+                        <p class="text-lg md:text-xl lg:text-2xl opacity-95 leading-relaxed drop-shadow-md">
                             ${heroSubtitle}
                         </p>
                         <div class="flex flex-row gap-2 sm:gap-4 justify-start w-fit">
@@ -143,7 +143,7 @@ class ServiceEventsSection extends App {
                                 <i class="fas fa-calendar-alt text-base"></i>
                                 Events
                             </button>
-                            <button class="px-5 py-2 bg-[${accentColor}] text-[${darkColor}] rounded-xl text-lg shadow-lg flex items-center gap-2">
+                            <button class="px-5 py-2 bg-[${secondaryColor}] text-[${darkColor}] rounded-xl text-lg shadow-lg flex items-center gap-2">
                                 <i class="fas fa-play text-base"></i>
                                 Sermons
                             </button>
