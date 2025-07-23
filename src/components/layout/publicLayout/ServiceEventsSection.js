@@ -1,5 +1,6 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
+import '@/components/layout/publicLayout/EventList.js';
 
 /**
  * Service Events Section Component
@@ -151,6 +152,11 @@ class ServiceEventsSection extends App {
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Events List Section -->
+        <div class="container mx-auto px-4 py-8">
+            <event-list></event-list>
         </div>
         `;
     }

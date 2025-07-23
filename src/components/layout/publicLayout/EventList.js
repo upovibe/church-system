@@ -59,80 +59,10 @@ class EventList extends App {
         // Render with the loaded data
         this.render();
         
-        // Add event listeners after render
-        this.setupTabFiltering();
+
     }
 
-    setupTabFiltering() {
-        // Wait for the DOM to be ready
-        setTimeout(() => {
-            const tabsContainer = this.querySelector('#events-tabs');
-            if (!tabsContainer) return;
 
-            // Listen for tab changes using the ui-tabs component's internal events
-            tabsContainer.addEventListener('click', (event) => {
-                const tabButton = event.target.closest('ui-tab button');
-                if (tabButton) {
-                    const tabItem = tabButton.closest('ui-tab');
-                    const selectedTab = tabItem.getAttribute('value');
-                    this.filterEventsByStatus(selectedTab);
-                }
-            });
-
-            // Also listen for the tab-changed event if it exists
-            tabsContainer.addEventListener('tab-changed', (event) => {
-                const selectedTab = event.detail.value;
-                this.filterEventsByStatus(selectedTab);
-            });
-
-            // Initial filter (show upcoming by default)
-            this.filterEventsByStatus('upcoming');
-        }, 100);
-    }
-
-    filterEventsByStatus(status) {
-        const eventCards = this.querySelectorAll('.event-card');
-        const eventsList = this.querySelector('#events-list');
-        
-        if (!eventsList) return;
-
-        let visibleCount = 0;
-
-        eventCards.forEach(card => {
-            const cardStatus = card.getAttribute('data-status');
-            if (cardStatus === status) {
-                card.style.display = 'block';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        // Show/hide empty state message
-        const emptyState = eventsList.querySelector('.text-center');
-        if (emptyState) {
-            emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-
-        // If no events match the status, show appropriate message
-        if (visibleCount === 0) {
-            const statusText = status.charAt(0).toUpperCase() + status.slice(1);
-            if (!emptyState) {
-                const newEmptyState = document.createElement('div');
-                newEmptyState.className = 'text-center py-8 text-gray-500';
-                newEmptyState.innerHTML = `
-                    <i class="fas fa-calendar-times text-2xl mb-2"></i>
-                    <p>No ${status} events</p>
-                `;
-                eventsList.appendChild(newEmptyState);
-            } else {
-                emptyState.innerHTML = `
-                    <i class="fas fa-calendar-times text-2xl mb-2"></i>
-                    <p>No ${status} events</p>
-                `;
-            }
-        }
-    }
 
     openEventPage(slugOrId) {
         // Navigate to the event page using SPA router
@@ -248,70 +178,74 @@ class EventList extends App {
         const secondaryColor = this.get('secondary_color');
 
         return `
-            <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
-                <div class="p-5 lg:p-8">
-                    <div class="flex items-center gap-2 mb-6">
-                        <i class="fas fa-calendar-alt text-[${primaryColor}] text-xl"></i>
-                        <h3 class="text-xl font-semibold text-[${secondaryColor}]">All Events</h3>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${loading ? `<event-list-skeleton></event-list-skeleton>` : events.length > 0 ? events.map(event => {
+                    const statusBadge = this.getStatusBadge(event.status);
                     
-                    <!-- Tabs Component -->
-                    <ui-tabs class="w-full" id="events-tabs">
-                        <ui-tab-list class="mb-6">
-                            <ui-tab value="upcoming">Upcoming</ui-tab>
-                            <ui-tab value="ongoing">Ongoing</ui-tab>
-                            <ui-tab value="completed">Completed</ui-tab>
-                            <ui-tab value="cancelled">Cancelled</ui-tab>
-                        </ui-tab-list>
-                        
-                        <!-- Single Events List Container -->
-                        <div class="max-h-96 overflow-y-auto mx-auto py-1 rounded-xl mt-5 space-y-4" id="events-list">
-                            ${loading ? `<event-list-skeleton></event-list-skeleton>` : events.length > 0 ? events.map(event => {
-                                const statusBadge = this.getStatusBadge(event.status);
-                                const normalizedStatus = this.normalizeStatus(event.status);
-                                return `
-                                    <div class="bg-gray-50 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 border-l-4 border-[${primaryColor}] event-card cursor-pointer hover:bg-gray-100" 
-                                         data-status="${normalizedStatus}" 
-                                         data-event='${JSON.stringify(event).replace(/'/g, "&apos;")}'
-                                         onclick="this.closest('event-list').openEventPage('${event.slug || event.id}')">
-                                        <div class="flex items-start justify-between">
-                                            <div class="flex-1 min-w-0">
-                                                <h4 class="font-semibold text-[${secondaryColor}] mb-1 truncate capitalize" title="${event.title || 'Untitled Event'}">${event.title || 'Untitled Event'}</h4>
-                                                <div class="flex items-center gap-4 text-sm text-gray-600">
-                                                    <span class="flex items-center gap-1">
-                                                        <i class="fas fa-calendar text-[${primaryColor}]"></i>
-                                                        ${this.formatDate(event.start_date || event.event_date)}
-                                                    </span>
-                                                    <span class="flex items-center gap-1">
-                                                        <i class="fas fa-clock text-[${primaryColor}]"></i>
-                                                        ${this.formatTime(event.start_date || event.event_time)}
-                                                    </span>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[${primaryColor}] bg-opacity-10 text-[${primaryColor}]">
-                                                        <i class="fas fa-tag mr-1"></i>
-                                                        ${event.category || 'General'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="ml-4 flex-shrink-0">
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusBadge.class}">
-                                                    <i class="${statusBadge.icon} mr-1 text-xs"></i>
-                                                    ${statusBadge.text}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('') : `
-                                <div class="text-center py-8 text-gray-500">
-                                    <i class="fas fa-calendar-times text-2xl mb-2"></i>
-                                    <p>No events available</p>
+                    // Get banner image from event
+                    let bannerImage = '';
+                    if (event.banner_image) {
+                        try {
+                            const bannerImages = JSON.parse(event.banner_image);
+                            if (bannerImages && bannerImages.length > 0) {
+                                bannerImage = bannerImages[0]; // Use the first image
+                            }
+                        } catch (error) {
+                            // If parsing fails, treat as single path
+                            bannerImage = event.banner_image;
+                        }
+                    }
+
+                    // Create background style with banner image
+                    const backgroundStyle = bannerImage 
+                        ? `background-image: url('${this.getImageUrl(bannerImage)}'); background-size: cover; background-position: center; background-repeat: no-repeat;`
+                        : 'background-color: white;';
+
+                    return `
+                        <div class="rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 border-l-4 border-[${primaryColor}] cursor-pointer h-64 relative overflow-hidden" 
+                             style="${backgroundStyle}"
+                             onclick="this.closest('event-list').openEventPage('${event.slug || event.id}')">
+                            <!-- Dark overlay for better text readability -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                            
+                            <!-- Status badge at top right -->
+                            <div class="absolute top-3 right-3 z-20">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusBadge.class}">
+                                    <i class="${statusBadge.icon} mr-1 text-xs"></i>
+                                    ${statusBadge.text}
+                                </span>
+                            </div>
+                            
+                            <!-- Category tag at top left -->
+                            <div class="absolute top-3 left-3 z-20">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
+                                    <i class="fas fa-tag mr-1"></i>
+                                    ${event.category || 'General'}
+                                </span>
+                            </div>
+                            
+                            <!-- Content at bottom left -->
+                            <div class="absolute bottom-4 left-4 right-4 z-20 text-white">
+                                <h4 class="font-bold text-lg line-clamp-2 capitalize mb-2" title="${event.title || 'Untitled Event'}">${event.title || 'Untitled Event'}</h4>
+                                <div class="flex items-center gap-4 text-sm text-white/90">
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-calendar text-white"></i>
+                                        ${this.formatDate(event.start_date || event.event_date)}
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-clock text-white"></i>
+                                        ${this.formatTime(event.start_date || event.event_time)}
+                                    </span>
                                 </div>
-                            `}
+                            </div>
                         </div>
-                    </ui-tabs>
-                </div>
+                    `;
+                }).join('') : `
+                    <div class="col-span-full text-center py-8 text-gray-500">
+                        <i class="fas fa-calendar-times text-2xl mb-2"></i>
+                        <p>No events available</p>
+                    </div>
+                `}
             </div>
         `;
     }
