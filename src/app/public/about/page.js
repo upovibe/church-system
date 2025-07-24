@@ -24,23 +24,18 @@ class AboutPage extends App {
         try {
             // Load colors first
             const colors = await fetchColorSettings();
-            
             // Load about page data
             const aboutPageData = await this.fetchPageData('about-us');
-
             // Combine all data
             const allData = {
                 colors,
                 page: aboutPageData
             };
-                
             // Cache in global store
             store.setState({ aboutPageData: allData });
-                
             // Set local state and render
             this.set('allData', allData);
             this.render();
-
         } catch (error) {
             console.error('Error loading about data:', error);
             this.set('error', 'Failed to load about page data');
@@ -81,13 +76,14 @@ class AboutPage extends App {
 
         // Convert data to JSON strings for attributes with proper escaping
         const colorsData = escapeJsonForAttribute(allData.colors);
+        const pageData = escapeJsonForAttribute(allData.page);
 
         return `
             <div class="mx-auto">
                 <!-- About Us Section Component -->
                 <about-us-section 
                     colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.page)}'>
+                    page-data='${pageData}'>
                 </about-us-section>
             </div>
         `;
