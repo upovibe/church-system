@@ -1,6 +1,5 @@
 import App from '@/core/App.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
-import '@/components/layout/skeletonLoaders/EventListSkeleton.js';
 
 /**
  * Life Group List Component
@@ -224,8 +223,44 @@ class LifeGroupList extends App {
             <!-- Life Groups Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="life-groups-list">
                 ${loading ? `
-                    <div class="col-span-full">
-                        <event-list-skeleton></event-list-skeleton>
+                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse flex flex-col">
+                        <div class="h-48 bg-gray-500 rounded-lg mb-4"></div>
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="h-6 bg-gray-400 rounded w-3/4 mb-2"></div>
+                                <div class="h-4 bg-gray-600 rounded w-full mb-2"></div>
+                                <div class="h-4 bg-gray-600 rounded w-2/3 mb-4"></div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-600">
+                                <div class="h-10 bg-gray-700 rounded-xl w-1/2 mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse flex flex-col">
+                        <div class="h-48 bg-gray-500 rounded-lg mb-4"></div>
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="h-6 bg-gray-400 rounded w-3/4 mb-2"></div>
+                                <div class="h-4 bg-gray-600 rounded w-full mb-2"></div>
+                                <div class="h-4 bg-gray-600 rounded w-2/3 mb-4"></div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-600">
+                                <div class="h-10 bg-gray-700 rounded-xl w-1/2 mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse flex flex-col">
+                        <div class="h-48 bg-gray-500 rounded-lg mb-4"></div>
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="h-6 bg-gray-400 rounded w-3/4 mb-2"></div>
+                                <div class="h-4 bg-gray-600 rounded w-full mb-2"></div>
+                                <div class="h-4 bg-gray-600 rounded w-2/3 mb-4"></div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-600">
+                                <div class="h-10 bg-gray-700 rounded-xl w-1/2 mx-auto"></div>
+                            </div>
+                        </div>
                     </div>
                 ` : lifeGroups.length > 0 ? lifeGroups.map(lifeGroup => {
                     // Get banner image from life group
