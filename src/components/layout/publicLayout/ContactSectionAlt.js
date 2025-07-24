@@ -243,8 +243,7 @@ class ContactSectionAlt extends App {
                             <div class="space-y-8">
                                 <!-- Page Content Section -->
                                 ${this.get('pageData')?.content ? `
-                                    <div class="bg-white rounded-[2rem] p-6">
-                                        <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-4">About Our School</h2>
+                                    <div class="bg-white rounded-[2rem] p-6 py-3">
                                         <content-display 
                                             content="${this.get('pageData').content.replace(/"/g, '&quot;')}"
                                             no-styles>
@@ -271,7 +270,7 @@ class ContactSectionAlt extends App {
                                     </div>
                                 `}                                
                                 <div class="bg-white rounded-[2rem] p-6">
-                                    <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-6">Contact Information</h2>
+                                    <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
                                     
                                     <div class="space-y-6">
                                         <!-- Address -->
@@ -280,7 +279,7 @@ class ContactSectionAlt extends App {
                                                 <i class="fas fa-map-marker-alt text-white"></i>
                                             </div>
                                             <div>
-                                                <h3 class="font-semibold text-[${secondaryColor}] mb-1">Address</h3>
+                                                <h3 class="font-semibold mb-1">Address</h3>
                                                 <p class="text-gray-600">${this.get('contactAddress') || '123 School Street, City, State 12345'}</p>
                                             </div>
                                         </div>
@@ -452,7 +451,7 @@ class ContactSectionAlt extends App {
                         <div class="p-6 bg-gray-50">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                                 <div>
-                                    <i class="fas fa-map-marker-alt text-[${primaryColor}] text-xl mb-2"></i>
+                                    <i class="fas fa-map-marker-alt text-xl mb-2"></i>
                                     <h4 class="font-semibold text-[${secondaryColor}]">Location</h4>
                                     <p class="text-gray-600 text-sm">${this.get('mapLocationName') || 'Our School Campus'}</p>
                                 </div>
