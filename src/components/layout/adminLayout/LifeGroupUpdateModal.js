@@ -55,8 +55,7 @@ class LifeGroupUpdateModal extends HTMLElement {
 
     // Set life group data for editing
     setLifeGroupData(lifeGroupData) {
-        this.lifeGroupData = lifeGroupData;
-        // Re-render the modal with the new data
+        this.lifeGroupData = { ...lifeGroupData };
         this.render();
         
         // Set the banner value in the file upload component after render
@@ -117,16 +116,12 @@ class LifeGroupUpdateModal extends HTMLElement {
             });
 
             // Add banner file if selected
-            if (bannerFileUpload && bannerFileUpload.files && bannerFileUpload.files.length > 0) {
-                formData.append('banner', bannerFileUpload.files[0]);
+            if (bannerFileUpload && bannerFileUpload.getFiles().length > 0) {
+                formData.append('banner', bannerFileUpload.getFiles()[0]);
             }
 
             // Update the life group
-            const response = await api.withToken(token).put(`/life-groups/${this.lifeGroupData.id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            const response = await api.withToken(token).put(`/life-groups/${this.lifeGroupData.id}`, formData);
 
             if (response.data.success) {
                 Toast.show({
@@ -166,7 +161,20 @@ class LifeGroupUpdateModal extends HTMLElement {
     }
 
     render() {
-        const lifeGroup = this.lifeGroupData;
+        if (!this.lifeGroupData) {
+            this.innerHTML = `
+                <ui-modal 
+                    title="Update Life Group"
+                    size="lg"
+                    ${this.hasAttribute('open') ? 'open' : ''}>
+                    <div class="text-center py-8 text-gray-500">
+                        <p>No life group data available</p>
+                    </div>
+                </ui-modal>
+            `;
+            return;
+        }
+
         this.innerHTML = `
             <ui-modal 
                 title="Update Life Group"
@@ -183,7 +191,7 @@ class LifeGroupUpdateModal extends HTMLElement {
                             data-field="title"
                             type="text"
                             placeholder="Enter life group title"
-                            value="${lifeGroup ? lifeGroup.title : ''}"
+                            value="${this.lifeGroupData.title}"
                             required>
                         </ui-input>
                     </div>
@@ -196,7 +204,9 @@ class LifeGroupUpdateModal extends HTMLElement {
                         <ui-textarea
                             data-field="description"
                             placeholder="Enter life group description"
-                            rows="4">${lifeGroup ? lifeGroup.description || '' : ''}</ui-textarea>
+                            rows="4"
+                            value="${this.lifeGroupData.description || ''}">
+                        </ui-textarea>
                     </div>
 
                     <!-- Link -->
@@ -208,7 +218,7 @@ class LifeGroupUpdateModal extends HTMLElement {
                             data-field="link"
                             type="url"
                             placeholder="https://example.com"
-                            value="${lifeGroup ? lifeGroup.link || '' : ''}">
+                            value="${this.lifeGroupData.link || ''}">
                         </ui-input>
                     </div>
 
@@ -220,12 +230,12 @@ class LifeGroupUpdateModal extends HTMLElement {
                         <ui-file-upload
                             data-field="banner"
                             accept="image/*"
-                            max-size="5MB"
+                            multiple="false"
                             placeholder="Upload banner image">
                         </ui-file-upload>
-                        ${lifeGroup && lifeGroup.banner ? `
+                        ${this.lifeGroupData.banner ? `
                             <div class="mt-2">
-                                <p class="text-sm text-gray-500">Current banner: ${lifeGroup.banner}</p>
+                                <p class="text-sm text-gray-500">Current banner: ${this.lifeGroupData.banner}</p>
                             </div>
                         ` : ''}
                     </div>
@@ -233,7 +243,7 @@ class LifeGroupUpdateModal extends HTMLElement {
                     <!-- Active Status -->
                     <div>
                         <label class="flex items-center">
-                            <ui-switch name="is_active" ${lifeGroup && lifeGroup.is_active ? 'checked' : ''}></ui-switch>
+                            <ui-switch name="is_active" ${this.lifeGroupData.is_active ? 'checked' : ''}></ui-switch>
                             <span class="ml-2 text-sm text-gray-700">Active</span>
                         </label>
                     </div>
