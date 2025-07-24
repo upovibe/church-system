@@ -233,175 +233,204 @@ class ContactSectionAlt extends App {
         const accentColor = this.get('accent_color');
         const textColor = this.get('text_color');
 
+        const pageData = this.get('pageData');
+        // Banner logic
+        let bannerImages = [];
+        if (pageData && pageData.banner_image) {
+            if (typeof pageData.banner_image === 'string') {
+                try {
+                    const parsed = JSON.parse(pageData.banner_image);
+                    bannerImages = Array.isArray(parsed) ? parsed : [parsed];
+                } catch (e) {
+                    bannerImages = [pageData.banner_image];
+                }
+            } else if (Array.isArray(pageData.banner_image)) {
+                bannerImages = pageData.banner_image;
+            }
+        }
+        const showImages = bannerImages.length > 0;
+
+        // Helper to get proper image URL
+        function getImageUrl(imagePath) {
+            if (!imagePath) return null;
+            if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                return imagePath;
+            }
+            if (imagePath.startsWith('/')) {
+                const baseUrl = window.location.origin;
+                return baseUrl + imagePath;
+            }
+            const baseUrl = window.location.origin;
+            const apiPath = '/api';
+            return baseUrl + apiPath + '/' + imagePath;
+        }
+
         return `
             <!-- Contact Section Alt -->
-            <section class="container mx-auto py-40">
+            <section class="">
+                <!-- Banner Section (like GallerySection) -->
+                <div class="relative w-full h-[400px] lg:h-[45vh] overflow-hidden mb-10">
+                    ${showImages ? bannerImages.map((img, idx) => `
+                        <div
+                            class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                            style="background-image: url('${getImageUrl(img)}'); transition-property: opacity;">
+                        </div>
+                    `).join('') : `
+                        <div class="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center z-10">
+                            <div class="text-center">
+                                <i class="fas fa-envelope text-gray-400 text-6xl mb-2"></i>
+                                <p class="text-gray-500 font-medium">No Banner Image</p>
+                            </div>
+                        </div>
+                    `}
+                    <!-- Dark gradient overlay from bottom to top -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
+                    <!-- Content Overlay -->
+                    <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
+                        <div class="text-left text-white px-4 lg:px-8 max-w-3xl space-y-6">
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg pb-2 border-b-4 border-[${accentColor}] w-fit" style="line-height: 1.1">
+                                ${pageData && pageData.title ? pageData.title : 'Contact Us'}
+                            </h1>
+                            ${pageData && pageData.subtitle ? `
+                                <p class="text-lg md:text-xl lg:text-2xl opacity-95 leading-relaxed drop-shadow-md">
+                                    ${pageData.subtitle}
+                                </p>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+                <!-- Optional page content below banner -->
+                ${pageData && pageData.content ? `
+                    <div class="max-w-3xl mx-auto mb-10 text-center">
+                        <content-display content="${pageData.content.replace(/"/g, '&quot;')}" no-styles></content-display>
+                    </div>
+                ` : ''}
                 <!-- Contact Content -->
-                <div class="relative">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">                            
-                            <!-- Contact Information -->
-                            <div class="space-y-8">
-                                <!-- Page Content Section -->
-                                ${this.get('pageData')?.content ? `
-                                    <div class="bg-white rounded-[2rem] p-6 py-3">
-                                        <content-display 
-                                            content="${this.get('pageData').content.replace(/"/g, '&quot;')}"
-                                            no-styles>
-                                        </content-display>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Contact Information -->
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-[2rem] p-6">
+                            <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
+                            <div class="space-y-6">
+                                <!-- Address -->
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-map-marker-alt text-white"></i>
                                     </div>
-                                ` : `
-                                    <!-- Office Hours (fallback if no content) -->
-                                    <div class="bg-white rounded-[2rem] shadow-2xl p-6">
-                                        <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-4">Office Hours</h2>
-                                        <div class="space-y-3">
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-600">Monday - Friday</span>
-                                                <span class="font-semibold text-[${secondaryColor}]">8:00 AM - 4:00 PM</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-600">Saturday</span>
-                                                <span class="font-semibold text-[${secondaryColor}]">9:00 AM - 1:00 PM</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-600">Sunday</span>
-                                                <span class="font-semibold text-[${secondaryColor}]">Closed</span>
-                                            </div>
-                                        </div>
+                                    <div>
+                                        <h3 class="font-semibold mb-1">Address</h3>
+                                        <p class="text-gray-600">${this.get('contactAddress') || '123 School Street, City, State 12345'}</p>
                                     </div>
-                                `}                                
-                                <div class="bg-white rounded-[2rem] p-6">
-                                    <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
-                                    
-                                    <div class="space-y-6">
-                                        <!-- Address -->
-                                        <div class="flex items-start gap-4">
-                                            <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
-                                                <i class="fas fa-map-marker-alt text-white"></i>
-                                            </div>
-                                            <div>
-                                                <h3 class="font-semibold mb-1">Address</h3>
-                                                <p class="text-gray-600">${this.get('contactAddress') || '123 School Street, City, State 12345'}</p>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Phone -->
-                                        <div class="flex items-start gap-4">
-                                            <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
-                                                <i class="fas fa-phone text-white"></i>
-                                            </div>
-                                            <div>
-                                                <h3 class="font-semibold text-[${secondaryColor}] mb-1">Phone</h3>
-                                                <p class="text-gray-600">${this.get('contactPhone') || '+1 (555) 123-4567'}</p>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Email -->
-                                        <div class="flex items-start gap-4">
-                                            <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
-                                                <i class="fas fa-envelope text-white"></i>
-                                            </div>
-                                            <div>
-                                                <h3 class="font-semibold text-[${secondaryColor}] mb-1">Email</h3>
-                                                <p class="text-gray-600">${this.get('contactEmail') || 'info@school.edu'}</p>
-                                            </div>
-                                        </div>
+                                </div>
+                                <!-- Phone -->
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-phone text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold mb-1">Phone</h3>
+                                        <p class="text-gray-600">${this.get('contactPhone') || '+1 (555) 123-4567'}</p>
+                                    </div>
+                                </div>
+                                <!-- Email -->
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-envelope text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold mb-1">Email</h3>
+                                        <p class="text-gray-600">${this.get('contactEmail') || 'info@school.edu'}</p>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Contact Form -->
-                            <div class="bg-white rounded-[2rem] p-6">
-                                <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-6">Send us a Message</h2>
-                                
-                                <form class="space-y-6">
-                                    <!-- Name -->
-                                    <div>
-                                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Full Name *
-                                        </label>
-                                        <ui-input
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            value="${formData.name}"
-                                            placeholder="Enter your full name"
-                                            required>
-                                        </ui-input>
-                                    </div>
-                                    
-                                    <!-- Email -->
-                                    <div>
-                                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Email Address *
-                                        </label>
-                                        <ui-input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value="${formData.email}"
-                                            placeholder="Enter your email address"
-                                            required>
-                                        </ui-input>
-                                    </div>
-                                    
-                                    <!-- Subject -->
-                                    <div>
-                                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Subject
-                                        </label>
-                                        <ui-input
-                                            type="text"
-                                            id="subject"
-                                            name="subject"
-                                            value="${formData.subject}"
-                                            placeholder="Enter message subject">
-                                        </ui-input>
-                                    </div>
-                                    
-                                    <!-- Message -->
-                                    <div>
-                                        <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Message *
-                                        </label>
-                                        <ui-textarea
-                                            id="message"
-                                            name="message"
-                                            rows="5"
-                                            placeholder="Enter your message"
-                                            required>${formData.message}</ui-textarea>
-                                    </div>
-                                    
-                                    <!-- Submit Button -->
-                                    <button
-                                        type="submit"
-                                        disabled="${loading}"
-                                        class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg hover:from-[${primaryColor}] hover:to-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-                                        ${loading ? `
-                                            <div class="flex items-center justify-center gap-2">
-                                                <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                                Sending Message...
-                                            </div>
-                                        ` : `
-                                            <div class="flex items-center justify-center gap-2">
-                                                <i class="fas fa-paper-plane"></i>
-                                                Send Message
-                                            </div>
-                                        `}
-                                    </button>                                    
-                                </form>                                
-                                    <!-- Social Media Links -->
-                                    ${this.hasSocialMediaLinks() ? `
-                                        <div class="border-t border-gray-200 pt-6">
-                                            <h3 class="text-lg font-semibold text-[${secondaryColor}] mb-4 text-center">Follow Us</h3>
-                                            <div class="grid grid-cols-3 gap-3">
-                                                ${this.renderSocialMediaLinks()}
-                                            </div>
-                                        </div>
-                                    ` : ''}
-                            </div>
                         </div>
+                    </div>
+                    <!-- Contact Form -->
+                    <div class="bg-white rounded-[2rem] p-6">
+                        <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-6">Send us a Message</h2>
+                        <form class="space-y-6">
+                            <!-- Name -->
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Full Name *
+                                </label>
+                                <ui-input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value="${formData.name}"
+                                    placeholder="Enter your full name"
+                                    required>
+                                </ui-input>
+                            </div>
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email Address *
+                                </label>
+                                <ui-input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value="${formData.email}"
+                                    placeholder="Enter your email address"
+                                    required>
+                                </ui-input>
+                            </div>
+                            <!-- Subject -->
+                            <div>
+                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Subject
+                                </label>
+                                <ui-input
+                                    type="text"
+                                    id="subject"
+                                    name="subject"
+                                    value="${formData.subject}"
+                                    placeholder="Enter message subject">
+                                </ui-input>
+                            </div>
+                            <!-- Message -->
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Message *
+                                </label>
+                                <ui-textarea
+                                    id="message"
+                                    name="message"
+                                    rows="5"
+                                    placeholder="Enter your message"
+                                    required>${formData.message}</ui-textarea>
+                            </div>
+                            <!-- Submit Button -->
+                            <button
+                                type="submit"
+                                disabled="${loading}"
+                                class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg hover:from-[${primaryColor}] hover:to-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                                ${loading ? `
+                                    <div class="flex items-center justify-center gap-2">
+                                        <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        Sending Message...
+                                    </div>
+                                ` : `
+                                    <div class="flex items-center justify-center gap-2">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Send Message
+                                    </div>
+                                `}
+                            </button>
+                            <!-- Social Media Links -->
+                            ${this.hasSocialMediaLinks() ? `
+                                <div class="border-t border-gray-200 pt-6">
+                                    <h3 class="text-lg font-semibold text-[${secondaryColor}] mb-4 text-center">Follow Us</h3>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        ${this.renderSocialMediaLinks()}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </form>
+                    </div>
                 </div>
-                
                 <!-- Map Section -->
                 <div class="mt-16">
                     <div class="text-center mb-8">
