@@ -156,8 +156,10 @@ class OurTeamSection extends App {
                                         alt="${member.name}"
                                         ${member.profile_image ? `src="${this.getImageUrl(member.profile_image)}"` : ''}
                                     ></ui-avatar>
-                                    <h4 class="mt-4 text-lg font-semibold text-[${secondaryColor}]">${member.name}</h4>
-                                    ${member.position ? `<p class="text-sm text-gray-600 mt-1">${member.position}</p>` : ''}
+                                    <div class="mt-4 px-4 py-2 rounded-md bg-white/80 shadow text-center">
+                                        <h4 class="text-lg font-semibold text-[${secondaryColor}]">${member.name}</h4>
+                                        ${member.position ? `<p class="text-sm text-gray-600 mt-1">${member.position}</p>` : ''}
+                                    </div>
                                 </div>
                             `).join('')}
                         </div>
