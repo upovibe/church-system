@@ -118,7 +118,7 @@ class LeadershipSection extends App {
         // Only render if there's content
         if (!pageData?.content || pageData.content.trim() === '') {
             return `
-                <div class="text-center py-16">
+                <div class="container mx-auto px-4 text-center py-16">
                     <div class="bg-white rounded-3xl shadow-lg p-8">
                         <i class="fas fa-users text-gray-400 text-6xl mb-4"></i>
                         <h2 class="text-2xl font-semibold text-gray-600 mb-2">Our Team</h2>
