@@ -83,16 +83,36 @@ class AboutUsSection extends App {
         }
 
         return `
-        <section class="container mx-auto px-4 py-20">
+        <style>
+            .about-imgs-flex {
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 2.5rem;
+            }
+            .about-imgs-flex .about-img {
+                flex: 1 1 0%;
+                min-width: 0;
+                transition: flex-basis 0.5s cubic-bezier(0.4,0,0.2,1), z-index 0.3s;
+                z-index: 1;
+            }
+            .about-imgs-flex:hover .about-img {
+                flex-basis: 15% !important;
+                z-index: 1;
+            }
+            .about-imgs-flex .about-img:hover {
+                flex-basis: 70% !important;
+                z-index: 2;
+            }
+        </style>
+        <section class="container mx-auto px-4 py-24 pt-40">
             <div class="mx-auto mb-8">
-                ${title ? `<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white" style="line-height: 1.2;">${title}</h1>` : ''}
+                ${title ? `<h1 class="text-2xl md:text-4xl font-bold mb-4 text-white" style="line-height: 1.2;">${title}</h1>` : ''}
                 <!--  ${subtitle ? `<p class="text-xl text-white/80 mb-8">${subtitle}</p>` : ''} -->
             </div>
             ${bannerImages.length > 1 ? `
-                <div class="flex gap-6 mx-auto mb-10 group/about-imgs">
+                <div class="about-imgs-flex">
                     ${bannerImages.slice(0, 3).map((img, idx) => `
-                        <div class="relative flex-1 basis-1/3 transition-all duration-500 overflow-hidden rounded-3xl shadow-lg bg-white/10 flex items-center justify-center group-hover/about-imgs:basis-1/6 hover:basis-2/3 hover:z-10"
-                            style="min-width:0;">
+                        <div class="about-img rounded-3xl overflow-hidden shadow-lg bg-white/10 flex items-center justify-center">
                             <img src="/api/${img}"
                                  alt="About Us Banner"
                                  class="w-full h-[40vh] lg:h-[50vh] object-cover transition-all duration-500">
