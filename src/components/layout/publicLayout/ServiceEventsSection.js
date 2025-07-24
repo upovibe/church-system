@@ -142,7 +142,7 @@ class ServiceEventsSection extends App {
                     <div class="text-left text-white px-4 lg:px-8 max-w-4xl space-y-6">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg pb-2 border-b-4 border-[${accentColor}] w-fit" style="line-height: 1.1">
                             ${heroTitle}
-                        </h1>
+                    </h1>
                         <p class="text-lg md:text-xl lg:text-2xl opacity-95 leading-relaxed drop-shadow-md">
                             ${heroSubtitle}
                         </p>

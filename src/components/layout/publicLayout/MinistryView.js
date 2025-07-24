@@ -1,0 +1,316 @@
+    import App from '@/core/App.js';
+    import '@/components/common/PageLoader.js';
+    import { fetchColorSettings } from '@/utils/colorSettings.js';
+    import '@/components/ui/Toast.js';
+    import '@/components/ui/ContentDisplay.js';
+
+    /**
+     * Ministry View Component
+     * 
+     * Displays detailed information for a specific ministry
+     */
+    class MinistryView extends App {
+        constructor() {
+            super();
+            this.set('ministry', null);
+            this.set('loading', true);
+            this.set('error', null);
+        }
+
+        async connectedCallback() {
+            super.connectedCallback();
+            
+            // Load colors from settings
+            await this.loadColorsFromSettings();
+            
+                    // Check if slug attribute is provided and load data
+        const slugOrId = this.getAttribute('slug');
+        if (slugOrId) {
+            this.loadMinistryData(slugOrId);
+        }
+        }
+
+        async loadColorsFromSettings() {
+            try {
+                const colors = await fetchColorSettings();
+                Object.entries(colors).forEach(([key, value]) => {
+                    this.set(key, value);
+                });
+            } catch (error) {
+                console.error('Error loading color settings:', error);
+            }
+        }
+
+        // Watch for slug attribute changes
+        static get observedAttributes() {
+            return ['slug'];
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+            if (name === 'slug' && newValue && newValue !== oldValue) {
+                this.loadMinistryData(newValue);
+            }
+        }
+
+            async loadMinistryData(slugOrId) {
+        if (!slugOrId) {
+            this.set('error', 'No ministry identifier provided');
+            this.set('loading', false);
+            return;
+        }
+
+        try {
+            console.log('Fetching ministry data for:', slugOrId);
+            
+            // Try to fetch by slug first, then by ID if that fails
+            let response = await fetch(`/api/news/slug/${slugOrId}`);
+            
+            if (!response.ok) {
+                // If slug fetch fails, try by ID
+                console.log('Slug fetch failed, trying by ID...');
+                response = await fetch(`/api/news/${slugOrId}`);
+            }
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Ministry API Response:', data);
+                
+                if (data.success && data.data) {
+                    console.log('Ministry Data:', data.data);
+                    this.set('ministry', data.data);
+                } else {
+                    console.log('No ministry data found for:', slugOrId);
+                    this.set('error', 'Ministry not found');
+                }
+            } else {
+                console.log('Failed to fetch ministry:', response.statusText);
+                this.set('error', 'Failed to load ministry');
+            }
+        } catch (error) {
+            console.error('Error fetching ministry:', error);
+            this.set('error', 'Error loading ministry');
+        }
+        
+        this.set('loading', false);
+        this.render();
+    }
+
+        // Helper method to get proper image URL
+        getImageUrl(imagePath) {
+            if (!imagePath || typeof imagePath !== 'string') return null;
+            
+            if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                return imagePath;
+            }
+            
+            if (imagePath.startsWith('/')) {
+                const baseUrl = window.location.origin;
+                return baseUrl + imagePath;
+            }
+            
+            const baseUrl = window.location.origin;
+            const apiPath = '/api';
+            return baseUrl + apiPath + '/' + imagePath;
+        }
+
+        // Helper function to get banner images
+        getBannerImages(bannerImage) {
+            if (!bannerImage) return [];
+            
+            try {
+                const images = JSON.parse(bannerImage);
+                return Array.isArray(images) ? images : [bannerImage];
+            } catch (error) {
+                return [bannerImage];
+            }
+        }
+
+            copyMinistryUrl() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            this.showToast('Ministry URL copied to clipboard!', 'success');
+        }).catch(() => {
+            this.showToast('Failed to copy URL', 'error');
+        });
+    }
+
+    shareMinistry() {
+        const ministry = this.get('ministry');
+        if (!ministry) return;
+
+        if (navigator.share) {
+            navigator.share({
+                title: ministry.title,
+                text: ministry.content ? this.stripHtml(ministry.content).substring(0, 100) + '...' : 'Check out this ministry',
+                url: window.location.href
+            }).catch(() => {
+                this.showToast('Sharing cancelled', 'info');
+            });
+        } else {
+            this.copyMinistryUrl();
+        }
+    }
+
+    showToast(message, type = 'info') {
+        const toast = document.createElement('toast-notification');
+        toast.setAttribute('message', message);
+        toast.setAttribute('type', type);
+        document.body.appendChild(toast);
+    }
+
+    // Helper function to strip HTML tags for preview
+    stripHtml(html) {
+        if (!html) return '';
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    }
+
+    // Helper function to format date
+    formatDate(dateString) {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return dateString;
+            }
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (error) {
+            return dateString;
+        }
+    }
+
+        render() {
+            const loading = this.get('loading');
+            const error = this.get('error');
+            const ministry = this.get('ministry');
+            
+            // Get colors from state
+            const primaryColor = this.get('primary_color');
+            const secondaryColor = this.get('secondary_color');
+            const accentColor = this.get('accent_color');
+            const textColor = this.get('text_color');
+
+            if (loading) {
+                return `<page-loader></page-loader>`;
+            }
+
+            if (error) {
+                return `
+                    <div class="min-h-screen flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Error</h2>
+                            <p class="text-gray-600">${error}</p>
+                            <button onclick="window.history.back()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Go Back
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (!ministry) {
+                return `
+                    <div class="min-h-screen flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-church text-4xl text-gray-400 mb-4"></i>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Ministry Not Found</h2>
+                            <p class="text-gray-600">The ministry you're looking for doesn't exist.</p>
+                            <button onclick="window.history.back()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Go Back
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Get banner image
+            const bannerImages = this.getBannerImages(ministry.banner_image);
+            const bannerImage = bannerImages.length > 0 ? bannerImages[0] : null;
+
+            return `
+                <div class="min-h-screen">
+                    <!-- Banner Section -->
+                    <div class="relative h-[40vh] bg-gradient-to-br from-gray-400 to-gray-600 overflow-hidden">
+                        ${bannerImage ? `
+                            <img src="${this.getImageUrl(bannerImage)}" 
+                                alt="${ministry.title || 'Ministry Banner'}" 
+                                class="w-full h-full object-cover"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        ` : ''}
+                        
+                        <!-- Fallback placeholder -->
+                        <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center ${bannerImage ? 'hidden' : ''}">
+                            <div class="text-center text-white">
+                                <i class="fas fa-church text-6xl mb-4 opacity-50"></i>
+                                <p class="text-lg opacity-75">No Banner Image</p>
+                            </div>
+                        </div>
+
+                                            <!-- Content Overlay -->
+                    <div class="absolute inset-0 bg-black/40 flex items-center">
+                        <div class="container mx-auto px-4">
+                            <div class="max-w-4xl">
+                                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                                    ${ministry.title || 'Untitled Ministry'}
+                                </h1>
+                                <div class="flex items-center gap-4 text-white/90">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm">
+                                        <i class="fas fa-church mr-2"></i>
+                                        Ministry
+                                    </span>
+                                    ${ministry.created_at ? `
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm">
+                                            <i class="fas fa-calendar mr-2"></i>
+                                            ${this.formatDate(ministry.created_at)}
+                                        </span>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Share Buttons - Bottom Right Corner -->
+                    <div class="absolute bottom-4 right-4 flex gap-2">
+                        <button onclick="this.closest('ministry-view').shareMinistry()" 
+                                class="size-8 flex items-center justify-center bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg hover:bg-white/30 transition-colors">
+                            <i class="fas fa-share-alt text-white"></i>
+                        </button>
+                        <button onclick="this.closest('ministry-view').copyMinistryUrl()" 
+                                class="size-8 flex items-center justify-center bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg hover:bg-white/30 transition-colors">
+                            <i class="fas fa-copy text-white"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                                    <!-- Content Section -->
+                <div class="container mx-auto px-4 py-12">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="bg-white rounded-xl shadow-lg p-8">
+                                ${ministry.content ? `
+                                    <content-display 
+                                        content="${ministry.content.replace(/"/g, '&quot;')}"
+                                        no-styles>
+                                    </content-display>
+                                ` : `
+                                    <div class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-file-alt text-4xl mb-4"></i>
+                                        <p>No content available for this ministry.</p>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    customElements.define('ministry-view', MinistryView);
+    export default MinistryView; 
