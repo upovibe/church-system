@@ -261,26 +261,26 @@
                 <img class="w-36 lg:w-44 max-w-none" src="${this.get('logoUrl')}" alt="Church Logo" />
               </ui-link>
               <!-- Nav links (center, after logo) -->
-              <nav class="hidden lg:flex flex-1 items-center space-x-10">
+              <nav class="hidden xl:flex flex-1 items-center space-x-10">
                 ${renderNavLinks(false)}
               </nav>
               <!-- Contact Us button on the right -->
-              <a href="/public/contact" class="hidden lg:inline-flex items-center px-6 py-2 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 ml-4 space-x-2">
+              <a href="/public/contact" class="hidden xl:inline-flex items-center px-6 py-2 bg-[${secondaryColor}] text-[${primaryColor}] font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[${secondaryColor}] focus:ring-offset-2 transition-all duration-300 ml-4 space-x-2">
                 <i class="fas fa-phone"></i>
                 <span class="">Contact Us</span>
               </a>
               <!-- Mobile Menu Button -->
-              <button data-mobile-toggle class="lg:hidden text-[${textColor}] size-8 rounded-md ml-auto">
+              <button data-mobile-toggle class="xl:hidden text-[${textColor}] size-8 rounded-md ml-auto">
                 <i class="fas fa-bars"></i>
               </button>
             </div>
           </header>
 
           <!-- Mobile Overlay -->
-          <div data-mobile-overlay class="fixed inset-0 bg-black bg-opacity-50 z-40 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+          <div data-mobile-overlay class="fixed inset-0 bg-black bg-opacity-50 z-40 opacity-0 pointer-events-none transition-opacity duration-300 xl:hidden"></div>
 
           <!-- Mobile Menu -->
-          <div data-mobile-menu class="fixed inset-0 bg-[${primaryColor}] z-50 transform -translate-x-full transition-transform duration-300 lg:hidden">
+          <div data-mobile-menu class="fixed inset-0 bg-[${primaryColor}] z-50 transform -translate-x-full transition-transform duration-300 xl:hidden">
             <div class="flex items-center justify-between p-4 border-b border-[${primaryColor}]">
               <img class="w-36 max-w-none" src="${this.get('logoUrl')}" alt="Church Logo" />
               <button data-mobile-toggle class="text-[${textColor}] size-8 rounded-md">
