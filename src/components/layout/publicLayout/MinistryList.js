@@ -268,11 +268,11 @@ class MinistryList extends App {
                                 
                                 <!-- Content Section -->
                                 <div class="md:w-2/3 p-6 flex flex-col justify-between">
-                                    <div class="text-[${textColor}]">
-                                        <h3 class="text-xl font-bold text-gray-800 mb-1 line-clamp-2" title="${ministry.title || 'Untitled Ministry'}">
+                                    <div class="text-white ">
+                                        <h3 class="text-2xl font-bold mb-1 line-clamp-2" title="${ministry.title || 'Untitled Ministry'}">
                                             ${ministry.title || 'Untitled Ministry'}
                                         </h3>
-                                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                                        <p class="text-sm leading-relaxed mb-4 line-clamp-3">
                                             ${truncatedContent || 'No description available'}
                                         </p>
                                     </div>
@@ -280,7 +280,7 @@ class MinistryList extends App {
                                     <!-- Footer -->
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[${primaryColor}]/10 text-[${textColor}]">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[${primaryColor}]/10 text-black">
                                                 <i class="fas fa-church mr-1"></i>
                                                 Ministry
                                             </span>
