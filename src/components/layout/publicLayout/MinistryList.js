@@ -247,7 +247,7 @@ class MinistryList extends App {
                             
                             <div class="flex flex-col md:flex-row">
                                 <!-- Image Section -->
-                                <div class="md:w-1/3 h-48 md:h-auto relative rounded-lg overflow-hidden">
+                                <div class="md:w-1/3 h-48 md:h-auto relative">
                                     ${bannerImage ? `
                                         <img src="${this.getImageUrl(bannerImage)}" 
                                              alt="${ministry.title || 'Ministry Image'}" 
@@ -266,12 +266,12 @@ class MinistryList extends App {
                                 </div>
                                 
                                 <!-- Content Section -->
-                                <div class="md:w-2/3 p-6 flex flex-col justify-between text-white">
+                                <div class="md:w-2/3 p-6 flex flex-col justify-between bg-white">
                                     <div>
-                                        <h3 class="text-2xl font-bold mb-3 line-clamp-2" title="${ministry.title || 'Untitled Ministry'}"></h3>
+                                        <h3 class="text-xl font-bold text-gray-800 mb-3 line-clamp-2" title="${ministry.title || 'Untitled Ministry'}">
                                             ${ministry.title || 'Untitled Ministry'}
                                         </h3>
-                                        <p class="opacity-70 text-sm leading-relaxed mb-4 line-clamp-3">
+                                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
                                             ${truncatedContent || 'No description available'}
                                         </p>
                                     </div>
