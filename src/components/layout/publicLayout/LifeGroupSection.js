@@ -128,16 +128,7 @@ class LifeGroupSection extends App {
                          class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
                          style="background-image: url('${this.getImageUrl(img)}'); transition-property: opacity;">
                     </div>
-                `).join('') : `
-                    <!-- Placeholder Banner -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center">
-                        <div class="text-center text-white">
-                            <i class="fas fa-users text-6xl mb-4 opacity-50"></i>
-                            <h1 class="text-3xl font-bold mb-2">${heroTitle}</h1>
-                            <p class="text-lg opacity-75">${heroSubtitle}</p>
-                        </div>
-                    </div>
-                `}
+                `).join('') : ''}
                 <!-- Dark gradient overlay from bottom to top -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
                 <!-- Content Overlay -->
