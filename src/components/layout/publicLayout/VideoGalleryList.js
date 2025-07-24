@@ -127,7 +127,37 @@ class VideoGalleryList extends App {
         const textColor = this.get('text_color');
 
         if (loading || !colorsLoaded) {
-            return `<page-loader></page-loader>`;
+            return `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="group relative overflow-hidden rounded-2xl shadow-lg bg-white animate-pulse">
+                        <div class="relative aspect-video bg-gray-200"></div>
+                        <div class="p-4">
+                            <div class="h-6 bg-gray-200 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
+                            <div class="w-16 h-1 bg-gray-200 rounded-full mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-2xl shadow-lg bg-white animate-pulse">
+                        <div class="relative aspect-video bg-gray-200"></div>
+                        <div class="p-4">
+                            <div class="h-6 bg-gray-200 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
+                            <div class="w-16 h-1 bg-gray-200 rounded-full mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-2xl shadow-lg bg-white animate-pulse">
+                        <div class="relative aspect-video bg-gray-200"></div>
+                        <div class="p-4">
+                            <div class="h-6 bg-gray-200 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
+                            <div class="w-16 h-1 bg-gray-200 rounded-full mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         if (selectedGallerySlug) {
