@@ -89,12 +89,15 @@ class AboutUsSection extends App {
                 <!--  ${subtitle ? `<p class="text-xl text-white/80 mb-8">${subtitle}</p>` : ''} -->
             </div>
             ${bannerImages.length > 1 ? `
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-auto mb-10">
-                    ${bannerImages.slice(0, 3).map(img => `
-                        <div class="rounded-3xl overflow-hidden shadow-lg w-full h-[40vh] lg:h-[50vh] bg-white/10 flex items-center justify-center">
+                <div class="flex gap-6 mx-auto mb-10 group/about-imgs">
+                    ${bannerImages.slice(0, 3).map((img, idx) => `
+                        <div class="relative flex-1 transition-all duration-500 overflow-hidden rounded-3xl shadow-lg bg-white/10 flex items-center justify-center
+                            ${idx === 0 ? 'basis-2/4' : 'basis-1/4'}
+                            hover:basis-2/4 group-hover/about-imgs:basis-1/4 hover:z-10"
+                            style="min-width:0;">
                             <img src="/api/${img}"
                                  alt="About Us Banner"
-                                 class="w-full h-full object-cover">
+                                 class="w-full h-[40vh] lg:h-[50vh] object-cover transition-all duration-500">
                         </div>
                     `).join('')}
                 </div>
