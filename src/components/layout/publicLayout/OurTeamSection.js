@@ -156,9 +156,9 @@ class OurTeamSection extends App {
                                         alt="${member.name}"
                                         ${member.profile_image ? `src="${this.getImageUrl(member.profile_image)}"` : ''}
                                     ></ui-avatar>
-                                    <div class="-mt-4 w-64 h-24 flex flex-col justify-center items-center px-4 py-2 rounded-md bg-[#353535] shadow text-center z-10">
-                                        <h4 class="text-lg font-semibold text-white">${member.name}</h4>
-                                        ${member.position ? `<p class="text-sm text-[#F9D423] mt-1">${member.position}</p>` : ''}
+                                    <div class="-mt-4 h-24 flex flex-col justify-center items-center px-4 py-2 rounded-md bg-[#353535] shadow text-center z-10 w-full">
+                                        <h4 class="text-xl font-bold text-white">${member.name}</h4>
+                                        ${member.position ? `<p class="text-lg text-[#F9D423] mt-2">${member.position}</p>` : ''}
                                     </div>
                                 </div>
                             `).join('')}
