@@ -236,32 +236,6 @@ class ContactSectionAlt extends App {
         return `
             <!-- Contact Section Alt -->
             <section class="mx-auto py-10">
-                
-                <!-- Creative Header -->
-                <div class="relative mb-16">
-                    <!-- Animated Background Shapes -->
-                    <div class="absolute inset-0 overflow-hidden">
-                        <div class="absolute top-0 left-1/4 w-32 h-32 bg-[${primaryColor}]/10 rounded-full blur-xl animate-pulse"></div>
-                        <div class="absolute top-20 right-1/4 w-24 h-24 bg-[${accentColor}]/15 rounded-full blur-lg animate-pulse delay-1000"></div>
-                        <div class="absolute bottom-10 left-1/3 w-20 h-20 bg-[${secondaryColor}]/10 rounded-full blur-md animate-pulse delay-500"></div>
-                    </div>
-                    
-                    <div class="relative text-center">
-                        <div class="inline-block mb-6">
-                            <div class="w-24 h-24 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                                <i class="fas fa-envelope text-white text-3xl"></i>
-                            </div>
-                        </div>
-                        <h1 class="text-4xl lg:text-5xl font-bold text-[${secondaryColor}] mb-4 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] bg-clip-text text-transparent">
-                            ${this.get('contactTitle') || 'Get In Touch'}
-                        </h1>
-                        <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-                            ${this.get('contactSubtitle') || 'Have a question or want to learn more about our school? We\'d love to hear from you!'}
-                        </p>
-                        <div class="w-32 h-1 bg-gradient-to-r from-[${primaryColor}] via-[${accentColor}] to-[${secondaryColor}] mx-auto rounded-full"></div>
-                    </div>
-                </div>
-
                 <!-- Contact Content -->
                 <div class="relative">
                     <!-- Animated Background -->
@@ -270,7 +244,6 @@ class ContactSectionAlt extends App {
                         <div class="absolute top-10 left-10 w-20 h-20 bg-[${primaryColor}]/10 rounded-full animate-spin-slow"></div>
                         <div class="absolute bottom-10 right-10 w-16 h-16 bg-[${accentColor}]/10 rounded-full animate-spin-slow-reverse"></div>
                     </div>
-                    
                     <div class="relative">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 p-5 lg:p-8">
                             
