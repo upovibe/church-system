@@ -117,12 +117,16 @@ class LifeGroupUpdateModal extends HTMLElement {
             });
 
             // Add banner file if selected
-            if (bannerFileUpload && bannerFileUpload.getFiles().length > 0) {
-                formData.append('banner', bannerFileUpload.getFiles()[0]);
+            if (bannerFileUpload && bannerFileUpload.files && bannerFileUpload.files.length > 0) {
+                formData.append('banner', bannerFileUpload.files[0]);
             }
 
             // Update the life group
-            const response = await api.withToken(token).put(`/life-groups/${this.lifeGroupData.id}`, formData);
+            const response = await api.withToken(token).put(`/life-groups/${this.lifeGroupData.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
 
             if (response.data.success) {
                 Toast.show({
@@ -216,7 +220,7 @@ class LifeGroupUpdateModal extends HTMLElement {
                         <ui-file-upload
                             data-field="banner"
                             accept="image/*"
-                            multiple="false"
+                            max-size="5MB"
                             placeholder="Upload banner image">
                         </ui-file-upload>
                         ${lifeGroup && lifeGroup.banner ? `
