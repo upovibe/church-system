@@ -1,6 +1,7 @@
 import App from '@/core/App.js';
 import '@/components/common/PageLoader.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
+import Toast from '@/components/ui/Toast.js';
 
 /**
  * Event View Component
@@ -15,6 +16,20 @@ class EventView extends App {
         this.set('loading', true);
         this.set('error', null);
         this.set('colorsLoaded', false);
+    }
+
+    // Method to copy event URL to clipboard and show toast
+    copyEventUrl() {
+        const event = this.get('event');
+        const eventTitle = event?.title ? event.title.charAt(0).toUpperCase() + event.title.slice(1) : 'Event';
+        
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            Toast.show({ 
+                message: `${eventTitle} copied to clipboard!`, 
+                variant: 'success', 
+                duration: 3000 
+            });
+        });
     }
 
     async connectedCallback() {
@@ -247,8 +262,8 @@ class EventView extends App {
                             </h1>
                             
                             <!-- Date/Time and Location - Flex row layout -->
-                            <div class="flex flex-row gap-4 items-center">
-                                <div class="bg-[${darkColor}] bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-2 text-[${textColor}]">
+                            <div class="flex flex-row flex-wrap gap-4 items-center">
+                                <div class="bg-[${darkColor}] bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-2 text-[${textColor}] whitespace-nowrap">
                                     <div class="flex items-center gap-2">
                                         <i class="fas fa-calendar-alt text-[${accentColor}]"></i>
                                         <span class="text-sm font-medium">${startDate} • ${startTime}</span>
@@ -256,7 +271,7 @@ class EventView extends App {
                                 </div>
                                 
                                 ${event.location ? `
-                                    <div class="bg-[${darkColor}] bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-2 text-[${textColor}]">
+                                    <div class="bg-[${darkColor}] bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-2 text-[${textColor}] whitespace-nowrap">
                                         <div class="flex items-center gap-2">
                                             <i class="fas fa-map-marker-alt text-[${accentColor}]"></i>
                                             <span class="text-sm font-medium">${event.location}</span>
@@ -266,11 +281,31 @@ class EventView extends App {
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Status Badge - Absolute positioned at bottom-right corner -->
+                    <div class="absolute bottom-4 right-4 z-10">
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[${primaryColor}] text-[${textColor}] shadow-lg">
+                            <i class="fas fa-clock mr-2"></i>
+                            ${event.status ? event.status.charAt(0).toUpperCase() + event.status.slice(1) : 'Upcoming'}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Event Details Section -->
-                <div class="container px-4 py-8">
-                    <div class="max-w-4xl mx-auto">
+                <div class="container mx-auto p-4">
+                        <!-- Title with Share/Copy buttons -->
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-2">Event Details</h2>
+                            </div>
+                            <div class="flex gap-3 ml-4">
+                                <i onclick="navigator.share ? navigator.share({title: '${event.title}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
+                                   class="fas fa-share size-8 text-gray-600 hover:text-[${primaryColor}] cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
+                                <i onclick="this.closest('event-view').copyEventUrl()" 
+                                   class="fas fa-copy size-8 text-gray-600 hover:text-gray-800 cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
+                            </div>
+                        </div>
+
                         <!-- Event Description -->
                         <div class="rounded-lg shadow-md p-4">
                             <div class="prose max-w-none">
@@ -278,48 +313,7 @@ class EventView extends App {
                             </div>
                         </div>
 
-                        <!-- Event Info Cards -->
-                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                            <div class="bg-[${textColor}] rounded-lg shadow-md p-6 border-l-4 border-[${primaryColor}]">
-                                <div class="flex items-center">
-                                    <i class="fas fa-calendar-alt text-[${primaryColor}] text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 class="font-semibold text-[${darkColor}]">Date</h3>
-                                        <p class="text-[${secondaryColor}]">${startDate}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-[${textColor}] rounded-lg shadow-md p-6 border-l-4 border-[${accentColor}]">
-                                <div class="flex items-center">
-                                    <i class="fas fa-clock text-[${accentColor}] text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 class="font-semibold text-[${darkColor}]">Time</h3>
-                                        <p class="text-[${secondaryColor}]">${startTime} - ${endTime}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-[${textColor}] rounded-lg shadow-md p-6 border-l-4 border-[${secondaryColor}]">
-                                <div class="flex items-center">
-                                    <i class="fas fa-map-marker-alt text-[${secondaryColor}] text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 class="font-semibold text-[${darkColor}]">Location</h3>
-                                        <p class="text-[${secondaryColor}]">${event.location || 'TBD'}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-[${textColor}] rounded-lg shadow-md p-6 border-l-4 border-[${darkColor}]">
-                                <div class="flex items-center">
-                                    <i class="fas fa-info-circle text-[${darkColor}] text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 class="font-semibold text-[${darkColor}]">Status</h3>
-                                        <p class="text-[${secondaryColor}] capitalize">${event.status || 'upcoming'}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <!-- Back Button -->
                         <div class="text-center">
@@ -330,7 +324,6 @@ class EventView extends App {
                             </a>
                         </div>
                     </div>
-                </div>
             </div>
         `;
     }
