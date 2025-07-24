@@ -295,7 +295,7 @@ class ContactSectionAlt extends App {
                         </div>
                     </div>
                 </div>
-                <div class="contaner lg:max-w-5xl mx-auto p-5">
+                <div class="contaner lg:max-w-5xl mx-auto p-5 pb-20">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         <!-- Left Column: Page Content (if any) and Contact Information -->
                         <div class="space-y-8">
