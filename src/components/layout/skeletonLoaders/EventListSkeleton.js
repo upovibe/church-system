@@ -17,11 +17,14 @@ class EventListSkeleton extends HTMLElement {
 
   render() {
     this.innerHTML = `
-            <div class="space-y-4">
-                 <!-- Simple Event Card Skeletons -->
-                        <ui-skeleton type="card" width="100%" height="100px"></ui-skeleton>
-                        <ui-skeleton type="card" width="100%" height="100px"></ui-skeleton>
-                        <ui-skeleton type="card" width="100%" height="100px"></ui-skeleton>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 <!-- Grid Event Card Skeletons -->
+                        <ui-skeleton type="card" width="100%" height="200px"></ui-skeleton>
+                        <ui-skeleton type="card" width="100%" height="200px"></ui-skeleton>
+                        <ui-skeleton type="card" width="100%" height="200px"></ui-skeleton>
+                        <ui-skeleton type="card" width="100%" height="200px"></ui-skeleton>
+                        <ui-skeleton type="card" width="100%" height="200px"></ui-skeleton>
+                        <ui-skeleton type="card" width="100%" height="200px"></ui-skeleton>
             </div>
         `;
   }
