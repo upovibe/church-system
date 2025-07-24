@@ -5,6 +5,7 @@ import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/AboutUsSection.js';
+import '@/components/layout/publicLayout/OurTeamSection.js';
 
 /**
  * About Page Component (/about)
@@ -85,6 +86,10 @@ class AboutPage extends App {
                     colors='${colorsData}'
                     page-data='${pageData}'>
                 </about-us-section>
+                <!-- Our Team Section Component -->
+                <our-team-section 
+                    colors='${colorsData}'>
+                </our-team-section>
             </div>
         `;
     }
