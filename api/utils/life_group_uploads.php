@@ -1,14 +1,14 @@
 <?php
-// api/utils/event_uploads.php - Event upload utilities
+// api/utils/life_group_uploads.php - Life Group upload utilities
 
 /**
- * Upload event banner image
+ * Upload life group banner image
  * 
  * @param array $file The uploaded file array from $_FILES or a manually parsed request
  * @return array The uploaded file path(s)
  */
-function uploadEventBanner($file) {
-    $uploadDir = __DIR__ . '/../uploads/events/';
+function uploadLifeGroupBanner($file) {
+    $uploadDir = __DIR__ . '/../uploads/life-groups/';
     $thumbnailsDir = $uploadDir . 'thumbnails/';
     
     // Create directories if they don't exist
@@ -37,26 +37,26 @@ function uploadEventBanner($file) {
     }
     
     // Generate thumbnails
-    $thumbnails = generateEventThumbnails($filepath, $filename, $thumbnailsDir);
+    $thumbnails = generateLifeGroupThumbnails($filepath, $filename, $thumbnailsDir);
     
     return [
-        'original' => 'uploads/events/' . $filename,
+        'original' => 'uploads/life-groups/' . $filename,
         'thumbnails' => $thumbnails
     ];
 }
 
 /**
- * Upload multiple event banner images
+ * Upload multiple life group banner images
  * 
  * @param array $files The uploaded files array from $_FILES
  * @return array Array of uploaded file paths
  */
-function uploadEventBanners($files) {
+function uploadLifeGroupBanners($files) {
     $uploadedFiles = [];
     
     // Handle single file
     if (!is_array($files['name'])) {
-        return uploadEventBanner($files);
+        return uploadLifeGroupBanner($files);
     }
     
     // Handle multiple files
@@ -72,10 +72,10 @@ function uploadEventBanners($files) {
             ];
             
             try {
-                $uploadedFiles[] = uploadEventBanner($file);
+                $uploadedFiles[] = uploadLifeGroupBanner($file);
             } catch (Exception $e) {
                 // Log error but continue with other files
-                error_log('Error uploading event banner: ' . $e->getMessage());
+                error_log('Error uploading life group banner: ' . $e->getMessage());
             }
         }
     }
@@ -101,7 +101,7 @@ function isValidImageFile($file) {
         return false;
     }
     
-    // Additional validation using getimagesize
+    // Check if file is actually an image
     $imageInfo = getimagesize($file['tmp_name']);
     if ($imageInfo === false) {
         return false;
@@ -111,30 +111,31 @@ function isValidImageFile($file) {
 }
 
 /**
- * Generate thumbnails for event banner
+ * Generate thumbnails for life group banner
  * 
- * @param string $originalPath Full path to original image
+ * @param string $originalPath Path to original image
  * @param string $filename Original filename
  * @param string $thumbnailsDir Directory for thumbnails
  * @return array Array of thumbnail paths
  */
-function generateEventThumbnails($originalPath, $filename, $thumbnailsDir) {
+function generateLifeGroupThumbnails($originalPath, $filename, $thumbnailsDir) {
     $thumbnails = [];
-    $sizes = [
-        'small' => [150, 150],
-        'medium' => [300, 300],
-        'large' => [600, 600]
-    ];
-    
     $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
     $nameWithoutExt = pathinfo($filename, PATHINFO_FILENAME);
+    
+    // Thumbnail sizes for life groups
+    $sizes = [
+        'small' => [300, 200],
+        'medium' => [600, 400],
+        'large' => [1200, 800]
+    ];
     
     foreach ($sizes as $size => $dimensions) {
         $thumbnailFilename = $nameWithoutExt . '_' . $size . '.' . $extension;
         $thumbnailPath = $thumbnailsDir . $thumbnailFilename;
         
         if (createThumbnail($originalPath, $thumbnailPath, $dimensions[0], $dimensions[1])) {
-            $thumbnails[$size] = 'uploads/events/thumbnails/' . $thumbnailFilename;
+            $thumbnails[$size] = 'uploads/life-groups/thumbnails/' . $thumbnailFilename;
         }
     }
     
@@ -144,10 +145,10 @@ function generateEventThumbnails($originalPath, $filename, $thumbnailsDir) {
 /**
  * Create thumbnail from image
  * 
- * @param string $sourcePath Source image path
- * @param string $destPath Destination thumbnail path
- * @param int $width Target width
- * @param int $height Target height
+ * @param string $sourcePath Path to source image
+ * @param string $destPath Path to save thumbnail
+ * @param int $width Desired width
+ * @param int $height Desired height
  * @return bool True if successful, false otherwise
  */
 function createThumbnail($sourcePath, $destPath, $width, $height) {
@@ -157,58 +158,58 @@ function createThumbnail($sourcePath, $destPath, $width, $height) {
             return false;
         }
         
-        $sourceWidth = $imageInfo[0];
-        $sourceHeight = $imageInfo[1];
+        $originalWidth = $imageInfo[0];
+        $originalHeight = $imageInfo[1];
         $mimeType = $imageInfo['mime'];
         
-        // Create source image resource
+        // Calculate aspect ratio
+        $aspectRatio = $originalWidth / $originalHeight;
+        $targetAspectRatio = $width / $height;
+        
+        if ($aspectRatio > $targetAspectRatio) {
+            // Image is wider than target
+            $cropWidth = round($originalHeight * $targetAspectRatio);
+            $cropHeight = $originalHeight;
+            $cropX = round(($originalWidth - $cropWidth) / 2);
+            $cropY = 0;
+        } else {
+            // Image is taller than target
+            $cropWidth = $originalWidth;
+            $cropHeight = round($originalWidth / $targetAspectRatio);
+            $cropX = 0;
+            $cropY = round(($originalHeight - $cropHeight) / 2);
+        }
+        
+        // Create image resource
         $sourceImage = createImageResource($sourcePath, $mimeType);
         if (!$sourceImage) {
             return false;
         }
         
-        // Calculate aspect ratio
-        $aspectRatio = $sourceWidth / $sourceHeight;
-        $targetAspectRatio = $width / $height;
-        
-        if ($aspectRatio > $targetAspectRatio) {
-            // Source is wider
-            $cropWidth = round($sourceHeight * $targetAspectRatio);
-            $cropHeight = $sourceHeight;
-            $cropX = round(($sourceWidth - $cropWidth) / 2);
-            $cropY = 0;
-        } else {
-            // Source is taller
-            $cropWidth = $sourceWidth;
-            $cropHeight = round($sourceWidth / $targetAspectRatio);
-            $cropX = 0;
-            $cropY = round(($sourceHeight - $cropHeight) / 2);
-        }
-        
         // Create thumbnail image
-        $thumbnail = imagecreatetruecolor($width, $height);
+        $thumbnailImage = imagecreatetruecolor($width, $height);
         
         // Preserve transparency for PNG and GIF
-        if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
-            imagealphablending($thumbnail, false);
-            imagesavealpha($thumbnail, true);
-            $transparent = imagecolorallocatealpha($thumbnail, 255, 255, 255, 127);
-            imagefill($thumbnail, 0, 0, $transparent);
+        if (in_array($mimeType, ['image/png', 'image/gif'])) {
+            imagealphablending($thumbnailImage, false);
+            imagesavealpha($thumbnailImage, true);
+            $transparent = imagecolorallocatealpha($thumbnailImage, 255, 255, 255, 127);
+            imagefill($thumbnailImage, 0, 0, $transparent);
         }
         
         // Resize and crop
         imagecopyresampled(
-            $thumbnail, $sourceImage,
+            $thumbnailImage, $sourceImage,
             0, 0, $cropX, $cropY,
             $width, $height, $cropWidth, $cropHeight
         );
         
         // Save thumbnail
-        $result = saveImage($thumbnail, $destPath, $mimeType);
+        $result = saveImage($thumbnailImage, $destPath, $mimeType);
         
         // Clean up
         imagedestroy($sourceImage);
-        imagedestroy($thumbnail);
+        imagedestroy($thumbnailImage);
         
         return $result;
     } catch (Exception $e) {
@@ -220,9 +221,9 @@ function createThumbnail($sourcePath, $destPath, $width, $height) {
 /**
  * Create image resource from file
  * 
- * @param string $path Image file path
- * @param string $mimeType MIME type
- * @return GdImage|false Image resource or false on failure
+ * @param string $path Path to image file
+ * @param string $mimeType MIME type of image
+ * @return resource|false Image resource or false on failure
  */
 function createImageResource($path, $mimeType) {
     switch ($mimeType) {
@@ -243,98 +244,88 @@ function createImageResource($path, $mimeType) {
 /**
  * Save image to file
  * 
- * @param GdImage $image Image resource
- * @param string $path Output file path
- * @param string $mimeType MIME type
+ * @param resource $image Image resource
+ * @param string $path Path to save image
+ * @param string $mimeType MIME type of image
  * @return bool True if successful, false otherwise
  */
 function saveImage($image, $path, $mimeType) {
     switch ($mimeType) {
         case 'image/jpeg':
         case 'image/jpg':
-            return imagejpeg($image, $path, 85);
+            return imagejpeg($image, $path, 90);
         case 'image/png':
-            return imagepng($image, $path, 8);
+            return imagepng($image, $path, 9);
         case 'image/gif':
             return imagegif($image, $path);
         case 'image/webp':
-            return imagewebp($image, $path, 85);
+            return imagewebp($image, $path, 90);
         default:
             return false;
     }
 }
 
 /**
- * Get event banner info for API response
+ * Get life group banner information
  * 
- * @param string|array $bannerPath Banner path(s)
- * @return array|null Banner information or null if not found
+ * @param string $bannerPath Path to banner image
+ * @return array|false Banner information or false on failure
  */
-function getEventBannerInfo($bannerPath) {
-    if (empty($bannerPath)) {
-        return null;
-    }
-    
-    if (is_array($bannerPath)) {
-        $info = [];
-        foreach ($bannerPath as $path) {
-            $info[] = getEventBannerInfo($path);
-        }
-        return $info;
-    }
-    
+function getLifeGroupBannerInfo($bannerPath) {
     $fullPath = __DIR__ . '/../' . $bannerPath;
+    
     if (!file_exists($fullPath)) {
-        return null;
+        return false;
     }
     
     $imageInfo = getimagesize($fullPath);
     if ($imageInfo === false) {
-        return null;
+        return false;
     }
     
     return [
         'path' => $bannerPath,
-        'url' => '/api/' . $bannerPath,
         'width' => $imageInfo[0],
         'height' => $imageInfo[1],
+        'mime_type' => $imageInfo['mime'],
         'size' => filesize($fullPath),
-        'mime_type' => $imageInfo['mime']
+        'filename' => basename($bannerPath)
     ];
 }
 
 /**
- * Delete event banner and thumbnails
+ * Delete life group banner and thumbnails
  * 
- * @param string $bannerPath Banner path
+ * @param string $bannerPath Path to banner image
  * @return bool True if successful, false otherwise
  */
-function deleteEventBanner($bannerPath) {
-    if (empty($bannerPath)) {
-        return true;
-    }
-    
-    $fullPath = __DIR__ . '/../' . $bannerPath;
-    $thumbnailsDir = __DIR__ . '/../uploads/events/thumbnails/';
-    
-    // Delete original file
-    if (file_exists($fullPath)) {
-        unlink($fullPath);
-    }
-    
-    // Delete thumbnails
-    $filename = basename($bannerPath);
-    $nameWithoutExt = pathinfo($filename, PATHINFO_FILENAME);
-    $extension = pathinfo($filename, PATHINFO_EXTENSION);
-    
-    $sizes = ['small', 'medium', 'large'];
-    foreach ($sizes as $size) {
-        $thumbnailPath = $thumbnailsDir . $nameWithoutExt . '_' . $size . '.' . $extension;
-        if (file_exists($thumbnailPath)) {
-            unlink($thumbnailPath);
+function deleteLifeGroupBanner($bannerPath) {
+    try {
+        $fullPath = __DIR__ . '/../' . $bannerPath;
+        
+        // Delete original file
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
         }
+        
+        // Delete thumbnails
+        $filename = basename($bannerPath);
+        $nameWithoutExt = pathinfo($filename, PATHINFO_FILENAME);
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        $thumbnailsDir = __DIR__ . '/../uploads/life-groups/thumbnails/';
+        
+        $sizes = ['small', 'medium', 'large'];
+        foreach ($sizes as $size) {
+            $thumbnailPath = $thumbnailsDir . $nameWithoutExt . '_' . $size . '.' . $extension;
+            if (file_exists($thumbnailPath)) {
+                unlink($thumbnailPath);
+            }
+        }
+        
+        return true;
+    } catch (Exception $e) {
+        error_log('Error deleting life group banner: ' . $e->getMessage());
+        return false;
     }
-    
-    return true;
 }
 ?> 
