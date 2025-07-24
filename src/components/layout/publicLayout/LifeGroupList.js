@@ -195,11 +195,12 @@ class LifeGroupList extends App {
     render() {
         const loading = this.get('loading');
         const lifeGroups = this.get('lifeGroups') || [];
-        
+                
         // Get colors from state
         const primaryColor = this.get('primary_color');
         const secondaryColor = this.get('secondary_color');
         const textColor = this.get('text_color');
+        const accentColor = this.get('accent_color');
 
         return `
             <!-- Search Bar -->
@@ -271,7 +272,7 @@ class LifeGroupList extends App {
                                 <div class="mt-4 pt-4 border-t border-gray-600">
                                     <div class="flex items-center justify-center">
                                         ${lifeGroup.link ? `
-                                            <a href="${lifeGroup.link}" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-colors" onclick="event.stopPropagation();">
+                                            <a href="${lifeGroup.link}" target="_blank" class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-[${accentColor}] transition-colors" onclick="event.stopPropagation();">
                                                 <i class="fas fa-external-link-alt mr-2"></i>
                                                 Join Life Group
                                             </a>
