@@ -171,7 +171,7 @@ class PhotoGalleryView extends App {
                         <h1 class="text-2xl font-bold text-gray-800 mb-2">Gallery Not Found</h1>
                         <p class="text-gray-600 mb-6">The gallery you're looking for doesn't exist or has been removed.</p>
                         <a href="/public/gallery" 
-                           class="inline-flex items-center gap-2 px-6 py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-colors">
+                           class="inline-flex items-center gap-2 px-6 py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:border-b-2 hover:border-b-[${accentColor}] transition-colors">
                             <i class="fas fa-arrow-left"></i>
                             Back to Gallery
                         </a>
@@ -181,14 +181,6 @@ class PhotoGalleryView extends App {
         }
 
         return `
-            <!-- Breadcrumb -->
-            <ui-breadcrumb separator="chevron" color="primary">
-                <ui-breadcrumb-item href="/">Home</ui-breadcrumb-item>
-                <ui-breadcrumb-item href="/public/gallery">Gallery</ui-breadcrumb-item>
-                <ui-breadcrumb-item href="/public/gallery/photos">Photos</ui-breadcrumb-item>
-                <ui-breadcrumb-item>${gallery.name ? gallery.name.charAt(0).toUpperCase() + gallery.name.slice(1) : 'Gallery Details'}</ui-breadcrumb-item>
-            </ui-breadcrumb>
-
             <!-- Gallery Banner -->
             ${gallery.images && gallery.images.length > 0 ? `
                 <div class="relative w-full h-96 rounded-2xl overflow-hidden shadow-lg my-6">
@@ -203,14 +195,6 @@ class PhotoGalleryView extends App {
                         </div>
                     </div>
                     
-                    <!-- Share/Copy buttons - Absolute positioned at top-right corner -->
-                    <div class="absolute top-4 right-4 z-10 flex gap-3">
-                        <i onclick="navigator.share ? navigator.share({title: '${gallery.name}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
-                           class="fas fa-share size-8 text-white hover:text-gray-200 cursor-pointer transition-colors bg-black bg-opacity-50 rounded-lg p-1.5 backdrop-blur-sm"></i>
-                        <i onclick="this.closest('app-photo-gallery-view').copyGalleryUrl()" 
-                           class="fas fa-copy size-8 text-white hover:text-gray-200 cursor-pointer transition-colors bg-black bg-opacity-50 rounded-lg p-1.5 backdrop-blur-sm"></i>
-                    </div>
-                    
                     <!-- Dark gradient overlay from bottom to top -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-2xl"></div>
                     
@@ -221,26 +205,32 @@ class PhotoGalleryView extends App {
                         </span>
                     </div>
                 </div>
-            ` : `
-                <div class="relative w-full h-96 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-2xl overflow-hidden shadow-lg my-6 flex items-center justify-center">
-                    <div class="text-center text-white">
-                        <i class="fas fa-images text-6xl mb-4"></i>
-                        <p class="text-2xl font-semibold">No Banner Image</p>
-                    </div>
-                </div>
-            `}
-
+            ` : ''}
 
             <!-- Gallery Title and Description -->
             <div class="my-6">
-                <h1 class="text-3xl lg:text-4xl font-bold text-[${secondaryColor}] mb-4">
-                    ${gallery.name}
-                </h1>
-                ${gallery.description ? `
-                    <p class="text-lg text-gray-600 leading-relaxed mb-4">
-                        ${gallery.description}
-                    </p>
-                ` : ''}
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <h1 class="text-3xl lg:text-4xl font-bold text-[${secondaryColor}] mb-4">
+                            ${gallery.name}
+                        </h1>
+                        ${gallery.description ? `
+                            <p class="text-lg text-gray-600 leading-relaxed mb-4">
+                                ${gallery.description}
+                            </p>
+                        ` : ''}
+                    </div>
+                    <div class="flex gap-2 ml-4">
+                        <button onclick="navigator.share ? navigator.share({title: '${gallery.name}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
+                               class="size-8 bg-[${primaryColor}] text-[${textColor}] rounded-lg font-semibold hover:bg-[${accentColor}] transition-colors flex items-center justify-center">
+                            <i class="fas fa-share"></i>
+                        </button>
+                        <button onclick="this.closest('app-photo-gallery-view').copyGalleryUrl()" 
+                               class="size-8 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="w-24 h-1 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full"></div>
             </div>
 
@@ -288,17 +278,12 @@ class PhotoGalleryView extends App {
                     </div>
                 </div>
             ` : `
-                <div class="bg-white rounded-2xl shadow-lg p-8 mb-6 text-center">
+                <div class="bg-slate-700 rounded-2xl shadow-lg p-8 mb-6 text-center">
                     <div class="w-32 h-32 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-images text-white text-4xl"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-[${secondaryColor}] mb-3">No Images Available</h3>
                     <p class="text-gray-600 mb-6">This gallery doesn't have any images yet.</p>
-                    <a href="/public/gallery" 
-                       class="inline-flex items-center gap-2 px-6 py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-colors">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to Gallery
-                    </a>
                 </div>
             `}
         `;
