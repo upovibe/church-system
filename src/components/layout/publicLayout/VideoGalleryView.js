@@ -217,23 +217,6 @@ class VideoGalleryView extends App {
         }
 
         return `
-            <!-- Video Gallery Banner -->
-            ${videoGallery.video_links && videoGallery.video_links.length > 0 ? `
-                <div class="relative w-full h-96 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-2xl overflow-hidden shadow-lg my-6 flex items-center justify-center">
-                    <div class="text-center text-white">
-                        <i class="fas fa-video text-6xl mb-4"></i>
-                        <p class="text-2xl font-semibold">${videoGallery.name}</p>
-                        <p class="text-lg opacity-90">Video Gallery</p>
-                    </div>
-                    <!-- Video Count Badge -->
-                    <div class="absolute top-6 left-6">
-                        <span class="bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full backdrop-blur-sm">
-                            ${videoGallery.video_links ? videoGallery.video_links.length : 0} ${videoGallery.video_links && videoGallery.video_links.length === 1 ? 'video' : 'videos'}
-                        </span>
-                    </div>
-                </div>
-            ` : ''}
-
             <!-- Video Gallery Title and Description -->
             <div class="my-6">
                 <div class="flex items-start justify-between mb-4">
@@ -249,11 +232,11 @@ class VideoGalleryView extends App {
                     </div>
                     <div class="flex gap-2 ml-4">
                         <button onclick="navigator.share ? navigator.share({title: '${videoGallery.name}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
-                               class="size-8 border-2 border-[${primaryColor}] text-[${primaryColor}] rounded-lg font-semibold hover:bg-[${primaryColor}] hover:text-[${textColor}] transition-colors flex items-center justify-center">
+                               class="size-8 bg-[${primaryColor}] text-[${textColor}] rounded-lg font-semibold hover:bg-[${accentColor}] transition-colors flex items-center justify-center">
                             <i class="fas fa-share"></i>
                         </button>
                         <button onclick="this.closest('app-video-gallery-view').copyGalleryUrl()" 
-                               class="size-8 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-300 hover:text-gray-800 transition-colors flex items-center justify-center">
+                               class="size-8 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center">
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
@@ -295,14 +278,12 @@ class VideoGalleryView extends App {
                                                 </div>
                                             </div>
                                         `}
-                                        
                                         <!-- Video Number Badge -->
                                         <div class="absolute top-3 left-3">
                                             <span class="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full">
                                                 ${index + 1}
                                             </span>
                                         </div>
-                                        
                                         <!-- Platform Badge -->
                                         <div class="absolute top-3 right-3">
                                             <span class="bg-[${primaryColor}] text-white text-xs px-2 py-1 rounded-full capitalize">
@@ -310,7 +291,6 @@ class VideoGalleryView extends App {
                                             </span>
                                         </div>
                                     </div>
-                                    
                                     <!-- Video Link -->
                                     <div class="p-4">
                                         <a href="${videoUrl}" target="_blank" 
@@ -331,11 +311,11 @@ class VideoGalleryView extends App {
                     </div>
                     <h3 class="text-2xl font-bold text-[${secondaryColor}] mb-3">No Videos Available</h3>
                     <p class="text-gray-600 mb-6">This video gallery doesn't have any videos yet.</p>
-                    <a href="/public/gallery" 
-                       class="inline-flex items-center gap-2 px-6 py-3 bg-[${primaryColor}] text-[${textColor}] font-semibold rounded-lg hover:bg-[${accentColor}] transition-colors">
+                    <button onclick="this.closest('app-video-gallery-view').goBackToList()" 
+                            class="inline-flex items-center gap-2 px-6 py-3 border-2 border-[${primaryColor}] text-[${primaryColor}] font-semibold rounded-lg hover:bg-[${primaryColor}] hover:text-[${textColor}] transition-colors">
                         <i class="fas fa-arrow-left"></i>
                         Back to Gallery
-                    </a>
+                    </button>
                 </div>
             `}
         `;
