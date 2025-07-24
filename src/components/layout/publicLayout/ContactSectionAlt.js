@@ -189,33 +189,29 @@ class ContactSectionAlt extends App {
     // Helper method to render social media links
     renderSocialMediaLinks() {
         const socialLinks = [
-            { key: 'facebookUrl', icon: 'fab fa-facebook', name: 'Facebook', color: '#1877F2' },
-            { key: 'twitterUrl', icon: 'fab fa-twitter', name: 'Twitter', color: '#1DA1F2' },
-            { key: 'instagramUrl', icon: 'fab fa-instagram', name: 'Instagram', color: '#E4405F' },
-            { key: 'linkedinUrl', icon: 'fab fa-linkedin', name: 'LinkedIn', color: '#0A66C2' },
-            { key: 'whatsappUrl', icon: 'fab fa-whatsapp', name: 'WhatsApp', color: '#25D366' },
-            { key: 'youtubeUrl', icon: 'fab fa-youtube', name: 'YouTube', color: '#FF0000' }
+            { key: 'facebookUrl', icon: 'fab fa-facebook', color: '#1877F2' },
+            { key: 'twitterUrl', icon: 'fab fa-twitter', color: '#1DA1F2' },
+            { key: 'instagramUrl', icon: 'fab fa-instagram', color: '#E4405F' },
+            { key: 'linkedinUrl', icon: 'fab fa-linkedin', color: '#0A66C2' },
+            { key: 'whatsappUrl', icon: 'fab fa-whatsapp', color: '#25D366' },
+            { key: 'youtubeUrl', icon: 'fab fa-youtube', color: '#FF0000' }
         ];
 
-        const secondaryColor = this.get('secondary_color');
-        const primaryColor = this.get('primary_color');
-
-        return socialLinks
-            .filter(link => this.get(link.key) && this.get(link.key).trim() !== '')
-            .map(link => `
-                <a href="${this.get(link.key)}" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="group flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300"
-                         style="background: linear-gradient(135deg, ${link.color}, ${link.color}dd)">
-                        <i class="${link.icon} text-white text-xl"></i>
-                    </div>
-                    <span class="text-sm font-medium text-[${secondaryColor}] group-hover:text-[${primaryColor}] transition-colors">
-                        ${link.name}
-                    </span>
-                </a>
-            `).join('');
+        return `
+            <div class="flex flex-row justify-center gap-2">
+                ${socialLinks
+                    .filter(link => this.get(link.key) && this.get(link.key).trim() !== '')
+                    .map(link => `
+                        <a href="${this.get(link.key)}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="w-9 h-9 rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform duration-200"
+                           style="background: linear-gradient(135deg, ${link.color}, ${link.color}cc)">
+                            <i class="${link.icon} text-white text-lg"></i>
+                        </a>
+                    `).join('')}
+            </div>
+        `;
     }
 
     render() {
@@ -304,7 +300,7 @@ class ContactSectionAlt extends App {
                         <!-- Left Column: Page Content (if any) and Contact Information -->
                         <div class="space-y-8">
                             ${pageData && pageData.content ? `
-                                <div class="mb-4 text-center">
+                                <div class="mb-4 text-center bg-white rounded-xl p-6">
                                     <content-display content="${pageData.content.replace(/"/g, '&quot;')}" no-styles></content-display>
                                 </div>
                             ` : ''}
@@ -346,7 +342,7 @@ class ContactSectionAlt extends App {
                         </div>
                         <!-- Contact Form -->
                         <div class="bg-white rounded-[2rem] p-6">
-                            <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-6">Send us a Message</h2>
+                            <h2 class="text-2xl font-bold text-[${primaryColor}] mb-6">Send us a Message</h2>
                             <form class="space-y-6">
                                 <!-- Name -->
                                 <div>
@@ -421,10 +417,7 @@ class ContactSectionAlt extends App {
                                 <!-- Social Media Links -->
                                 ${this.hasSocialMediaLinks() ? `
                                     <div class="border-t border-gray-200 pt-6">
-                                        <h3 class="text-lg font-semibold text-[${secondaryColor}] mb-4 text-center">Follow Us</h3>
-                                        <div class="grid grid-cols-3 gap-3">
-                                            ${this.renderSocialMediaLinks()}
-                                        </div>
+                                        <div class="mb-2">${this.renderSocialMediaLinks()}</div>
                                     </div>
                                 ` : ''}
                             </form>
@@ -440,55 +433,35 @@ class ContactSectionAlt extends App {
                             <div class="w-24 h-1 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] mx-auto mt-4 rounded-full"></div>
                         </div>
                         <div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden">
-                            <!-- Map Header -->
-                            <div class="bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] p-6 text-white">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-map-marker-alt text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-xl font-bold">${this.get('mapLocationName') || 'Our School Campus'}</h3>
-                                        <p class="text-white/90">${this.get('mapAddress') || '123 School Street, City, Country'}</p>
-                                    </div>
-                                </div>
-                            </div>
                             <!-- Map Embed -->
                             <div class="relative h-96">
                                 ${this.get('mapEmbedUrl') ? `
                                     <iframe 
                                         src="${this.get('mapEmbedUrl')}"
-                                        title="${this.get('mapLocationName') || 'School Location'}"
+                                        title="${this.get('mapLocationName')}"
                                         class="w-full h-full"
                                         frameborder="0" 
                                         allowfullscreen>
                                     </iframe>
-                                ` : `
-                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                        <div class="text-center">
-                                            <i class="fas fa-map text-gray-400 text-4xl mb-4"></i>
-                                            <p class="text-gray-500 mb-2">Map not available</p>
-                                            <p class="text-sm text-gray-400">Please configure map settings</p>
-                                        </div>
-                                    </div>
-                                `}
+                                ` : ''}
                             </div>
                             <!-- Map Info -->
                             <div class="p-6 bg-gray-50">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                                     <div>
                                         <i class="fas fa-map-marker-alt text-xl mb-2"></i>
-                                        <h4 class="font-semibold text-[${secondaryColor}]">Location</h4>
-                                        <p class="text-gray-600 text-sm">${this.get('mapLocationName') || 'Our School Campus'}</p>
+                                        <h4 class="font-semibold text-[${primaryColor}]">Location</h4>
+                                        <p class="text-[${primaryColor}] text-sm">${this.get('mapLocationName')}</p>
                                     </div>
                                     <div>
                                         <i class="fas fa-route text-[${primaryColor}] text-xl mb-2"></i>
-                                        <h4 class="font-semibold text-[${secondaryColor}]">Coordinates</h4>
-                                        <p class="text-gray-600 text-sm">${this.get('mapLatitude') || '40.7128'}, ${this.get('mapLongitude') || '-74.0060'}</p>
+                                        <h4 class="font-semibold text-[${primaryColor}]">Coordinates</h4>
+                                        <p class="text-[${primaryColor}] text-sm">${this.get('mapLatitude')}, ${this.get('mapLongitude')}</p>
                                     </div>
                                     <div>
                                         <i class="fas fa-search-plus text-[${primaryColor}] text-xl mb-2"></i>
-                                        <h4 class="font-semibold text-[${secondaryColor}]">Zoom Level</h4>
-                                        <p class="text-gray-600 text-sm">${this.get('mapZoomLevel') || '15'}</p>
+                                        <h4 class="font-semibold text-[${primaryColor}]">Zoom Level</h4>
+                                        <p class="text-[${primaryColor}] text-sm">${this.get('mapZoomLevel')}</p>
                                     </div>
                                 </div>
                             </div>
