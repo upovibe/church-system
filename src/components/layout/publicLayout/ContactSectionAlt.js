@@ -235,7 +235,7 @@ class ContactSectionAlt extends App {
 
         return `
             <!-- Contact Section Alt -->
-            <section class="mx-auto py-10">
+            <section class="container mx-auto py-40">
                 <!-- Contact Content -->
                 <div class="relative">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">                            
@@ -269,8 +269,7 @@ class ContactSectionAlt extends App {
                                             </div>
                                         </div>
                                     </div>
-                                `}
-                                
+                                `}                                
                                 <div class="bg-white rounded-[2rem] p-6">
                                     <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-6">Contact Information</h2>
                                     
