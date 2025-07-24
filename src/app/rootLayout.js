@@ -69,7 +69,7 @@ class RootLayout extends App {
         return `
             <div class="flex flex-col min-h-screen bg-transparent">
                 <app-header></app-header>
-                <main class="flex-grow bg-black">
+                <main class="flex-grow bg-black min-h-screen pb-[10rem]">
                     <!-- Page content will be injected here -->
                 </main>
                 <app-footer></app-footer>
