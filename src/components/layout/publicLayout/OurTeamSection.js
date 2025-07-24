@@ -151,14 +151,14 @@ class OurTeamSection extends App {
                                 <div class="flex flex-col items-center justify-start py-8">
                                     <ui-avatar 
                                         name="${member.name}"
-                                        size="3xl"
+                                        size="6xl"
                                         color="${primaryColor}"
                                         alt="${member.name}"
                                         ${member.profile_image ? `src="${this.getImageUrl(member.profile_image)}"` : ''}
                                     ></ui-avatar>
-                                    <div class="mt-4 px-4 py-2 rounded-md bg-white/80 shadow text-center">
-                                        <h4 class="text-lg font-semibold text-[${secondaryColor}]">${member.name}</h4>
-                                        ${member.position ? `<p class="text-sm text-gray-600 mt-1">${member.position}</p>` : ''}
+                                    <div class="-mt-4 w-64 h-24 flex flex-col justify-center items-center px-4 py-2 rounded-md bg-[#353535] shadow text-center z-10">
+                                        <h4 class="text-lg font-semibold text-white">${member.name}</h4>
+                                        ${member.position ? `<p class="text-sm text-[#F9D423] mt-1">${member.position}</p>` : ''}
                                     </div>
                                 </div>
                             `).join('')}

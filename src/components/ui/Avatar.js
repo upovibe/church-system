@@ -4,7 +4,7 @@
  * Displays a circular avatar with image or initials. Supports:
  * - Circular image display
  * - Fallback to initials when no image
- * - Different sizes (sm, md, lg, xl)
+ * - Different sizes (sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl)
  * - Status indicators (online, offline, away)
  * - Custom colors for initials
  * 
@@ -12,13 +12,14 @@
  * - src: image source URL
  * - alt: image alt text
  * - name: name for initials (e.g., "John Doe" -> "JD")
- * - size: 'sm' | 'md' | 'lg' | 'xl' (default: 'md')
+ * - size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' (default: 'md')
  * - status: 'online' | 'offline' | 'away'
  * - color: custom color for initials background
  * 
  * Usage:
  * <ui-avatar src="/path/to/image.jpg" alt="User" name="John Doe" size="lg"></ui-avatar>
  * <ui-avatar name="Jane Smith" size="md" status="online"></ui-avatar>
+ * <ui-avatar name="Big Avatar" size="6xl"></ui-avatar>
  */
 class Avatar extends HTMLElement {
     constructor() {
@@ -92,6 +93,21 @@ class Avatar extends HTMLElement {
                     width: 8rem;
                     height: 8rem;
                     font-size: 2rem;
+                }
+                .upo-avatar-4xl {
+                    width: 10rem;
+                    height: 10rem;
+                    font-size: 2.5rem;
+                }
+                .upo-avatar-5xl {
+                    width: 12rem;
+                    height: 12rem;
+                    font-size: 3rem;
+                }
+                .upo-avatar-6xl {
+                    width: 16rem;
+                    height: 16rem;
+                    font-size: 4rem;
                 }
                 .upo-avatar img {
                     width: 100%;
