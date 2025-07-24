@@ -4,7 +4,7 @@ import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
-import '@/components/layout/publicLayout/MinistriesSection.js';
+import '@/components/layout/publicLayout/MinistrySection.js';
 
 /**
  * Ministries Page Component (/ministries)
@@ -25,8 +25,8 @@ class MinistriesPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load ministries page data
-            const ministriesPageData = await this.fetchPageData('ministries');
+            // Load ministries page data using 'news' slug
+            const ministriesPageData = await this.fetchPageData('news');
 
             // Combine all data
             const allData = {
@@ -83,12 +83,12 @@ class MinistriesPage extends App {
         const colorsData = escapeJsonForAttribute(allData.colors);
 
         return `
-            <div class="mx-auto">
-                <!-- Ministries Section Component -->
-                <ministries-section 
+            <div class="min-h-screen mx-auto">
+                <!-- Ministry Section Component -->
+                <ministry-section 
                     colors='${colorsData}'
                     page-data='${escapeJsonForAttribute(allData.page)}'>
-                </ministries-section>
+                </ministry-section>
             </div>
         `;
     }
