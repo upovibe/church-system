@@ -65,8 +65,9 @@ class MinistrySection extends App {
             bannerImages = [bannerImages];
         }
 
-        // Filter out empty/null values
-        return bannerImages.filter(img => img && img.trim() !== '');
+        // Filter out empty/null values and return only the first image
+        const filteredImages = bannerImages.filter(img => img && img.trim() !== '');
+        return filteredImages.length > 0 ? [filteredImages[0]] : [];
     }
 
     loadDataFromProps() {
