@@ -106,7 +106,21 @@ class AboutSection extends App {
                 <div class="flex-1 flex justify-center items-center">
                     <div class="octagon-container w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[30rem] lg:h-[30rem] xl:w-[35rem] xl:h-[35rem]">
                         <div class="octagon-mask">
-                            <img src="/api/${pageData.banner_image}"
+                            <img src="/api/${(() => {
+                                let img = pageData.banner_image;
+                                if (typeof img === 'string') {
+                                    try {
+                                        const arr = JSON.parse(img);
+                                        if (Array.isArray(arr) && arr.length > 0) return arr[0];
+                                    } catch (e) {
+                                        if (img.includes(',')) return img.split(',')[0].trim();
+                                        return img;
+                                    }
+                                } else if (Array.isArray(img) && img.length > 0) {
+                                    return img[0];
+                                }
+                                return img || '';
+                            })()}"
                                  alt="About Our School"
                                  class="octagon-image"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
