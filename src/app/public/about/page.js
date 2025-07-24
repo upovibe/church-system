@@ -27,10 +27,16 @@ class AboutPage extends App {
             const colors = await fetchColorSettings();
             // Load about page data
             const aboutPageData = await this.fetchPageData('about-us');
+            // Load our team page data
+            const teamPageData = await this.fetchPageData('our-team');
+            // Load team members
+            const teamMembers = await this.fetchTeamMembers();
             // Combine all data
             const allData = {
                 colors,
-                page: aboutPageData
+                page: aboutPageData,
+                teamPage: teamPageData,
+                teamMembers
             };
             // Cache in global store
             store.setState({ aboutPageData: allData });
@@ -50,6 +56,27 @@ class AboutPage extends App {
         } catch (error) {
             console.error(`Error fetching ${slug} page data:`, error);
             return null;
+        }
+    }
+
+    async fetchTeamMembers() {
+        // Check if data is already cached in global store
+        const globalState = store.getState();
+        if (globalState.aboutTeamMembersData) {
+            return globalState.aboutTeamMembersData;
+        }
+        // If not cached, fetch from API
+        try {
+            const response = await api.get('/teams/public');
+            if (response.data.success) {
+                const teamMembers = response.data.data;
+                // Cache the data in global store
+                store.setState({ aboutTeamMembersData: teamMembers });
+                return teamMembers;
+            }
+        } catch (error) {
+            console.error('Error fetching team members:', error);
+            return [];
         }
     }
 
@@ -78,6 +105,8 @@ class AboutPage extends App {
         // Convert data to JSON strings for attributes with proper escaping
         const colorsData = escapeJsonForAttribute(allData.colors);
         const pageData = escapeJsonForAttribute(allData.page);
+        const teamPageData = escapeJsonForAttribute(allData.teamPage);
+        const teamMembersData = escapeJsonForAttribute(allData.teamMembers);
 
         return `
             <div class="mx-auto">
@@ -88,7 +117,9 @@ class AboutPage extends App {
                 </about-us-section>
                 <!-- Our Team Section Component -->
                 <our-team-section 
-                    colors='${colorsData}'>
+                    colors='${colorsData}'
+                    page-data='${teamPageData}'
+                    team-members='${teamMembersData}'>
                 </our-team-section>
             </div>
         `;
