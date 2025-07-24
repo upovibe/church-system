@@ -4,7 +4,7 @@ import '@/components/layout/skeletonLoaders/EventListSkeleton.js';
 
 /**
  * Life Group List Component
- * 
+ *
  * Displays a list of life groups with banner images on the left and content on the right
  */
 class LifeGroupList extends App {
@@ -220,76 +220,59 @@ class LifeGroupList extends App {
                 </div>
             </div>
             
-            <!-- Life Groups List -->
-            <div class="space-y-6" id="life-groups-list">
-                ${loading ? `<event-list-skeleton></event-list-skeleton>` : lifeGroups.length > 0 ? lifeGroups.map(lifeGroup => {
+            <!-- Life Groups Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="life-groups-list">
+                ${loading ? `
+                    <div class="col-span-full">
+                        <event-list-skeleton></event-list-skeleton>
+                    </div>
+                ` : lifeGroups.length > 0 ? lifeGroups.map(lifeGroup => {
                     // Get banner image from life group
                     const bannerImage = lifeGroup.banner || '';
 
                     // Strip HTML from content for preview
                     const contentPreview = this.stripHtml(lifeGroup.description || '');
-                    const truncatedContent = this.truncateText(contentPreview, 200);
+                    const truncatedContent = this.truncateText(contentPreview, 120);
 
                     return `
-                        <div class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer life-group-card overflow-hidden p-5 rounded-lg bg-slate-700" 
-                             data-title="${lifeGroup.title || 'Untitled Life Group'}"
-                             onclick="this.closest('life-group-list').openLifeGroupPage('${lifeGroup.slug || lifeGroup.id}')">
-                            
-                            <div class="flex flex-col md:flex-row">
-                                <!-- Image Section -->
-                                <div class="md:w-1/3 h-48 md:h-auto relative rounded-xl overflow-hidden">
-                                    ${bannerImage ? `
-                                        <img src="${this.getImageUrl(bannerImage)}" 
-                                             alt="${lifeGroup.title || 'Life Group Image'}" 
-                                             class="w-full h-full object-cover rounded-xl"
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    ` : ''}
-                                    <!-- Fallback placeholder -->
-                                    <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center rounded-xl ${bannerImage ? 'hidden' : ''}">
-                                        <div class="text-center text-white">
-                                            <i class="fas fa-users text-4xl mb-2 opacity-50"></i>
-                                            <p class="text-sm opacity-75">No Image</p>
-                                        </div>
-                                    </div>                                    
-
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-5">
+                                <!-- Image -->
+                                <div class="relative h-48 bg-gray-200 overflow-hidden">
+                                    <img src="${this.getImageUrl(lifeGroup.banner)}" alt="${lifeGroup.title}" class="w-full h-full object-cover">
                                 </div>
                                 
-                                <!-- Content Section -->
-                                <div class="md:w-2/3 p-6 flex flex-col justify-between">
-                                    <div class="text-white ">
-                                        <h3 class="text-2xl font-bold mb-1 line-clamp-2" title="${lifeGroup.title || 'Untitled Life Group'}">
-                                            ${lifeGroup.title || 'Untitled Life Group'}
-                                        </h3>
-                                        <p class="text-sm leading-relaxed mb-4 line-clamp-3">
-                                            ${truncatedContent || 'No description available'}
-                                        </p>
+                                <!-- Content -->
+                                <div class="p-4">
+                                    <!-- Title -->
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2 italic">${lifeGroup.title}</h3>
+                                    
+                                    <!-- Description -->
+                                    <p class="text-gray-600 text-sm leading-relaxed mb-3">${this.truncateText(this.stripHtml(lifeGroup.description), 120)}</p>
+                                    
+                                    <!-- Date -->
+                                    <div class="text-xs text-gray-500 mb-3">
+                                        <i class="fas fa-calendar-alt mr-1"></i>
+                                        ${this.formatDate(lifeGroup.created_at)}
                                     </div>
                                     
                                     <!-- Footer -->
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-black">
-                                                <i class="fas fa-users mr-1"></i>
-                                                Life Group
-                                            </span>
+                                    <div class="mt-4 pt-4 border-t border-gray-600">
+                                        <div class="flex items-center justify-center">
                                             ${lifeGroup.link ? `
-                                                <a href="${lifeGroup.link}" target="_blank" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500 text-white hover:bg-blue-600 transition-colors" onclick="event.stopPropagation();">
-                                                    <i class="fas fa-external-link-alt mr-1"></i>
-                                                    Join
+                                                <a href="${lifeGroup.link}" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-colors" onclick="event.stopPropagation();">
+                                                    <i class="fas fa-external-link-alt mr-2"></i>
+                                                    Join Life Group
                                                 </a>
-                                            ` : ''}
-                                        </div>
-                                        <div class="flex items-center gap-2 text-gray-500 text-sm">
-                                            <i class="fas fa-arrow-right"></i>
-                                            <span>Read More</span>
+                                            ` : `
+                                                <span class="text-gray-400 text-sm">No link available</span>
+                                            `}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     `;
                 }).join('') : `
-                    <div class="text-center py-8 text-gray-500">
+                    <div class="col-span-full text-center py-8 text-gray-500">
                         <i class="fas fa-users text-2xl mb-2"></i>
                         <p>No life groups available</p>
                     </div>
