@@ -87,7 +87,9 @@ class GallerySection extends App {
         } else if (!Array.isArray(bannerImages)) {
             bannerImages = [bannerImages];
         }
-        return bannerImages.filter(img => img && img.trim() !== '');
+        // Filter out empty/null values and return only the first image
+        const filteredImages = bannerImages.filter(img => img && img.trim() !== '');
+        return filteredImages.length > 0 ? [filteredImages[0]] : [];
     }
 
     render() {
