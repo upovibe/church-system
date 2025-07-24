@@ -5,7 +5,7 @@ import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/AboutUsSection.js';
-import '@/components/layout/publicLayout/OurTeamSection.js';
+import '@/components/layout/publicLayout/LeadershipSection.js';
 
 /**
  * About Page Component (/about)
@@ -28,7 +28,7 @@ class AboutPage extends App {
             // Load about page data
             const aboutPageData = await this.fetchPageData('about-us');
             // Load our team page data
-            const teamPageData = await this.fetchPageData('our-team');
+            const teamPageData = await this.fetchPageData('our-leaders');
             // Load team members
             const teamMembers = await this.fetchTeamMembers();
             // Combine all data
@@ -116,11 +116,11 @@ class AboutPage extends App {
                     page-data='${pageData}'>
                 </about-us-section>
                 <!-- Our Team Section Component -->
-                <our-team-section 
+                <leadership-section 
                     colors='${colorsData}'
                     page-data='${teamPageData}'
                     team-members='${teamMembersData}'>
-                </our-team-section>
+                </leadership-section>
             </div>
         `;
     }

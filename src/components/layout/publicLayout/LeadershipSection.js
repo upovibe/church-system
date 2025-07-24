@@ -8,7 +8,7 @@ import '@/components/ui/Avatar.js';
  * 
  * Displays team content with a unique design layout
  */
-class OurTeamSection extends App {
+class LeadershipSection extends App {
     constructor() {
         super();
     }
@@ -170,5 +170,5 @@ class OurTeamSection extends App {
     }
 }
 
-customElements.define('our-team-section', OurTeamSection);
-export default OurTeamSection; 
+customElements.define('leadership-section', LeadershipSection);
+export default LeadershipSection; 
