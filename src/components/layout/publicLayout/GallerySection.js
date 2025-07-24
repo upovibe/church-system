@@ -1,8 +1,8 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
 import '@/components/ui/ContentDisplay.js';
-import '@/components/layout/publicLayout/PhotoGalleryView.js';
-import '@/components/layout/publicLayout/VideoGalleryView.js';
+import '@/components/layout/publicLayout/PhotoGalleryList.js';
+import '@/components/layout/publicLayout/VideoGalleryList.js';
 
 /**
  * Gallery Section Component
@@ -161,11 +161,11 @@ class GallerySection extends App {
                 <div class="container mx-auto px-4 py-8">
                     ${this.get('activeTab') === 'photos' ? `
                         <div class="animate-fade-in">
-                            <photo-gallery-view></photo-gallery-view>
+                            <photo-gallery-list></photo-gallery-list>
                         </div>
                     ` : `
                         <div class="animate-fade-in">
-                            <video-gallery-view></video-gallery-view>
+                            <video-gallery-list></video-gallery-list>
                         </div>
                     `}
                 </div>
