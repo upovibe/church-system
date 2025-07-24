@@ -128,9 +128,17 @@
             copyMinistryUrl() {
         const url = window.location.href;
         navigator.clipboard.writeText(url).then(() => {
-            this.showToast('Ministry URL copied to clipboard!', 'success');
+            Toast.show({ 
+                message: 'Ministry URL copied to clipboard!', 
+                variant: 'success',
+                duration: 3000
+            });
         }).catch(() => {
-            this.showToast('Failed to copy URL', 'error');
+            Toast.show({ 
+                message: 'Failed to copy URL', 
+                variant: 'error',
+                duration: 3000
+            });
         });
     }
 
@@ -144,18 +152,15 @@
                 text: ministry.content ? this.stripHtml(ministry.content).substring(0, 100) + '...' : 'Check out this ministry',
                 url: window.location.href
             }).catch(() => {
-                this.showToast('Sharing cancelled', 'info');
+                Toast.show({ 
+                    message: 'Sharing cancelled', 
+                    variant: 'info',
+                    duration: 3000
+                });
             });
         } else {
             this.copyMinistryUrl();
         }
-    }
-
-    showToast(message, type = 'info') {
-        const toast = document.createElement('toast-notification');
-        toast.setAttribute('message', message);
-        toast.setAttribute('type', type);
-        document.body.appendChild(toast);
     }
 
     // Helper function to strip HTML tags for preview
