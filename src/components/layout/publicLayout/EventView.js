@@ -292,7 +292,7 @@ class EventView extends App {
                 </div>
 
                 <!-- Event Details Section -->
-                <div class="container mx-auto p-4">
+                <div class="container mx-auto p-4 py-8 space-y-4">
                         <!-- Title with Share/Copy buttons -->
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
@@ -307,21 +307,10 @@ class EventView extends App {
                         </div>
 
                         <!-- Event Description -->
-                        <div class="rounded-lg shadow-md p-4">
+                        <div class="rounded-lg shadow-md p-4 bg-white/80 backdrop-blur-sm border border-gray-200">
                             <div class="prose max-w-none">
-                                <p class="text-[${textColor}] leading-relaxed">${event.description || 'No description available'}</p>
+                                <p class="leading-relaxed">${event.description || 'No description available'}</p>
                             </div>
-                        </div>
-
-
-
-                        <!-- Back Button -->
-                        <div class="text-center">
-                            <a href="/public/service-events" 
-                               class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                                <i class="fas fa-arrow-left"></i>
-                                Back to Events
-                            </a>
                         </div>
                     </div>
             </div>
