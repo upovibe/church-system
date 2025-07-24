@@ -242,7 +242,7 @@ class MinistryList extends App {
                     const truncatedContent = this.truncateText(contentPreview, 200);
 
                     return `
-                        <div class="bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ministry-card overflow-hidden p-5 rounded-lg bg-slate-700" 
+                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ministry-card overflow-hidden p-5" 
                              data-title="${ministry.title || 'Untitled Ministry'}"
                              onclick="this.closest('ministry-list').openMinistryPage('${ministry.slug || ministry.id}')">
                             
