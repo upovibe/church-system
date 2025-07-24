@@ -119,6 +119,16 @@ Router::get('/teams/{id}', 'TeamController@show');
 Router::put('/teams/{id}', 'TeamController@update');
 Router::delete('/teams/{id}', 'TeamController@destroy');
 
+// Life Group Management Routes (admin only for create/update/delete, public for view)
+Router::get('/life-groups', 'LifeGroupController@index');
+Router::post('/life-groups', 'LifeGroupController@store');
+Router::get('/life-groups/active', 'LifeGroupController@getActive');
+Router::get('/life-groups/search', 'LifeGroupController@search');
+Router::get('/life-groups/slug/{slug}', 'LifeGroupController@showBySlug');
+Router::get('/life-groups/{id}', 'LifeGroupController@show');
+Router::put('/life-groups/{id}', 'LifeGroupController@update');
+Router::delete('/life-groups/{id}', 'LifeGroupController@destroy');
+
 // Guest Applications
 Router::get('/applications', 'ApplicationController@index');
 Router::get('/applications/{id}', 'ApplicationController@show');
