@@ -83,7 +83,7 @@ class ServiceEventsPage extends App {
         const colorsData = escapeJsonForAttribute(allData.colors);
 
         return `
-            <div class="mx-auto">
+           <div class="min-h-screen mx-auto">
                 <!-- Service Events Section Component -->
                 <service-events-section 
                     colors='${colorsData}'

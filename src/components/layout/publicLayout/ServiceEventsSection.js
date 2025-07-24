@@ -1,6 +1,7 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/EventList.js';
+import '@/components/layout/publicLayout/SermonList.js';
 
 /**
  * Service Events Section Component
@@ -11,6 +12,7 @@ import '@/components/layout/publicLayout/EventList.js';
 class ServiceEventsSection extends App {
     constructor() {
         super();
+        this.set('activeTab', 'events'); // Default to events tab
     }
 
     connectedCallback() {
@@ -157,6 +159,11 @@ class ServiceEventsSection extends App {
         <!-- Events List Section -->
         <div class="container mx-auto px-4 py-8">
             <event-list></event-list>
+        </div>
+
+        <!-- Events List Section -->
+        <div class="container mx-auto px-4 py-8">
+            <sermon-list></sermon-list>
         </div>
         `;
     }
