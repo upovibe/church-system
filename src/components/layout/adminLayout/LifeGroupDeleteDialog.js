@@ -137,7 +137,7 @@ class LifeGroupDeleteDialog extends HTMLElement {
     }
 
     render() {
-        return `
+        this.innerHTML = `
             <ui-dialog 
                 title="Delete Life Group"
                 variant="danger"
@@ -173,12 +173,8 @@ class LifeGroupDeleteDialog extends HTMLElement {
                 </div>
 
                 <div slot="footer" class="flex justify-end space-x-3">
-                    <ui-button variant="secondary" data-action="cancel">
-                        Cancel
-                    </ui-button>
-                    <ui-button variant="danger" data-action="confirm">
-                        Delete Life Group
-                    </ui-button>
+                    <button type="button" data-action="cancel" class="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">Cancel</button>
+                    <button type="button" data-action="confirm" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400">Delete Life Group</button>
                 </div>
             </ui-dialog>
         `;

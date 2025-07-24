@@ -152,7 +152,7 @@ class LifeGroupSettingsModal extends HTMLElement {
     }
 
     render() {
-        return `
+        this.innerHTML = `
             <ui-modal 
                 title="Add New Life Group"
                 size="lg"
@@ -216,15 +216,6 @@ class LifeGroupSettingsModal extends HTMLElement {
                             <span class="ml-2 text-sm text-gray-700">Active</span>
                         </label>
                     </div>
-                </div>
-
-                <div slot="footer" class="flex justify-end space-x-3">
-                    <ui-button variant="secondary" data-action="cancel">
-                        Cancel
-                    </ui-button>
-                    <ui-button variant="primary" data-action="confirm">
-                        Save Life Group
-                    </ui-button>
                 </div>
             </ui-modal>
         `;

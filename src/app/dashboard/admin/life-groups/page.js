@@ -173,8 +173,21 @@ class LifeGroupsPage extends App {
     }
 
     onAdd(event) {
+        console.log('➕ Add button clicked');
         this.closeAllModals();
         this.set('showAddModal', true);
+        
+        // Check if modal exists after render
+        setTimeout(() => {
+            const modal = this.querySelector('life-group-settings-modal');
+            console.log('🔍 Modal in DOM:', modal);
+            if (modal) {
+                console.log('✅ Modal found, checking if it has open attribute');
+                console.log('🔍 Modal open attribute:', modal.hasAttribute('open'));
+            } else {
+                console.log('❌ Modal not found in DOM');
+            }
+        }, 50);
     }
 
     onRefresh(event) {
@@ -243,6 +256,8 @@ class LifeGroupsPage extends App {
         const showUpdateModal = this.get('showUpdateModal');
         const showViewModal = this.get('showViewModal');
         const showDeleteDialog = this.get('showDeleteDialog');
+        
+
 
         const tableData = lifeGroups ? lifeGroups.map((lg, index) => {
             
