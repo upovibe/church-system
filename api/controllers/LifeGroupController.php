@@ -53,18 +53,20 @@ class LifeGroupController {
             // Require admin authentication
             RoleMiddleware::requireAdmin($this->pdo);
             
-            // Handle multipart form data or JSON data for PUT/PATCH requests
-            $data = [];
-            $content_type = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-            $rawData = file_get_contents('php://input');
-
-            if (strpos($content_type, 'multipart/form-data') !== false) {
-                $parsed = MultipartFormParser::parse($rawData, $content_type);
-                $data = $parsed['data'] ?? [];
-                $_FILES = $parsed['files'] ?? [];
-            } else {
-                // Fall back to JSON
-                $data = json_decode($rawData, true) ?? [];
+            // Use simple approach like TestimonialController
+            $data = $_POST ?: json_decode(file_get_contents('php://input'), true);
+            
+            // Debug logging
+            error_log("Received data: " . print_r($data, true));
+            
+            // Validate required fields
+            if (empty($data['title'])) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Title is required'
+                ]);
+                return;
             }
             
             // Auto-generate slug from title (only if title is provided)
@@ -78,15 +80,24 @@ class LifeGroupController {
                 $data['is_active'] = 1;
             }
             
-            // Handle banner upload if present
+            // Handle banner upload if present (only if there are actual files)
             $bannerData = null;
             if (!empty($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
                 $bannerData = uploadLifeGroupBanner($_FILES['banner']);
                 $data['banner'] = $bannerData['original'];
             }
             
+            // Filter data to only include fillable fields
+            $fillableFields = ['title', 'slug', 'description', 'banner', 'link', 'is_active'];
+            $filteredData = [];
+            foreach ($fillableFields as $field) {
+                if (isset($data[$field])) {
+                    $filteredData[$field] = $data[$field];
+                }
+            }
+            
             // Create life group
-            $lifeGroupId = $this->lifeGroupModel->create($data);
+            $lifeGroupId = $this->lifeGroupModel->create($filteredData);
             
             if ($lifeGroupId) {
                 // Get the created life group data
