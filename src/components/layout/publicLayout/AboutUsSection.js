@@ -104,7 +104,7 @@ class AboutUsSection extends App {
                 z-index: 2;
             }
         </style>
-        <section class="container mx-auto px-4 py-24 pt-40">
+        <section class="container mx-auto px-4 pt-40">
             <div class="mx-auto mb-8">
                 ${title ? `<h1 class="text-2xl md:text-4xl font-bold mb-4 text-white" style="line-height: 1.2;">${title}</h1>` : ''}
                 <!--  ${subtitle ? `<p class="text-xl text-white/80 mb-8">${subtitle}</p>` : ''} -->

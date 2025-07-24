@@ -128,111 +128,36 @@ class OurTeamSection extends App {
             `;
         }
 
-        const bannerImages = this.getBannerImages(pageData);
-
         return `
             <!-- Our Team Section -->
-            <section class="mx-auto py-10 bg-gray-50">
-                <!-- Team Header -->
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl lg:text-4xl font-bold text-[${primaryColor}] mb-4">
-                        Our Team
-                    </h2>
-                    <p class="text-lg opacity-80 mb-4">
-                        Dedicated educators committed to excellence
-                    </p>
-                    <div class="w-24 h-1 bg-[${primaryColor}] mx-auto rounded-full"></div>
+            <section class="container mx-auto px-4">
+                <!-- Main Content Section (No Banner, No BG) -->
+                ${pageData.content ? `
+                <div class="mx-auto mt-10 bg-[#898989]/90 rounded-2xl shadow p-8">
+                    <content-display 
+                        content="${pageData.content.replace(/"/g, '&quot;')}"
+                        no-styles>
+                    </content-display>
                 </div>
-                
-                <!-- Main Content Section (Image Left, Content Right) -->
-                <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                        <!-- Banner Image Column (Left) -->
-                        <div class="relative h-64 lg:h-auto">
-                            ${bannerImages.length > 0 ? `
-                                <img src="${this.getImageUrl(bannerImages[0])}" 
-                                     alt="Our Team" 
-                                     class="w-full h-full object-cover"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            ` : ''}
-                            <div class="absolute inset-0 hidden items-center justify-center bg-gray-100">
-                                <div class="text-center">
-                                    <i class="fas fa-users text-gray-400 text-4xl mb-2"></i>
-                                    <p class="text-gray-500 font-medium">Our team image</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Content Column (Right) -->
-                        <div class="p-5 lg:p-12 flex flex-col justify-center">
-                            <content-display 
-                                content="${pageData.content.replace(/"/g, '&quot;')}"
-                                no-styles>
-                            </content-display>
-                        </div>
-                    </div>
-                </div>
-                
+                ` : ''}
                 <!-- Team Members Grid -->
                 ${teamMembers.length > 0 ? `
                     <div class="mt-16">
                         <div class="text-center mb-12">
-                            <h3 class="text-2xl lg:text-3xl font-bold text-[${secondaryColor}] mb-4">Our Team Members</h3>
-                            <p class="text-lg text-gray-600">Get to know the dedicated professionals behind our success</p>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-[${secondaryColor}] mb-4">Leadership</h3>
                         </div>
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             ${teamMembers.map(member => `
-                                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group">
-                                    <!-- Team Member Image/Avatar -->
-                                    <div class="relative h-48 overflow-hidden">
-                                        <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[${secondaryColor}] to-[${primaryColor}]">
-                                            <ui-avatar 
-                                                name="${member.name}" 
-                                                size="3xl" 
-                                                color="${primaryColor}"
-                                                alt="${member.name}"
-                                                ${member.profile_image ? `src="${this.getImageUrl(member.profile_image)}"` : ''}
-                                            ></ui-avatar>
-                                        </div>
-                                        
-                                        <!-- Department Badge -->
-                                        ${member.department ? `
-                                            <div class="absolute top-3 right-3">
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[${primaryColor}] text-white">
-                                                    ${member.department}
-                                                </span>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                    
-                                    <!-- Team Member Info -->
-                                    <div class="p-6">
-                                        <h4 class="text-lg font-semibold text-[${secondaryColor}] mb-2">${member.name}</h4>
-                                        ${member.position ? `
-                                            <p class="text-sm text-gray-600 mb-3">${member.position}</p>
-                                        ` : ''}
-                                        
-                                        ${member.bio ? `
-                                            <p class="text-sm text-gray-500 line-clamp-3">${member.bio}</p>
-                                        ` : ''}
-                                        
-                                        <!-- Contact Info -->
-                                        <div class="mt-4 pt-4 border-t border-gray-100">
-                                            ${member.email ? `
-                                                <div class="flex items-center text-sm text-gray-600 mb-1">
-                                                    <i class="fas fa-envelope w-4 mr-2"></i>
-                                                    <span class="truncate">${member.email}</span>
-                                                </div>
-                                            ` : ''}
-                                            ${member.phone ? `
-                                                <div class="flex items-center text-sm text-gray-600">
-                                                    <i class="fas fa-phone w-4 mr-2"></i>
-                                                    <span>${member.phone}</span>
-                                                </div>
-                                            ` : ''}
-                                        </div>
-                                    </div>
+                                <div class="flex flex-col items-center justify-start py-8">
+                                    <ui-avatar 
+                                        name="${member.name}"
+                                        size="3xl"
+                                        color="${primaryColor}"
+                                        alt="${member.name}"
+                                        ${member.profile_image ? `src="${this.getImageUrl(member.profile_image)}"` : ''}
+                                    ></ui-avatar>
+                                    <h4 class="mt-4 text-lg font-semibold text-[${secondaryColor}]">${member.name}</h4>
+                                    ${member.position ? `<p class="text-sm text-gray-600 mt-1">${member.position}</p>` : ''}
                                 </div>
                             `).join('')}
                         </div>
