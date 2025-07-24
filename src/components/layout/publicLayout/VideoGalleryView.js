@@ -217,48 +217,47 @@ class VideoGalleryView extends App {
         }
 
         return `
-            <!-- Breadcrumb -->
-            <ui-breadcrumb separator="chevron" color="primary">
-                <ui-breadcrumb-item href="/">Home</ui-breadcrumb-item>
-                <ui-breadcrumb-item href="/public/gallery">Gallery</ui-breadcrumb-item>
-                <ui-breadcrumb-item href="/public/gallery/videos">Videos</ui-breadcrumb-item>
-                <ui-breadcrumb-item>${videoGallery.name ? videoGallery.name.charAt(0).toUpperCase() + videoGallery.name.slice(1) : 'Video Gallery Details'}</ui-breadcrumb-item>
-            </ui-breadcrumb>
-
             <!-- Video Gallery Banner -->
-            <div class="relative w-full h-96 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-2xl overflow-hidden shadow-lg my-6 flex items-center justify-center">
-                <div class="text-center text-white">
-                    <i class="fas fa-video text-6xl mb-4"></i>
-                    <p class="text-2xl font-semibold">${videoGallery.name}</p>
-                    <p class="text-lg opacity-90">Video Gallery</p>
+            ${videoGallery.video_links && videoGallery.video_links.length > 0 ? `
+                <div class="relative w-full h-96 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-2xl overflow-hidden shadow-lg my-6 flex items-center justify-center">
+                    <div class="text-center text-white">
+                        <i class="fas fa-video text-6xl mb-4"></i>
+                        <p class="text-2xl font-semibold">${videoGallery.name}</p>
+                        <p class="text-lg opacity-90">Video Gallery</p>
+                    </div>
+                    <!-- Video Count Badge -->
+                    <div class="absolute top-6 left-6">
+                        <span class="bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full backdrop-blur-sm">
+                            ${videoGallery.video_links ? videoGallery.video_links.length : 0} ${videoGallery.video_links && videoGallery.video_links.length === 1 ? 'video' : 'videos'}
+                        </span>
+                    </div>
                 </div>
-                
-                <!-- Share/Copy buttons - Absolute positioned at top-right corner -->
-                <div class="absolute top-4 right-4 z-10 flex gap-3">
-                    <i onclick="navigator.share ? navigator.share({title: '${videoGallery.name}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
-                       class="fas fa-share size-8 text-white hover:text-gray-200 cursor-pointer transition-colors bg-black bg-opacity-50 rounded-lg p-1.5 backdrop-blur-sm"></i>
-                    <i onclick="this.closest('app-video-gallery-view').copyGalleryUrl()" 
-                       class="fas fa-copy size-8 text-white hover:text-gray-200 cursor-pointer transition-colors bg-black bg-opacity-50 rounded-lg p-1.5 backdrop-blur-sm"></i>
-                </div>
-                
-                <!-- Video Count Badge -->
-                <div class="absolute top-6 left-6">
-                    <span class="bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full backdrop-blur-sm">
-                        ${videoGallery.video_links ? videoGallery.video_links.length : 0} ${videoGallery.video_links && videoGallery.video_links.length === 1 ? 'video' : 'videos'}
-                    </span>
-                </div>
-            </div>
+            ` : ''}
 
             <!-- Video Gallery Title and Description -->
             <div class="my-6">
-                <h1 class="text-3xl lg:text-4xl font-bold text-[${secondaryColor}] mb-4">
-                    ${videoGallery.name}
-                </h1>
-                ${videoGallery.description ? `
-                    <p class="text-lg text-gray-600 leading-relaxed mb-4">
-                        ${videoGallery.description}
-                    </p>
-                ` : ''}
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <h1 class="text-3xl lg:text-4xl font-bold text-[${secondaryColor}] mb-4">
+                            ${videoGallery.name}
+                        </h1>
+                        ${videoGallery.description ? `
+                            <p class="text-lg text-gray-600 leading-relaxed mb-4">
+                                ${videoGallery.description}
+                            </p>
+                        ` : ''}
+                    </div>
+                    <div class="flex gap-2 ml-4">
+                        <button onclick="navigator.share ? navigator.share({title: '${videoGallery.name}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
+                               class="size-8 border-2 border-[${primaryColor}] text-[${primaryColor}] rounded-lg font-semibold hover:bg-[${primaryColor}] hover:text-[${textColor}] transition-colors flex items-center justify-center">
+                            <i class="fas fa-share"></i>
+                        </button>
+                        <button onclick="this.closest('app-video-gallery-view').copyGalleryUrl()" 
+                               class="size-8 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-300 hover:text-gray-800 transition-colors flex items-center justify-center">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="w-24 h-1 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full"></div>
             </div>
 
