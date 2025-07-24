@@ -269,7 +269,7 @@ class ContactSectionAlt extends App {
             <!-- Contact Section Alt -->
             <section class="">
                 <!-- Banner Section (like GallerySection) -->
-                <div class="relative w-full h-[400px] lg:h-[45vh] overflow-hidden mb-10">
+                <div class="relative w-full h-[45vh] overflow-hidden mb-10">
                     ${showImages ? bannerImages.map((img, idx) => `
                         <div
                             class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
@@ -299,200 +299,197 @@ class ContactSectionAlt extends App {
                         </div>
                     </div>
                 </div>
-                <!-- Optional page content below banner -->
-                ${pageData && pageData.content ? `
-                    <div class="max-w-3xl mx-auto mb-10 text-center">
-                        <content-display content="${pageData.content.replace(/"/g, '&quot;')}" no-styles></content-display>
-                    </div>
-                ` : ''}
-                <!-- Contact Content -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <!-- Contact Information -->
-                    <div class="space-y-8">
-                        <div class="bg-white rounded-[2rem] p-6">
-                            <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
-                            <div class="space-y-6">
-                                <!-- Address -->
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-map-marker-alt text-white"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold mb-1">Address</h3>
-                                        <p class="text-gray-600">${this.get('contactAddress') || '123 School Street, City, State 12345'}</p>
-                                    </div>
-                                </div>
-                                <!-- Phone -->
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-phone text-white"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold mb-1">Phone</h3>
-                                        <p class="text-gray-600">${this.get('contactPhone') || '+1 (555) 123-4567'}</p>
-                                    </div>
-                                </div>
-                                <!-- Email -->
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-envelope text-white"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold mb-1">Email</h3>
-                                        <p class="text-gray-600">${this.get('contactEmail') || 'info@school.edu'}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Contact Form -->
-                    <div class="bg-white rounded-[2rem] p-6">
-                        <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-6">Send us a Message</h2>
-                        <form class="space-y-6">
-                            <!-- Name -->
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Full Name *
-                                </label>
-                                <ui-input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value="${formData.name}"
-                                    placeholder="Enter your full name"
-                                    required>
-                                </ui-input>
-                            </div>
-                            <!-- Email -->
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Email Address *
-                                </label>
-                                <ui-input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value="${formData.email}"
-                                    placeholder="Enter your email address"
-                                    required>
-                                </ui-input>
-                            </div>
-                            <!-- Subject -->
-                            <div>
-                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Subject
-                                </label>
-                                <ui-input
-                                    type="text"
-                                    id="subject"
-                                    name="subject"
-                                    value="${formData.subject}"
-                                    placeholder="Enter message subject">
-                                </ui-input>
-                            </div>
-                            <!-- Message -->
-                            <div>
-                                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Message *
-                                </label>
-                                <ui-textarea
-                                    id="message"
-                                    name="message"
-                                    rows="5"
-                                    placeholder="Enter your message"
-                                    required>${formData.message}</ui-textarea>
-                            </div>
-                            <!-- Submit Button -->
-                            <button
-                                type="submit"
-                                disabled="${loading}"
-                                class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg hover:from-[${primaryColor}] hover:to-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-                                ${loading ? `
-                                    <div class="flex items-center justify-center gap-2">
-                                        <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        Sending Message...
-                                    </div>
-                                ` : `
-                                    <div class="flex items-center justify-center gap-2">
-                                        <i class="fas fa-paper-plane"></i>
-                                        Send Message
-                                    </div>
-                                `}
-                            </button>
-                            <!-- Social Media Links -->
-                            ${this.hasSocialMediaLinks() ? `
-                                <div class="border-t border-gray-200 pt-6">
-                                    <h3 class="text-lg font-semibold text-[${secondaryColor}] mb-4 text-center">Follow Us</h3>
-                                    <div class="grid grid-cols-3 gap-3">
-                                        ${this.renderSocialMediaLinks()}
-                                    </div>
+                <div class="contaner lg:max-w-5xl mx-auto p-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <!-- Left Column: Page Content (if any) and Contact Information -->
+                        <div class="space-y-8">
+                            ${pageData && pageData.content ? `
+                                <div class="mb-4 text-center">
+                                    <content-display content="${pageData.content.replace(/"/g, '&quot;')}" no-styles></content-display>
                                 </div>
                             ` : ''}
-                        </form>
-                    </div>
-                </div>
-                <!-- Map Section -->
-                <div class="mt-16">
-                    <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-[${secondaryColor}] mb-4">Find Us</h2>
-                        <p class="text-gray-600 max-w-2xl mx-auto">
-                            Visit our campus and experience our facilities firsthand
-                        </p>
-                        <div class="w-24 h-1 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] mx-auto mt-4 rounded-full"></div>
-                    </div>
-                    
-                    <div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden">
-                        <!-- Map Header -->
-                        <div class="bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] p-6 text-white">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-map-marker-alt text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold">${this.get('mapLocationName') || 'Our School Campus'}</h3>
-                                    <p class="text-white/90">${this.get('mapAddress') || '123 School Street, City, Country'}</p>
+                            <div class="bg-white rounded-[2rem] p-6">
+                                <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
+                                <div class="space-y-6">
+                                    <!-- Address -->
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-map-marker-alt text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold mb-1">Address</h3>
+                                            <p class="text-gray-600">${this.get('contactAddress') || '123 School Street, City, State 12345'}</p>
+                                        </div>
+                                    </div>
+                                    <!-- Phone -->
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-phone text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold mb-1">Phone</h3>
+                                            <p class="text-gray-600">${this.get('contactPhone') || '+1 (555) 123-4567'}</p>
+                                        </div>
+                                    </div>
+                                    <!-- Email -->
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-envelope text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold mb-1">Email</h3>
+                                            <p class="text-gray-600">${this.get('contactEmail') || 'info@school.edu'}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Map Embed -->
-                        <div class="relative h-96">
-                            ${this.get('mapEmbedUrl') ? `
-                                <iframe 
-                                    src="${this.get('mapEmbedUrl')}"
-                                    title="${this.get('mapLocationName') || 'School Location'}"
-                                    class="w-full h-full"
-                                    frameborder="0" 
-                                    allowfullscreen>
-                                </iframe>
-                            ` : `
-                                <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                    <div class="text-center">
-                                        <i class="fas fa-map text-gray-400 text-4xl mb-4"></i>
-                                        <p class="text-gray-500 mb-2">Map not available</p>
-                                        <p class="text-sm text-gray-400">Please configure map settings</p>
+                        <!-- Contact Form -->
+                        <div class="bg-white rounded-[2rem] p-6">
+                            <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-6">Send us a Message</h2>
+                            <form class="space-y-6">
+                                <!-- Name -->
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Full Name *
+                                    </label>
+                                    <ui-input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        value="${formData.name}"
+                                        placeholder="Enter your full name"
+                                        required>
+                                    </ui-input>
+                                </div>
+                                <!-- Email -->
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Email Address *
+                                    </label>
+                                    <ui-input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value="${formData.email}"
+                                        placeholder="Enter your email address"
+                                        required>
+                                    </ui-input>
+                                </div>
+                                <!-- Subject -->
+                                <div>
+                                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Subject
+                                    </label>
+                                    <ui-input
+                                        type="text"
+                                        id="subject"
+                                        name="subject"
+                                        value="${formData.subject}"
+                                        placeholder="Enter message subject">
+                                    </ui-input>
+                                </div>
+                                <!-- Message -->
+                                <div>
+                                    <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Message *
+                                    </label>
+                                    <ui-textarea
+                                        id="message"
+                                        name="message"
+                                        rows="5"
+                                        placeholder="Enter your message"
+                                        required>${formData.message}</ui-textarea>
+                                </div>
+                                <!-- Submit Button -->
+                                <button
+                                    type="submit"
+                                    disabled="${loading}"
+                                    class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg hover:from-[${primaryColor}] hover:to-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                                    ${loading ? `
+                                        <div class="flex items-center justify-center gap-2">
+                                            <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            Sending Message...
+                                        </div>
+                                    ` : `
+                                        <div class="flex items-center justify-center gap-2">
+                                            <i class="fas fa-paper-plane"></i>
+                                            Send Message
+                                        </div>
+                                    `}
+                                </button>
+                                <!-- Social Media Links -->
+                                ${this.hasSocialMediaLinks() ? `
+                                    <div class="border-t border-gray-200 pt-6">
+                                        <h3 class="text-lg font-semibold text-[${secondaryColor}] mb-4 text-center">Follow Us</h3>
+                                        <div class="grid grid-cols-3 gap-3">
+                                            ${this.renderSocialMediaLinks()}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Map Section -->
+                    <div class="mt-16">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-bold text-[${secondaryColor}] mb-4">Find Us</h2>
+                            <p class="text-gray-600 max-w-2xl mx-auto">
+                                Visit our campus and experience our facilities firsthand
+                            </p>
+                            <div class="w-24 h-1 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] mx-auto mt-4 rounded-full"></div>
+                        </div>
+                        <div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden">
+                            <!-- Map Header -->
+                            <div class="bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] p-6 text-white">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-map-marker-alt text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold">${this.get('mapLocationName') || 'Our School Campus'}</h3>
+                                        <p class="text-white/90">${this.get('mapAddress') || '123 School Street, City, Country'}</p>
                                     </div>
                                 </div>
-                            `}
-                        </div>
-                        
-                        <!-- Map Info -->
-                        <div class="p-6 bg-gray-50">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                                <div>
-                                    <i class="fas fa-map-marker-alt text-xl mb-2"></i>
-                                    <h4 class="font-semibold text-[${secondaryColor}]">Location</h4>
-                                    <p class="text-gray-600 text-sm">${this.get('mapLocationName') || 'Our School Campus'}</p>
-                                </div>
-                                <div>
-                                    <i class="fas fa-route text-[${primaryColor}] text-xl mb-2"></i>
-                                    <h4 class="font-semibold text-[${secondaryColor}]">Coordinates</h4>
-                                    <p class="text-gray-600 text-sm">${this.get('mapLatitude') || '40.7128'}, ${this.get('mapLongitude') || '-74.0060'}</p>
-                                </div>
-                                <div>
-                                    <i class="fas fa-search-plus text-[${primaryColor}] text-xl mb-2"></i>
-                                    <h4 class="font-semibold text-[${secondaryColor}]">Zoom Level</h4>
-                                    <p class="text-gray-600 text-sm">${this.get('mapZoomLevel') || '15'}</p>
+                            </div>
+                            <!-- Map Embed -->
+                            <div class="relative h-96">
+                                ${this.get('mapEmbedUrl') ? `
+                                    <iframe 
+                                        src="${this.get('mapEmbedUrl')}"
+                                        title="${this.get('mapLocationName') || 'School Location'}"
+                                        class="w-full h-full"
+                                        frameborder="0" 
+                                        allowfullscreen>
+                                    </iframe>
+                                ` : `
+                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                                        <div class="text-center">
+                                            <i class="fas fa-map text-gray-400 text-4xl mb-4"></i>
+                                            <p class="text-gray-500 mb-2">Map not available</p>
+                                            <p class="text-sm text-gray-400">Please configure map settings</p>
+                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                            <!-- Map Info -->
+                            <div class="p-6 bg-gray-50">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                    <div>
+                                        <i class="fas fa-map-marker-alt text-xl mb-2"></i>
+                                        <h4 class="font-semibold text-[${secondaryColor}]">Location</h4>
+                                        <p class="text-gray-600 text-sm">${this.get('mapLocationName') || 'Our School Campus'}</p>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-route text-[${primaryColor}] text-xl mb-2"></i>
+                                        <h4 class="font-semibold text-[${secondaryColor}]">Coordinates</h4>
+                                        <p class="text-gray-600 text-sm">${this.get('mapLatitude') || '40.7128'}, ${this.get('mapLongitude') || '-74.0060'}</p>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-search-plus text-[${primaryColor}] text-xl mb-2"></i>
+                                        <h4 class="font-semibold text-[${secondaryColor}]">Zoom Level</h4>
+                                        <p class="text-gray-600 text-sm">${this.get('mapZoomLevel') || '15'}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
