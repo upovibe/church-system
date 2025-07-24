@@ -135,7 +135,7 @@ class VideoGalleryList extends App {
                 <button onclick="this.closest('video-gallery-list').goBackToList()" class="mb-6 px-4 py-2 bg-[${primaryColor}] text-[${textColor}] rounded-lg font-semibold hover:bg-[${accentColor}] transition-colors flex items-center gap-2">
                     <i class="fas fa-arrow-left"></i> Back to Video Galleries
                 </button>
-                <video-gallery-view slug="${selectedGallerySlug}"></video-gallery-view>
+                <app-video-gallery-view slug="${selectedGallerySlug}"></app-video-gallery-view>
             `;
         }
 
