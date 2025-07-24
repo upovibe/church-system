@@ -235,41 +235,53 @@ class LifeGroupList extends App {
                     const truncatedContent = this.truncateText(contentPreview, 120);
 
                     return `
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-5">
-                                <!-- Image -->
-                                <div class="relative h-48 bg-gray-200 overflow-hidden">
-                                    <img src="${this.getImageUrl(lifeGroup.banner)}" alt="${lifeGroup.title}" class="w-full h-full object-cover">
-                                </div>
-                                
-                                <!-- Content -->
-                                <div class="p-4">
-                                    <!-- Title -->
-                                    <h3 class="text-xl font-semibold text-gray-800 mb-2 italic">${lifeGroup.title}</h3>
-                                    
-                                    <!-- Description -->
-                                    <p class="text-gray-600 text-sm leading-relaxed mb-3">${this.truncateText(this.stripHtml(lifeGroup.description), 120)}</p>
-                                    
-                                    <!-- Date -->
-                                    <div class="text-xs text-gray-500 mb-3">
-                                        <i class="fas fa-calendar-alt mr-1"></i>
-                                        ${this.formatDate(lifeGroup.created_at)}
-                                    </div>
-                                    
-                                    <!-- Footer -->
-                                    <div class="mt-4 pt-4 border-t border-gray-600">
-                                        <div class="flex items-center justify-center">
-                                            ${lifeGroup.link ? `
-                                                <a href="${lifeGroup.link}" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-colors" onclick="event.stopPropagation();">
-                                                    <i class="fas fa-external-link-alt mr-2"></i>
-                                                    Join Life Group
-                                                </a>
-                                            ` : `
-                                                <span class="text-gray-400 text-sm">No link available</span>
-                                            `}
-                                        </div>
+                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer life-group-card overflow-hidden p-5" 
+                             data-title="${lifeGroup.title || 'Untitled Life Group'}"
+                             onclick="this.closest('life-group-list').openLifeGroupPage('${lifeGroup.slug || lifeGroup.id}')">
+                            
+                            <!-- Image Section -->
+                            <div class="h-48 relative overflow-hidden">
+                                ${bannerImage ? `
+                                    <img src="${this.getImageUrl(bannerImage)}" 
+                                         alt="${lifeGroup.title || 'Life Group Image'}" 
+                                         class="w-full h-full object-cover"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                ` : ''}
+                                <!-- Fallback placeholder -->
+                                <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center ${bannerImage ? 'hidden' : ''}">
+                                    <div class="text-center text-white">
+                                        <i class="fas fa-users text-4xl mb-2 opacity-50"></i>
+                                        <p class="text-sm opacity-75">No Image</p>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Content Section -->
+                            <div class="py-6 flex flex-col h-48">
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold mb-2 text-white line-clamp-2 italic" title="${lifeGroup.title || 'Untitled Life Group'}">
+                                        ${lifeGroup.title || 'Untitled Life Group'}
+                                    </h3>
+                                    <p class="text-sm leading-relaxed text-gray-300 line-clamp-3">
+                                        ${truncatedContent || 'No description available'}
+                                    </p>
+                                </div>
+                                
+                                <!-- Footer -->
+                                <div class="mt-4 pt-4 border-t border-gray-600">
+                                    <div class="flex items-center justify-center">
+                                        ${lifeGroup.link ? `
+                                            <a href="${lifeGroup.link}" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 transition-colors" onclick="event.stopPropagation();">
+                                                <i class="fas fa-external-link-alt mr-2"></i>
+                                                Join Life Group
+                                            </a>
+                                        ` : `
+                                            <span class="text-gray-400 text-sm">No link available</span>
+                                        `}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     `;
                 }).join('') : `
                     <div class="col-span-full text-center py-8 text-gray-500">
@@ -283,4 +295,4 @@ class LifeGroupList extends App {
 }
 
 customElements.define('life-group-list', LifeGroupList);
-export default LifeGroupList; 
+export default LifeGroupList;
