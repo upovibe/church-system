@@ -98,6 +98,11 @@ class ServiceEventsSection extends App {
         this.render();
     }
 
+    switchTab(tab) {
+        this.set('activeTab', tab);
+        this.render();
+    }
+
     render() {
         // Get page data from state
         const pageData = this.get('pageData') || {};
@@ -142,11 +147,15 @@ class ServiceEventsSection extends App {
                             ${heroSubtitle}
                         </p>
                         <div class="flex flex-row gap-2 sm:gap-4 justify-start w-fit">
-                            <button class="px-5 py-2 bg-[${accentColor}] text-[${darkColor}] rounded-xl text-lg shadow-lg flex items-center gap-2">
+                            <button 
+                                class="px-5 py-2 rounded-xl text-lg shadow-lg flex items-center gap-2 transition-all duration-300 ${this.get('activeTab') === 'events' ? `bg-[${accentColor}] text-[${darkColor}]` : `bg-white/20 text-white hover:bg-white/30`}"
+                                onclick="this.closest('service-events-section').switchTab('events')">
                                 <i class="fas fa-calendar-alt text-base"></i>
                                 Events
                             </button>
-                            <button class="px-5 py-2 bg-[${secondaryColor}] text-[${darkColor}] rounded-xl text-lg shadow-lg flex items-center gap-2">
+                            <button 
+                                class="px-5 py-2 rounded-xl text-lg shadow-lg flex items-center gap-2 transition-all duration-300 ${this.get('activeTab') === 'sermons' ? `bg-[${secondaryColor}] text-[${darkColor}]` : `bg-white/20 text-white hover:bg-white/30`}"
+                                onclick="this.closest('service-events-section').switchTab('sermons')">
                                 <i class="fas fa-play text-base"></i>
                                 Sermons
                             </button>
@@ -156,14 +165,19 @@ class ServiceEventsSection extends App {
             </div>
         </div>
         
-        <!-- Events List Section -->
+        <!-- Content Sections -->
         <div class="container mx-auto px-4 py-8">
-            <event-list></event-list>
-        </div>
-
-        <!-- Events List Section -->
-        <div class="container mx-auto px-4 py-8">
-            <sermon-list></sermon-list>
+            ${this.get('activeTab') === 'events' ? `
+                <!-- Events List Section -->
+                <div class="animate-fade-in">
+                    <event-list></event-list>
+                </div>
+            ` : `
+                <!-- Sermons List Section -->
+                <div class="animate-fade-in">
+                    <sermon-list></sermon-list>
+                </div>
+            `}
         </div>
         `;
     }
