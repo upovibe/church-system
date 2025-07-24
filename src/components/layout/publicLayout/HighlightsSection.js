@@ -69,23 +69,37 @@ class HighlightsSection extends App {
         const sermon = pages.sermons || {};
         let bannerImg = '';
         if (sermon.banner_image) {
-            try {
-                const banners = typeof sermon.banner_image === 'string' ? JSON.parse(sermon.banner_image) : sermon.banner_image;
-                if (Array.isArray(banners) && banners.length > 0) {
-                    bannerImg = banners[0];
+            let img = sermon.banner_image;
+            if (typeof img === 'string') {
+                try {
+                    const arr = JSON.parse(img);
+                    if (Array.isArray(arr) && arr.length > 0) bannerImg = arr[0];
+                    else bannerImg = img;
+                } catch (e) {
+                    if (img.includes(',')) bannerImg = img.split(',')[0].trim();
+                    else bannerImg = img;
                 }
-            } catch {}
+            } else if (Array.isArray(img) && img.length > 0) {
+                bannerImg = img[0];
+            }
         }
 
         const event = pages.events || {};
         let eventBanner = '';
         if (event.banner_image) {
-            try {
-                const banners = typeof event.banner_image === 'string' ? JSON.parse(event.banner_image) : event.banner_image;
-                if (Array.isArray(banners) && banners.length > 0) {
-                    eventBanner = banners[0];
+            let img = event.banner_image;
+            if (typeof img === 'string') {
+                try {
+                    const arr = JSON.parse(img);
+                    if (Array.isArray(arr) && arr.length > 0) eventBanner = arr[0];
+                    else eventBanner = img;
+                } catch (e) {
+                    if (img.includes(',')) eventBanner = img.split(',')[0].trim();
+                    else eventBanner = img;
                 }
-            } catch {}
+            } else if (Array.isArray(img) && img.length > 0) {
+                eventBanner = img[0];
+            }
         }
 
         // Get testimonials data
@@ -95,12 +109,19 @@ class HighlightsSection extends App {
         const testimonial = (pages.testimonials && Array.isArray(pages.testimonials) ? pages.testimonials[0] : pages.testimonials) || {};
         let testimonialBanner = '';
         if (testimonial && testimonial.banner_image) {
-            try {
-                const banners = typeof testimonial.banner_image === 'string' ? JSON.parse(testimonial.banner_image) : testimonial.banner_image;
-                if (Array.isArray(banners) && banners.length > 0) {
-                    testimonialBanner = banners[0];
+            let img = testimonial.banner_image;
+            if (typeof img === 'string') {
+                try {
+                    const arr = JSON.parse(img);
+                    if (Array.isArray(arr) && arr.length > 0) testimonialBanner = arr[0];
+                    else testimonialBanner = img;
+                } catch (e) {
+                    if (img.includes(',')) testimonialBanner = img.split(',')[0].trim();
+                    else testimonialBanner = img;
                 }
-            } catch {}
+            } else if (Array.isArray(img) && img.length > 0) {
+                testimonialBanner = img[0];
+            }
         }
 
         return `
