@@ -105,34 +105,21 @@ class LifeGroupsPage extends App {
     async loadData() {
         try {
             this.set('loading', true);
-            
             const token = localStorage.getItem('token');
             if (!token) {
-                Toast.show({
-                    title: 'Authentication Error',
-                    message: 'Please log in to view data',
-                    variant: 'error',
-                    duration: 3000
-                });
+                Toast.show({ title: 'Authentication Error', message: 'Please log in to view data', variant: 'error', duration: 3000 });
                 return;
             }
-
-            // Load life groups data
-            const lifeGroupsResponse = await api.withToken(token).get('/life-groups');
             
-            this.set('lifeGroups', lifeGroupsResponse.data.data);
+            const response = await api.withToken(token).get('/life-groups');
+            const lifeGroupsData = response.data?.data || [];
+            
+            this.set('lifeGroups', lifeGroupsData);
             this.set('loading', false);
-            
         } catch (error) {
-            console.error('❌ Error loading data:', error);
+            console.error('❌ Error loading life groups:', error);
             this.set('loading', false);
-            
-            Toast.show({
-                title: 'Error',
-                message: error.response?.data?.message || 'Failed to load life groups data',
-                variant: 'error',
-                duration: 3000
-            });
+            Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to load life groups', variant: 'error', duration: 3000 });
         }
     }
 
@@ -194,28 +181,47 @@ class LifeGroupsPage extends App {
         this.loadData();
     }
 
-    // Update table data without full page reload
     updateTableData() {
         const lifeGroups = this.get('lifeGroups');
         if (!lifeGroups) return;
-
-        // Prepare table data
-        const tableData = lifeGroups.map((lifeGroup, index) => ({
-            id: lifeGroup.id, // Keep ID for internal use
-            index: index + 1, // Add index number for display
-            title: lifeGroup.title,
-            slug: lifeGroup.slug,
-            description: lifeGroup.description ? (lifeGroup.description.length > 50 ? lifeGroup.description.substring(0, 50) + '...' : lifeGroup.description) : 'No description',
-            link: lifeGroup.link || 'N/A',
-            status: lifeGroup.is_active ? 'Active' : 'Inactive',
-            created: new Date(lifeGroup.created_at).toLocaleString(),
-            updated: new Date(lifeGroup.updated_at).toLocaleString(),
-        }));
-
-        // Find the table component and update its data
+        
+        const tableData = lifeGroups.map((lg, index) => {
+            // Clean and escape the description to prevent JSON issues
+            let cleanDescription = lg.description || 'No description';
+            if (cleanDescription) {
+                cleanDescription = cleanDescription
+                    .replace(/<[^>]*>/g, '') // Remove HTML tags
+                    .replace(/"/g, '&quot;') // Escape quotes
+                    .replace(/'/g, '&#39;') // Escape single quotes
+                    .replace(/\n/g, ' ') // Replace newlines with spaces
+                    .trim();
+                
+                // Truncate if too long
+                if (cleanDescription.length > 100) {
+                    cleanDescription = cleanDescription.substring(0, 100) + '...';
+                }
+            }
+            
+            return {
+                id: lg.id || 0,
+                index: index + 1,
+                title: (lg.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, '&#39;'),
+                slug: lg.slug || 'no-slug',
+                description: cleanDescription,
+                link: lg.link || 'N/A',
+                status: lg.is_active ? 'Active' : 'Inactive',
+                created: lg.created_at ? new Date(lg.created_at).toLocaleString() : 'N/A',
+                updated: lg.updated_at ? new Date(lg.updated_at).toLocaleString() : 'N/A',
+            };
+        });
+        
         const tableComponent = this.querySelector('ui-table');
         if (tableComponent) {
-            tableComponent.setAttribute('data', JSON.stringify(tableData));
+            try {
+                tableComponent.setAttribute('data', JSON.stringify(tableData));
+            } catch (error) {
+                console.error('❌ Error updating table data:', error);
+            }
         }
     }
 
@@ -237,21 +243,41 @@ class LifeGroupsPage extends App {
         const showUpdateModal = this.get('showUpdateModal');
         const showViewModal = this.get('showViewModal');
         const showDeleteDialog = this.get('showDeleteDialog');
-        
-        const tableData = lifeGroups ? lifeGroups.map((lifeGroup, index) => ({
-            id: lifeGroup.id, // Keep ID for internal use
-            index: index + 1, // Add index number for display
-            title: lifeGroup.title,
-            slug: lifeGroup.slug,
-            description: lifeGroup.description ? (lifeGroup.description.length > 50 ? lifeGroup.description.substring(0, 50) + '...' : lifeGroup.description) : 'No description',
-            link: lifeGroup.link || 'N/A',
-            status: lifeGroup.is_active ? 'Active' : 'Inactive',
-            created: new Date(lifeGroup.created_at).toLocaleString(),
-            updated: new Date(lifeGroup.updated_at).toLocaleString(),
-        })) : [];
+
+        const tableData = lifeGroups ? lifeGroups.map((lg, index) => {
+            
+            // Clean and escape the description to prevent JSON issues
+            let cleanDescription = lg.description || 'No description';
+            if (cleanDescription) {
+                // Remove any HTML tags and escape special characters
+                cleanDescription = cleanDescription
+                    .replace(/<[^>]*>/g, '') // Remove HTML tags
+                    .replace(/"/g, '&quot;') // Escape quotes
+                    .replace(/'/g, '&#39;') // Escape single quotes
+                    .replace(/\n/g, ' ') // Replace newlines with spaces
+                    .trim();
+                
+                // Truncate if too long
+                if (cleanDescription.length > 100) {
+                    cleanDescription = cleanDescription.substring(0, 100) + '...';
+                }
+            }
+            
+            return {
+                id: lg.id || 0,
+                index: index + 1,
+                title: (lg.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, '&#39;'),
+                slug: lg.slug || 'no-slug',
+                description: cleanDescription,
+                link: lg.link || 'N/A',
+                status: lg.is_active ? 'Active' : 'Inactive',
+                created: lg.created_at ? new Date(lg.created_at).toLocaleString() : 'N/A',
+                updated: lg.updated_at ? new Date(lg.updated_at).toLocaleString() : 'N/A',
+            };
+        }) : [];
 
         const tableColumns = [
-            { key: 'index', label: 'No.' },
+            { key: 'index', label: 'No.', html: false },
             { key: 'title', label: 'Title' },
             { key: 'slug', label: 'Slug' },
             { key: 'description', label: 'Description' },
@@ -259,22 +285,20 @@ class LifeGroupsPage extends App {
             { key: 'status', label: 'Status' },
             { key: 'updated', label: 'Updated' }
         ];
-        
+
         return `
             <div class="bg-white rounded-lg shadow-lg p-4">
                 ${loading ? `
-                    <!-- Simple Skeleton Loading -->
                     <div class="space-y-4">
                         <ui-skeleton class="h-24 w-full"></ui-skeleton>
                         <ui-skeleton class="h-24 w-full"></ui-skeleton>
                         <ui-skeleton class="h-24 w-full"></ui-skeleton>
                     </div>
                 ` : `
-                    <!-- Life Groups Table Section -->
                     <div class="mb-8">
                         ${lifeGroups && lifeGroups.length > 0 ? `
                             <ui-table 
-                                title="Life Groups Management"
+                                title="Life Groups"
                                 data='${JSON.stringify(tableData)}'
                                 columns='${JSON.stringify(tableColumns)}'
                                 sortable
@@ -298,7 +322,6 @@ class LifeGroupsPage extends App {
                     </div>
                 `}
             </div>
-            
             <!-- Modals and Dialogs -->
             <life-group-settings-modal ${showAddModal ? 'open' : ''}></life-group-settings-modal>
             <life-group-update-modal ${showUpdateModal ? 'open' : ''}></life-group-update-modal>
