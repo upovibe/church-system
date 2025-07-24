@@ -248,21 +248,20 @@ class MinistryList extends App {
                             
                             <div class="flex flex-col md:flex-row">
                                 <!-- Image Section -->
-                                <div class="md:w-1/3 h-48 md:h-auto relative rounded-xl">
+                                <div class="md:w-1/3 h-48 md:h-auto relative rounded-xl overflow-hidden">
                                     ${bannerImage ? `
                                         <img src="${this.getImageUrl(bannerImage)}" 
                                              alt="${ministry.title || 'Ministry Image'}" 
-                                             class="w-full h-full object-cover"
+                                             class="w-full h-full object-cover rounded-xl"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     ` : ''}
                                     <!-- Fallback placeholder -->
-                                    <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center ${bannerImage ? 'hidden' : ''}">
+                                    <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center rounded-xl ${bannerImage ? 'hidden' : ''}">
                                         <div class="text-center text-white">
                                             <i class="fas fa-church text-4xl mb-2 opacity-50"></i>
                                             <p class="text-sm opacity-75">No Image</p>
                                         </div>
-                                    </div>
-                                    
+                                    </div>                                    
 
                                 </div>
                                 
@@ -280,7 +279,7 @@ class MinistryList extends App {
                                     <!-- Footer -->
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[${primaryColor}]/10 text-black">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-black">
                                                 <i class="fas fa-church mr-1"></i>
                                                 Ministry
                                             </span>
