@@ -91,9 +91,7 @@ class AboutUsSection extends App {
             ${bannerImages.length > 1 ? `
                 <div class="flex gap-6 mx-auto mb-10 group/about-imgs">
                     ${bannerImages.slice(0, 3).map((img, idx) => `
-                        <div class="relative flex-1 transition-all duration-500 overflow-hidden rounded-3xl shadow-lg bg-white/10 flex items-center justify-center
-                            ${idx === 0 ? 'basis-2/4' : 'basis-1/4'}
-                            hover:basis-2/4 group-hover/about-imgs:basis-1/4 hover:z-10"
+                        <div class="relative flex-1 basis-1/3 transition-all duration-500 overflow-hidden rounded-3xl shadow-lg bg-white/10 flex items-center justify-center group-hover/about-imgs:basis-1/6 hover:basis-2/3 hover:z-10"
                             style="min-width:0;">
                             <img src="/api/${img}"
                                  alt="About Us Banner"
