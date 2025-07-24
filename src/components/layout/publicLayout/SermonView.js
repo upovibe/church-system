@@ -87,6 +87,7 @@ class SermonView extends App {
 
         let images = sermon.images;
 
+        // If it's a string, try to parse as JSON
         if (typeof images === 'string') {
             try {
                 const parsed = JSON.parse(images);
@@ -96,12 +97,15 @@ class SermonView extends App {
                     images = [images];
                 }
             } catch (e) {
+                // If parsing fails, treat as single path
                 images = [images];
             }
         } else if (!Array.isArray(images)) {
+            // If it's not an array, wrap in array
             images = [images];
         }
 
+        // Filter out empty/null values
         return images.filter(img => img && img.trim() !== '');
     }
 
@@ -205,63 +209,64 @@ class SermonView extends App {
         const audioLinks = this.parseLinks(sermon.audio_links);
 
         return `
-            <!-- Banner Section -->
-            <div class="relative w-full h-[500px] lg:h-[45vh] overflow-hidden">
+            <!-- Sermon Banner - Always show (placeholder if no image) -->
+            <div class="relative w-full h-[600px] lg:h-[55vh] overflow-hidden">
                 ${bannerImage ? `
-                    <div class="absolute inset-0 w-full h-full bg-cover bg-center"
-                         style="background-image: url('${bannerImage}');">
+                    <img src="${bannerImage}" 
+                         alt="${sermon.title}" 
+                         class="w-full h-full object-cover"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                ` : ''}
+                <div class="absolute inset-0 ${bannerImage ? 'hidden' : 'flex'} items-center justify-center bg-gray-100">
+                    <div class="text-center">
+                        <i class="fas fa-microphone text-gray-400 text-6xl mb-4"></i>
+                        <h2 class="text-2xl font-bold text-gray-700 mb-2">${sermon.title ? sermon.title.charAt(0).toUpperCase() + sermon.title.slice(1) : 'Sermon'}</h2>
+                        <p class="text-lg text-gray-600">${sermon.speaker || 'Unknown Speaker'} • ${this.formatDate(sermon.date_preached)}</p>
                     </div>
-                ` : `
-                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
-                        <div class="text-center text-white">
-                            <i class="fas fa-microphone text-6xl mb-4 opacity-50"></i>
-                            <h1 class="text-3xl font-bold mb-2">${sermon.title}</h1>
-                            <p class="text-lg opacity-75">${sermon.speaker || 'Unknown Speaker'}</p>
-                            <p class="text-sm opacity-60">${this.formatDate(sermon.date_preached)}</p>
-                        </div>
-                    </div>
-                `}
+                </div>
                 
-                <!-- Dark gradient overlay -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <!-- Dark gradient overlay from bottom to top -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
                 
                 <!-- Content Overlay -->
-                <div class="absolute inset-0 flex items-center justify-start z-10 container mx-auto">
+                <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
                     <div class="text-left text-white px-4 lg:px-8 max-w-4xl space-y-4">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg pb-2 border-b-4 border-[${accentColor}] w-fit" style="line-height: 1.1">
-                            ${sermon.title}
+                            ${sermon.title ? sermon.title.charAt(0).toUpperCase() + sermon.title.slice(1) : 'Sermon'}
                         </h1>
                         
+                        <!-- Date and Speaker - Flex row layout -->
                         <div class="flex flex-row flex-wrap gap-4 items-center">
-                            <span class="flex items-center gap-2 whitespace-nowrap">
-                                <i class="fas fa-calendar text-[${accentColor}]"></i>
-                                <span class="text-lg">${this.formatDate(sermon.date_preached)}</span>
-                            </span>
-                            <span class="flex items-center gap-2 whitespace-nowrap">
-                                <i class="fas fa-user text-[${accentColor}]"></i>
-                                <span class="text-lg">${sermon.speaker || 'Unknown Speaker'}</span>
-                            </span>
-                        </div>
-                        
-                        <!-- Status Badge -->
-                        <div class="absolute bottom-4 right-4 z-10">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[${primaryColor}] text-[${textColor}]">
-                                <i class="fas fa-play mr-1"></i>
-                                Sermon
-                            </span>
+                            <div class="bg-[${darkColor}] bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-2 text-[${textColor}] whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-calendar-alt text-[${accentColor}]"></i>
+                                    <span class="text-sm font-medium">${this.formatDate(sermon.date_preached)}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[${darkColor}] bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-2 text-[${textColor}] whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-user text-[${accentColor}]"></i>
+                                    <span class="text-sm font-medium">${sermon.speaker || 'Unknown Speaker'}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Status Badge - Absolute positioned at bottom-right corner -->
+                <div class="absolute bottom-4 right-4 z-10">
+                    <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[${primaryColor}] text-[${textColor}] shadow-lg">
+                        <i class="fas fa-play mr-2"></i>
+                        Sermon
+                    </span>
                 </div>
             </div>
 
             <!-- Content Section -->
             <div class="container mx-auto p-4 py-8 space-y-4">
-                <!-- Title with Share/Copy buttons -->
-                <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                        <h1 class="text-3xl font-bold text-gray-800 mb-2">${sermon.title}</h1>
-                        <p class="text-lg text-gray-600">by ${sermon.speaker || 'Unknown Speaker'}</p>
-                    </div>
+                <!-- Share/Copy buttons -->
+                <div class="flex items-center justify-end">
                     <div class="flex gap-2">
                         <button onclick="this.closest('sermon-view').shareSermon()" 
                                 class="p-2 bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm rounded-lg hover:bg-white transition-colors">
@@ -323,6 +328,27 @@ class SermonView extends App {
                                 </div>
                             </div>
                         ` : ''}
+                    </div>
+                ` : ''}
+
+                <!-- Sermon Images Gallery -->
+                ${bannerImages.length > 1 ? `
+                    <div class="rounded-lg shadow-md p-6 bg-white/80 backdrop-blur-sm border border-gray-200">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Sermon Images</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            ${bannerImages.map((image, index) => {
+                                const imageUrl = this.getImageUrl(image);
+                                return imageUrl ? `
+                                    <div class="relative group overflow-hidden rounded-lg">
+                                        <img src="${imageUrl}" 
+                                             alt="Sermon image ${index + 1}" 
+                                             class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                                             onerror="this.style.display='none'">
+                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
+                                    </div>
+                                ` : '';
+                            }).join('')}
+                        </div>
                     </div>
                 ` : ''}
 
