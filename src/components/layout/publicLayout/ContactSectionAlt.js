@@ -238,15 +238,7 @@ class ContactSectionAlt extends App {
             <section class="mx-auto py-10">
                 <!-- Contact Content -->
                 <div class="relative">
-                    <!-- Animated Background -->
-                    <div class="absolute inset-0">
-                        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[${primaryColor}]/5 via-transparent to-[${accentColor}]/5 rounded-[3rem]"></div>
-                        <div class="absolute top-10 left-10 w-20 h-20 bg-[${primaryColor}]/10 rounded-full animate-spin-slow"></div>
-                        <div class="absolute bottom-10 right-10 w-16 h-16 bg-[${accentColor}]/10 rounded-full animate-spin-slow-reverse"></div>
-                    </div>
-                    <div class="relative">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 p-5 lg:p-8">
-                            
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">                            
                             <!-- Contact Information -->
                             <div class="space-y-8">
                                 <!-- Page Content Section -->
@@ -410,7 +402,6 @@ class ContactSectionAlt extends App {
                                     ` : ''}
                             </div>
                         </div>
-                    </div>
                 </div>
                 
                 <!-- Map Section -->
