@@ -122,6 +122,18 @@ class PageSeeder
                 'sort_order' => 8,
                 'banner_image' => json_encode(['uploads/pages/About_1752713342_6878487ef2458.jpg'])
             ],
+            [
+                'slug' => 'life-group',
+                'name' => 'Life Group',
+                'subtitle' => 'Life group',
+                'title' => 'Life Group',
+                'content' => '<h2>Life Group</h2><p>Life group</p>',
+                'meta_description' => 'Life group',
+                'category' => 'community',
+                'is_active' => 1,
+                'sort_order' => 9,
+                'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
+            ],
 
             // ===== GALLERY PAGES =====
             [
@@ -133,7 +145,7 @@ class PageSeeder
                 'meta_description' => 'Explore our church gallery featuring photos and videos of events, services, and community activities.',
                 'category' => 'gallery',
                 'is_active' => 1,
-                'sort_order' => 9,
+                'sort_order' => 10,
                 'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
             ],
             // ===== HIGHLIGHTS PAGES =====
@@ -146,7 +158,7 @@ class PageSeeder
                 'meta_description' => 'Stay updated with all the exciting events and activities happening at our church throughout the year.',
                 'category' => 'community',
                 'is_active' => 1,
-                'sort_order' => 10,
+                'sort_order' => 11,
                 'banner_image' => json_encode(['uploads/pages/1_1752790102_68797456e2b8c.jpg'])
             ],
             [
@@ -158,7 +170,7 @@ class PageSeeder
                 'meta_description' => 'Browse sermons and messages from our church, featuring biblical teaching and encouragement.',
                 'category' => 'highlights',
                 'is_active' => 1,
-                'sort_order' => 11,
+                'sort_order' => 12,
                 'banner_image' => json_encode(['uploads/pages/sermons_default.jpg'])
             ],
             [
@@ -170,7 +182,7 @@ class PageSeeder
                 'meta_description' => 'Inspiring testimonials and stories of faith from our church community.',
                 'category' => 'highlights',
                 'is_active' => 1,
-                'sort_order' => 12,
+                'sort_order' => 13,
                 'banner_image' => json_encode(['uploads/pages/testimonials_default.jpg'])
             ],
             [
