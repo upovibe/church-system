@@ -22,7 +22,7 @@ class EventPage extends App {
 
     render() {
         return `
-            <div class="min-h-screen bg-gray-50">
+            <div class="min-h-screen">
                 <event-view slug="${this.slug || ''}"></event-view>
             </div>
         `;
