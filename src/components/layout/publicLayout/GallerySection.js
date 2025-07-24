@@ -69,12 +69,6 @@ class GallerySection extends App {
                 
                 <!-- Creative Hero Area with Geometric Shapes -->
                 <div class="relative mb-20">
-                    <!-- Animated Background Shapes -->
-                    <div class="absolute inset-0 overflow-hidden">
-                        <div class="absolute top-0 left-1/4 w-32 h-32 bg-[${primaryColor}]/10 rounded-full blur-xl animate-pulse"></div>
-                        <div class="absolute top-20 right-1/4 w-24 h-24 bg-[${accentColor}]/15 rounded-full blur-lg animate-pulse delay-1000"></div>
-                        <div class="absolute bottom-10 left-1/3 w-20 h-20 bg-[${secondaryColor}]/10 rounded-full blur-md animate-pulse delay-500"></div>
-                    </div>
                     
                     <!-- Main Content with Creative Layout -->
                     <div class="relative">
@@ -155,13 +149,6 @@ class GallerySection extends App {
                 ${window.location.pathname === '/public/gallery' ? `
                 <!-- Creative Gallery Navigation -->
                 <div class="relative p-5 py-8">
-                    <!-- Animated Background -->
-                    <div class="absolute inset-0">
-                        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[${primaryColor}]/5 via-transparent to-[${accentColor}]/5 rounded-[3rem]"></div>
-                        <div class="absolute top-10 left-10 w-20 h-20 bg-[${primaryColor}]/10 rounded-full animate-spin-slow"></div>
-                        <div class="absolute bottom-10 right-10 w-16 h-16 bg-[${accentColor}]/10 rounded-full animate-spin-slow-reverse"></div>
-                    </div>
-                    
                     <div class="relative">
                         <!-- Creative Section Header -->
                         <div class="text-center mb-16">
