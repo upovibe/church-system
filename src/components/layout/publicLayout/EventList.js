@@ -1,6 +1,5 @@
 import App from '@/core/App.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
-import '@/components/layout/skeletonLoaders/EventListSkeleton.js';
 
 /**
  * Event List Component
@@ -313,7 +312,35 @@ class EventList extends App {
             
             <!-- Events Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="events-grid">
-                ${loading ? `<event-list-skeleton></event-list-skeleton>` : events.length > 0 ? events.map(event => {
+                ${loading ? `
+                    <div class="rounded-lg p-4 shadow-sm border-l-4 border-gray-300 h-64 relative overflow-hidden bg-gray-200 animate-pulse">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-300 via-gray-200 to-transparent"></div>
+                        <div class="absolute top-3 right-3 w-20 h-6 bg-gray-300 rounded-full"></div>
+                        <div class="absolute top-3 left-3 w-16 h-6 bg-gray-300 rounded-full"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <div class="h-6 bg-gray-300 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="rounded-lg p-4 shadow-sm border-l-4 border-gray-300 h-64 relative overflow-hidden bg-gray-200 animate-pulse">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-300 via-gray-200 to-transparent"></div>
+                        <div class="absolute top-3 right-3 w-20 h-6 bg-gray-300 rounded-full"></div>
+                        <div class="absolute top-3 left-3 w-16 h-6 bg-gray-300 rounded-full"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <div class="h-6 bg-gray-300 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="rounded-lg p-4 shadow-sm border-l-4 border-gray-300 h-64 relative overflow-hidden bg-gray-200 animate-pulse">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-300 via-gray-200 to-transparent"></div>
+                        <div class="absolute top-3 right-3 w-20 h-6 bg-gray-300 rounded-full"></div>
+                        <div class="absolute top-3 left-3 w-16 h-6 bg-gray-300 rounded-full"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <div class="h-6 bg-gray-300 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                ` : events.length > 0 ? events.map(event => {
                     const statusBadge = this.getStatusBadge(event.status);
                     
                     // Get banner image from event

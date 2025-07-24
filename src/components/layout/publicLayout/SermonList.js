@@ -1,6 +1,5 @@
 import App from '@/core/App.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
-import '@/components/layout/skeletonLoaders/EventListSkeleton.js';
 
 /**
  * Sermon List Component
@@ -256,7 +255,59 @@ class SermonList extends App {
             
             <!-- Sermons Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="sermons-grid">
-                ${loading ? `<event-list-skeleton></event-list-skeleton>` : sermons.length > 0 ? sermons.map(sermon => {
+                ${loading ? `
+                    <div class="rounded-lg overflow-hidden shadow-lg bg-white animate-pulse">
+                        <div class="relative h-48 bg-gray-200"></div>
+                        <div class="p-4">
+                            <div class="h-6 bg-gray-200 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded mb-3 w-3/4"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-gray-200 rounded"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-20"></div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 h-6 bg-gray-200 rounded-full"></div>
+                                    <div class="w-16 h-6 bg-gray-200 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-lg overflow-hidden shadow-lg bg-white animate-pulse">
+                        <div class="relative h-48 bg-gray-200"></div>
+                        <div class="p-4">
+                            <div class="h-6 bg-gray-200 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded mb-3 w-3/4"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-gray-200 rounded"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-20"></div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 h-6 bg-gray-200 rounded-full"></div>
+                                    <div class="w-16 h-6 bg-gray-200 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-lg overflow-hidden shadow-lg bg-white animate-pulse">
+                        <div class="relative h-48 bg-gray-200"></div>
+                        <div class="p-4">
+                            <div class="h-6 bg-gray-200 rounded mb-2"></div>
+                            <div class="h-4 bg-gray-200 rounded mb-3 w-3/4"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-gray-200 rounded"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-20"></div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 h-6 bg-gray-200 rounded-full"></div>
+                                    <div class="w-16 h-6 bg-gray-200 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ` : sermons.length > 0 ? sermons.map(sermon => {
                     // Get sermon image
                     let sermonImage = '';
                     if (sermon.images) {
