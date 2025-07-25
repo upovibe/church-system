@@ -23,6 +23,7 @@ class DashboardLayout extends App {
         this.sidebarOpen = false;
         this.logoUrl = null;
         this.brandColor = null;
+        this.collapsedGroups = new Set(); // Track which groups are collapsed
     }
 
     async connectedCallback() {
@@ -124,6 +125,13 @@ class DashboardLayout extends App {
                 e.preventDefault();
                 this.handleLogout();
             }
+
+            const groupHeader = e.target.closest('[data-group-toggle]');
+            if (groupHeader) {
+                e.preventDefault();
+                const groupName = groupHeader.getAttribute('data-group-name');
+                this.toggleGroup(groupName);
+            }
         });
 
         document.addEventListener('item-click', (e) => {
@@ -144,6 +152,49 @@ class DashboardLayout extends App {
             layoutContainer.classList.add('sidebar-open');
         } else {
             layoutContainer.classList.remove('sidebar-open');
+        }
+    }
+
+    toggleGroup(groupName) {
+        if (this.collapsedGroups.has(groupName)) {
+            this.collapsedGroups.delete(groupName);
+        } else {
+            this.collapsedGroups.add(groupName);
+        }
+        this.updateSidebarNavigation();
+    }
+
+    updateSidebarNavigation() {
+        const nav = this.querySelector('nav');
+        if (nav) {
+            const navigationGroups = this.getNavigationItems();
+            const textColor = this.get('text_color');
+            const accentColor = this.get('accent_color');
+            const secondaryColor = this.get('secondary_color');
+            
+            nav.innerHTML = navigationGroups.map(group => `
+                <div class="mb-4">
+                    <div 
+                        data-group-toggle 
+                        data-group-name="${group.group}"
+                        class="flex items-center justify-between text-xs font-semibold uppercase text-[${textColor || '#bfdbfe'}] mb-2 pl-2 tracking-wide cursor-pointer hover:text-white transition-colors"
+                    >
+                        <span>${group.group}</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200 ${this.collapsedGroups.has(group.group) ? 'rotate-180' : ''}"></i>
+                    </div>
+                    <div class="flex flex-col gap-1 ${this.collapsedGroups.has(group.group) ? 'hidden' : ''}">
+                        ${group.items.map(item => `
+                            <ui-link 
+                                href="${item.href}"
+                                class="group flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors no-underline ${item.active ? `bg-[${accentColor}]` : `text-[${textColor}] hover:bg-[${secondaryColor}] hover:bg-opacity-50 hover:text-white`}"
+                            >
+                                <i class="${item.icon} size-5 flex items-center justify-center"></i>
+                                <span>${item.label}</span>
+                            </ui-link>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
         }
     }
 
@@ -205,8 +256,8 @@ class DashboardLayout extends App {
                         { label: 'Events', icon: 'fas fa-calendar-alt', href: '/dashboard/admin/events' },
                         { label: 'Life Groups', icon: 'fas fa-users', href: '/dashboard/admin/life-groups' },
                         { label: 'Testimonials', icon: 'fas fa-comments', href: '/dashboard/admin/testimonials' },
-                        { label: 'News', icon: 'fas fa-newspaper', href: '/dashboard/admin/news' },
-                        { label: 'Gallery', icon: 'fas fa-images', href: '/dashboard/admin/galleries' },
+                        { label: 'Ministries', icon: 'fas fa-church', href: '/dashboard/admin/news' },
+                        { label: 'Photo Gallery', icon: 'fas fa-images', href: '/dashboard/admin/galleries' },
                         { label: 'Video Gallery', icon: 'fas fa-video', href: '/dashboard/admin/video-galleries' },
                     ]
                 },
@@ -436,8 +487,15 @@ class DashboardLayout extends App {
                     <nav class="flex-1 px-4 py-4 overflow-y-auto flex flex-col gap-2">
                         ${navigationGroups.map(group => `
                             <div class="mb-4">
-                                <div class="text-xs font-semibold uppercase text-[${textColor || '#bfdbfe'}] mb-2 pl-2 tracking-wide">${group.group}</div>
-                                <div class="flex flex-col gap-1">
+                                <div 
+                                    data-group-toggle 
+                                    data-group-name="${group.group}"
+                                    class="flex items-center justify-between text-xs font-semibold uppercase text-[${textColor || '#bfdbfe'}] mb-2 pl-2 tracking-wide cursor-pointer hover:text-white transition-colors"
+                                >
+                                    <span>${group.group}</span>
+                                    <i class="fas fa-chevron-down text-xs transition-transform duration-200 ${this.collapsedGroups.has(group.group) ? 'rotate-180' : ''}"></i>
+                                </div>
+                                <div class="flex flex-col gap-1 ${this.collapsedGroups.has(group.group) ? 'hidden' : ''}">
                                     ${group.items.map(item => `
                                         <ui-link 
                                             href="${item.href}"

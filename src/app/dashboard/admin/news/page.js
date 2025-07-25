@@ -262,7 +262,7 @@ class NewsPage extends App {
         const tableColumns = [
             { key: 'index', label: 'No.' },
             { key: 'title', label: 'Title' },
-            { key: 'slug', label: 'Slug' },
+            // { key: 'slug', label: 'Slug' },
             { key: 'status', label: 'Status' },
             { key: 'updated', label: 'Updated' }
         ];
@@ -281,12 +281,12 @@ class NewsPage extends App {
                     <div class="mb-8">
                         ${news && news.length > 0 ? `
                             <ui-table 
-                                title="News Management"
+                                title="Ministries Management"
                                 data='${JSON.stringify(tableData)}'
                                 columns='${JSON.stringify(tableColumns)}'
                                 sortable
                                 searchable
-                                search-placeholder="Search news..."
+                                search-placeholder="Search ministries..."
                                 pagination
                                 page-size="10"
                                 action
@@ -299,7 +299,7 @@ class NewsPage extends App {
                             </ui-table>
                         ` : `
                             <div class="text-center py-8 text-gray-500">
-                                <p>No news found in database</p>
+                                <p>No ministries found in database</p>
                             </div>
                         `}
                     </div>
