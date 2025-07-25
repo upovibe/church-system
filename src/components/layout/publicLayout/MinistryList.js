@@ -1,6 +1,5 @@
 import App from '@/core/App.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
-import '@/components/layout/skeletonLoaders/EventListSkeleton.js';
 
 /**
  * Ministry List Component
@@ -132,7 +131,7 @@ class MinistryList extends App {
 
     openMinistryPage(slugOrId) {
         // Navigate to the ministry page using SPA router
-        const ministryUrl = `/public/ministries/${slugOrId}`;
+        const ministryUrl = `/ministries/${slugOrId}`;
         if (window.router) {
             window.router.navigate(ministryUrl);
         } else {
@@ -220,9 +219,72 @@ class MinistryList extends App {
                 </div>
             </div>
             
-            <!-- Ministries List -->
-            <div class="space-y-6" id="ministries-list">
-                ${loading ? `<event-list-skeleton></event-list-skeleton>` : ministries.length > 0 ? ministries.map(ministry => {
+                         <!-- Ministries List -->
+             <div class="space-y-6" id="ministries-list">
+                 ${loading ? `
+                     <!-- Loading Skeleton -->
+                     <div class="space-y-6">
+                         <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
+                             <div class="flex flex-col md:flex-row">
+                                 <!-- Image Skeleton -->
+                                 <div class="md:w-1/3 h-48 md:h-auto bg-gray-600 rounded-xl"></div>
+                                 <!-- Content Skeleton -->
+                                 <div class="md:w-2/3 p-6 flex flex-col justify-between">
+                                     <div>
+                                         <div class="h-8 bg-gray-600 rounded mb-2"></div>
+                                         <div class="h-4 bg-gray-600 rounded mb-1"></div>
+                                         <div class="h-4 bg-gray-600 rounded mb-1"></div>
+                                         <div class="h-4 bg-gray-600 rounded w-3/4"></div>
+                                     </div>
+                                     <div class="flex items-center justify-between mt-4">
+                                         <div class="h-6 bg-gray-600 rounded w-20"></div>
+                                         <div class="h-4 bg-gray-600 rounded w-24"></div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         
+                         <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
+                             <div class="flex flex-col md:flex-row">
+                                 <!-- Image Skeleton -->
+                                 <div class="md:w-1/3 h-48 md:h-auto bg-gray-600 rounded-xl"></div>
+                                 <!-- Content Skeleton -->
+                                 <div class="md:w-2/3 p-6 flex flex-col justify-between">
+                                     <div>
+                                         <div class="h-8 bg-gray-600 rounded mb-2"></div>
+                                         <div class="h-4 bg-gray-600 rounded mb-1"></div>
+                                         <div class="h-4 bg-gray-600 rounded mb-1"></div>
+                                         <div class="h-4 bg-gray-600 rounded w-3/4"></div>
+                                     </div>
+                                     <div class="flex items-center justify-between mt-4">
+                                         <div class="h-6 bg-gray-600 rounded w-20"></div>
+                                         <div class="h-4 bg-gray-600 rounded w-24"></div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         
+                         <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
+                             <div class="flex flex-col md:flex-row">
+                                 <!-- Image Skeleton -->
+                                 <div class="md:w-1/3 h-48 md:h-auto bg-gray-600 rounded-xl"></div>
+                                 <!-- Content Skeleton -->
+                                 <div class="md:w-2/3 p-6 flex flex-col justify-between">
+                                     <div>
+                                         <div class="h-8 bg-gray-600 rounded mb-2"></div>
+                                         <div class="h-4 bg-gray-600 rounded mb-1"></div>
+                                         <div class="h-4 bg-gray-600 rounded mb-1"></div>
+                                         <div class="h-4 bg-gray-600 rounded w-3/4"></div>
+                                     </div>
+                                     <div class="flex items-center justify-between mt-4">
+                                         <div class="h-6 bg-gray-600 rounded w-20"></div>
+                                         <div class="h-4 bg-gray-600 rounded w-24"></div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 ` : ministries.length > 0 ? ministries.map(ministry => {
                     // Get banner image from ministry
                     let bannerImage = '';
                     if (ministry.banner_image) {
