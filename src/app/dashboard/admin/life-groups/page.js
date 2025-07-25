@@ -294,7 +294,7 @@ class LifeGroupsPage extends App {
         const tableColumns = [
             { key: 'index', label: 'No.', html: false },
             { key: 'title', label: 'Title' },
-            { key: 'slug', label: 'Slug' },
+            // { key: 'slug', label: 'Slug' },
             { key: 'description', label: 'Description' },
             { key: 'link', label: 'Link' },
             { key: 'status', label: 'Status' },
