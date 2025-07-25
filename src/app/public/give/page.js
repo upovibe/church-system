@@ -3,16 +3,10 @@ import api from '@/services/api.js';
 import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
+import { fetchPaymentSettings } from '@/utils/paymentSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/GiveSection.js';
 
-/**
- * Give Page Component (/give)
- * 
- * This is the give page of the application.
- * It uses the same centralized data loading approach as other pages.
- * File-based routing: /give → app/public/give/page.js
- */
 class GivePage extends App {
     connectedCallback() {
         super.connectedCallback();
@@ -22,22 +16,18 @@ class GivePage extends App {
 
     async loadAllData() {
         try {
-            // Load colors first
             const colors = await fetchColorSettings();
-
-            // Load give page data
+            const paymentSettings = await fetchPaymentSettings();
             const givePageData = await this.fetchPageData('give');
 
-            // Combine all data
             const allData = {
                 colors,
+                paymentSettings,
                 page: givePageData
             };
 
-            // Cache in global store
             store.setState({ givePageData: allData });
                 
-            // Set local state and render
             this.set('allData', allData);
             this.render();
 
@@ -79,14 +69,14 @@ class GivePage extends App {
             `;
         }
 
-        // Convert data to JSON strings for attributes with proper escaping
         const colorsData = escapeJsonForAttribute(allData.colors);
+        const paymentData = escapeJsonForAttribute(allData.paymentSettings);
 
         return `
             <div class="mx-auto">
-                <!-- Give Section Component -->
                 <give-section 
                     colors='${colorsData}'
+                    payment-settings='${paymentData}'
                     page-data='${escapeJsonForAttribute(allData.page)}'>
                 </give-section>
             </div>
