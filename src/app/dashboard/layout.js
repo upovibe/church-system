@@ -201,7 +201,6 @@ class DashboardLayout extends App {
                         { label: 'User Roles', icon: 'fas fa-user-tag', href: '/dashboard/admin/user-role' },
                         { label: 'Users', icon: 'fas fa-users', href: '/dashboard/admin/users' },
                         { label: 'Teams', icon: 'fas fa-user-friends', href: '/dashboard/admin/teams' },
-                        { label: 'Applications', icon: 'fas fa-file-signature', href: '/dashboard/admin/applications' },
                         { label: 'Sermons', icon: 'fas fa-book-open', href: '/dashboard/admin/sermons' },
                         { label: 'Events', icon: 'fas fa-calendar-alt', href: '/dashboard/admin/events' },
                         { label: 'Life Groups', icon: 'fas fa-users', href: '/dashboard/admin/life-groups' },
@@ -427,7 +426,7 @@ class DashboardLayout extends App {
                 <aside data-sidebar class="fixed inset-y-0 left-0 text-white flex flex-col shadow-lg">
                     <div class="flex items-center justify-between h-16 px-4 border-b border-[${secondaryColor || '#3b82f6'}] flex-shrink-0">
                         <div class="flex items-center space-x-3">
-                            <img src="${this.logoUrl ? this.getImageUrl(this.logoUrl) : '/src/assets/logo.png'}" alt="Logo" class="size-32 object-contain rounded-full" />
+                            <img src="${this.logoUrl ? this.getImageUrl(this.logoUrl) : '/src/assets/logo.png'}" alt="Logo" class="w-8 h-8 object-contain" />
                         </div>
                         <button type="button" data-sidebar-toggle class="xl:hidden size-8 rounded-md text-[${textColor || '#bfdbfe'}] hover:text-white hover:bg-[${hoverPrimary || '#3b82f6'}]">
                             <i class="fas fa-times text-lg"></i>
@@ -442,7 +441,7 @@ class DashboardLayout extends App {
                                     ${group.items.map(item => `
                                         <ui-link 
                                             href="${item.href}"
-                                            class="group flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors no-underline ${item.active ? `bg-[${accentColor || '#ffffff'}] text-white` : `text-[${textColor || '#dbeafe'}] hover:bg-[${secondaryColor || '#3b82f6'}] hover:bg-opacity-50 hover:text-white`}"
+                                            class="group flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors no-underline ${item.active ? `bg-[${accentColor}]` : `text-[${textColor}] hover:bg-[${secondaryColor}] hover:bg-opacity-50 hover:text-white`}"
                                         >
                                             <i class="${item.icon} size-5 flex items-center justify-center"></i>
                                             <span>${item.label}</span>
