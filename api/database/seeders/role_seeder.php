@@ -14,10 +14,7 @@ class RoleSeeder
         $roles = [
             ['admin', 'System administrator with full access'],
             ['pastor', 'Pastor with spiritual and administrative oversight'],
-            ['elder', 'Elder with leadership and decision-making responsibilities'],
-            ['deacon', 'Deacon responsible for service and support roles'],
-            ['member', 'Registered church member with access to member resources'],
-            ['guest', 'Guest with limited access to public resources']
+            ['elder', 'Elder with leadership and decision-making responsibilities']
         ];
         foreach ($roles as $role) {
             $stmt = $this->pdo->prepare('SELECT id FROM roles WHERE name = ?');

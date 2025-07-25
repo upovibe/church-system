@@ -67,30 +67,16 @@ export default {
         redirectTo: (user) => user ? `/dashboard/${user.role}` : '/dashboard'
     },
     
-    'dashboard/teacher': {
+    'dashboard/pastor': {
         requireAuth: true,
-        requireRole: 'teacher',
+        requireRole: 'pastor',
         logAccess: true,
         redirectTo: (user) => user ? `/dashboard/${user.role}` : '/dashboard'
     },
     
-    'dashboard/student': {
+    'dashboard/elder': {
         requireAuth: true,
-        requireRole: 'student',
-        logAccess: true,
-        redirectTo: (user) => user ? `/dashboard/${user.role}` : '/dashboard'
-    },
-    
-    'dashboard/parent': {
-        requireAuth: true,
-        requireRole: 'parent',
-        logAccess: true,
-        redirectTo: (user) => user ? `/dashboard/${user.role}` : '/dashboard'
-    },
-    
-    'dashboard/staff': {
-        requireAuth: true,
-        requireRole: 'staff',
+        requireRole: 'elder',
         logAccess: true,
         redirectTo: (user) => user ? `/dashboard/${user.role}` : '/dashboard'
     },
