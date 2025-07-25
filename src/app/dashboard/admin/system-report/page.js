@@ -24,7 +24,7 @@ class SystemReportPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'System Reports | School System';
+        document.title = 'System Reports';
         this.loadData();
         
         // Add event listeners for table events

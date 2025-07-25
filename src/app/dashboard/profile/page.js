@@ -17,7 +17,7 @@ class ProfilePage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Profile | School System';
+        document.title = 'Profile';
     }
 
     render() {

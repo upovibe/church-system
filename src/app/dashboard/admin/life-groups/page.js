@@ -32,7 +32,7 @@ class LifeGroupsPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Life Groups Management | Church System';
+        document.title = 'Life Groups Management';
         this.loadData();
         
         // Add event listeners for table events

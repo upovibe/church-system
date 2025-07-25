@@ -34,7 +34,7 @@ class UserRolePage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'User Role Settings | School System';
+        document.title = 'User Role Settings';
         this.loadData();
         
         // Add event listeners for table events

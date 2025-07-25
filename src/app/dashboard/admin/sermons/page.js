@@ -41,7 +41,7 @@ class SermonsPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Sermon Management | School System';
+        document.title = 'Sermon Management';
         this.loadData();
 
         // Add event listeners for table actions

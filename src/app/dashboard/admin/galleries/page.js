@@ -44,7 +44,7 @@ class GalleriesPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Photo Gallery Management | School System';
+        document.title = 'Photo Gallery Management';
         this.loadData();
         
         // Add event listeners for table events

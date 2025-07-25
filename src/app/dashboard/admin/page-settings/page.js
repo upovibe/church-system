@@ -31,7 +31,7 @@ class PageSettingsPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Page Settings | School System';
+        document.title = 'Page Settings';
         this.loadData();
         
         // Add event listeners for table events

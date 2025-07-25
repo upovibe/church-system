@@ -40,7 +40,7 @@ class UsersPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Users Management | School System';
+        document.title = 'Users Management';
         this.loadData();
         
         // Add event listeners for table events

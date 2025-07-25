@@ -8,7 +8,7 @@ import App from '@/core/App.js';
 class StaffDashboardPage extends App {
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Staff Dashboard | School System';
+        document.title = 'Staff Dashboard';
     }
 
     render() {

@@ -31,7 +31,7 @@ class TeamManagementPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Team Management | School System';
+        document.title = 'Team Management';
         this.loadData();
         
         // Add event listeners for table events

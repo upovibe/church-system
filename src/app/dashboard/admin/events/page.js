@@ -32,7 +32,7 @@ class EventsPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Events Management | School System';
+        document.title = 'Events Management';
         this.loadData();
         
         // Add event listeners for table events

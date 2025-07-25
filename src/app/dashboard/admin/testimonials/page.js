@@ -33,7 +33,7 @@ class TestimonialsPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Testimonials | Admin';
+        document.title = 'Testimonials';
         this.loadData();
 
         this.addEventListener('table-view', this.onView.bind(this));

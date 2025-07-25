@@ -32,7 +32,7 @@ class SystemSettingsPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'System Settings | School System';
+        document.title = 'System Settings';
         this.loadData();
         
         // Add event listeners for table events

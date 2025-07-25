@@ -41,7 +41,7 @@ class VideoGalleriesPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Video Gallery Management | School System';
+        document.title = 'Video Gallery Management';
         this.loadData();
         
         // Add event listeners for table events

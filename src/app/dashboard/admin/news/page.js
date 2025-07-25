@@ -43,7 +43,7 @@ class NewsPage extends App {
 
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'News Management | School System';
+        document.title = 'Ministries Management';
         this.loadData();
         
         // Add event listeners for table events

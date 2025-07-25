@@ -8,7 +8,7 @@ import App from '@/core/App.js';
 class AdminDashboardPage extends App {
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Admin Dashboard | School System';
+        document.title = 'Admin Dashboard';
     }
 
     render() {

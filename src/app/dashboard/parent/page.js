@@ -8,7 +8,7 @@ import App from '@/core/App.js';
 class ParentDashboardPage extends App {
     connectedCallback() {
         super.connectedCallback();
-        document.title = 'Parent Dashboard | School System';
+        document.title = 'Parent Dashboard';
     }
 
     render() {
