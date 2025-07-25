@@ -53,15 +53,6 @@ class EventSeeder {
                 'category' => 'fellowship',
                 'status' => 'upcoming',
                 'location' => 'Church Cafeteria'
-            ],
-            [
-                'title' => 'Women\'s Ministry Gathering',
-                'description' => 'Monthly meeting for women featuring guest speaker on "Finding Peace in Busy Seasons".',
-                'start_date' => date('Y-m-d 10:00:00', strtotime('+2 weeks Saturday')),
-                'end_date' => date('Y-m-d 12:00:00', strtotime('+2 weeks Saturday')),
-                'category' => 'fellowship',
-                'status' => 'upcoming',
-                'location' => 'Fellowship Hall'
             ]
         ];
 

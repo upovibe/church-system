@@ -74,25 +74,13 @@ class SettingsSeeder
             ['setting_key' => 'google_analytics', 'setting_value' => '', 'setting_type' => 'text', 'category' => 'general', 'description' => 'Google Analytics tracking code'],
             ['setting_key' => 'maintenance_mode', 'setting_value' => '0', 'setting_type' => 'boolean', 'category' => 'general', 'description' => 'Enable maintenance mode'],
             
-            // Hero Section Settings (General)
-            ['setting_key' => 'hero_title', 'setting_value' => 'Welcome to Our School', 'setting_type' => 'text', 'category' => 'general', 'description' => 'Main hero section title'],
-            ['setting_key' => 'hero_subtitle', 'setting_value' => 'Excellence in Education, Character, and Leadership', 'setting_type' => 'textarea', 'category' => 'general', 'description' => 'Hero section subtitle or description'],
+            // Payment Settings
+            ['setting_key' => 'payment_banner_image', 'setting_value' => 'uploads/settings/payment_banner_1753224113_688013b195189.png', 'setting_type' => 'file', 'category' => 'payment', 'description' => 'Payment page banner image'],
+            ['setting_key' => 'payment_title', 'setting_value' => 'Support Our Ministry', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Payment page title'],
+            ['setting_key' => 'payment_description', 'setting_value' => 'Your generous donations help us continue our mission and serve our community. Every contribution makes a difference.', 'setting_type' => 'textarea', 'category' => 'payment', 'description' => 'Payment page description'],
+            ['setting_key' => 'paystack_payment_link', 'setting_value' => 'https://paystack.com/pay/your-church-donations', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Paystack direct payment link'],
+            ['setting_key' => 'stripe_payment_link', 'setting_value' => 'https://buy.stripe.com/your-church-donations', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Stripe direct payment link'],
             
-            // About Section Settings (General)
-            ['setting_key' => 'about_title', 'setting_value' => 'About Our School', 'setting_type' => 'text', 'category' => 'general', 'description' => 'About section title'],
-            ['setting_key' => 'about_subtitle', 'setting_value' => 'Discover our story, values, and commitment to excellence', 'setting_type' => 'textarea', 'category' => 'general', 'description' => 'About section subtitle or description'],
-            
-            // Academics Section Settings (General)
-            ['setting_key' => 'academics_title', 'setting_value' => 'Academic Excellence', 'setting_type' => 'text', 'category' => 'general', 'description' => 'Academics section title'],
-            ['setting_key' => 'academics_subtitle', 'setting_value' => 'Comprehensive education programs designed for student success', 'setting_type' => 'textarea', 'category' => 'general', 'description' => 'Academics section subtitle or description'],
-            
-            // Community Section Settings (General)
-            ['setting_key' => 'community_title', 'setting_value' => 'Our Community', 'setting_type' => 'text', 'category' => 'general', 'description' => 'Community section title'],
-            ['setting_key' => 'community_subtitle', 'setting_value' => 'Building connections and fostering relationships within our school family', 'setting_type' => 'textarea', 'category' => 'general', 'description' => 'Community section subtitle or description'],
-            
-            // Contact Section Settings (General)
-            ['setting_key' => 'contact_title', 'setting_value' => 'Get In Touch', 'setting_type' => 'text', 'category' => 'general', 'description' => 'Contact section title'],
-            ['setting_key' => 'contact_subtitle', 'setting_value' => 'Have questions? We\'d love to hear from you. Send us a message and we\'ll respond as soon as possible.', 'setting_type' => 'textarea', 'category' => 'general', 'description' => 'Contact section subtitle or description']
         ];
 
         foreach ($defaultSettings as $setting) {

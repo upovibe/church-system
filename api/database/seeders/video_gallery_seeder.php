@@ -20,8 +20,8 @@ class VideoGallerySeeder {
 
             $videoGalleries = [
                 [
-                    'name' => 'School Events 2024',
-                    'description' => 'A collection of videos from various school events throughout 2024, including sports days, cultural festivals, and academic ceremonies.',
+                    'name' => 'Sunday Sermons 2024',
+                    'description' => 'Powerful sermons and messages from our Sunday services, featuring biblical teachings and spiritual guidance.',
                     'video_links' => [
                         'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                         'https://www.youtube.com/watch?v=9bZkp7q19f0',
@@ -30,8 +30,8 @@ class VideoGallerySeeder {
                     'is_active' => 1
                 ],
                 [
-                    'name' => 'Student Performances',
-                    'description' => 'Amazing performances by our talented students in music, dance, drama, and other artistic endeavors.',
+                    'name' => 'Gospel Music & Worship',
+                    'description' => 'Inspiring gospel music, worship sessions, and praise performances from our church choir and musicians.',
                     'video_links' => [
                         'https://www.youtube.com/watch?v=ZZ5LpwO-An4',
                         'https://www.youtube.com/watch?v=JGwWNGJdvx8',
@@ -41,8 +41,8 @@ class VideoGallerySeeder {
                     'is_active' => 1
                 ],
                 [
-                    'name' => 'Sports Highlights',
-                    'description' => 'Exciting moments from our school sports teams, including football, basketball, swimming, and athletics competitions.',
+                    'name' => 'Church Events & Celebrations',
+                    'description' => 'Special church events, celebrations, and community gatherings that bring our congregation together.',
                     'video_links' => [
                         'https://www.youtube.com/watch?v=3YxaaGgTQYM',
                         'https://www.youtube.com/watch?v=eviwJDNjvDk',
@@ -51,8 +51,8 @@ class VideoGallerySeeder {
                     'is_active' => 1
                 ],
                 [
-                    'name' => 'Academic Achievements',
-                    'description' => 'Celebrating our students academic successes, science fair projects, and educational achievements.',
+                    'name' => 'Bible Study Sessions',
+                    'description' => 'In-depth Bible study sessions and theological discussions to help grow in faith and understanding.',
                     'video_links' => [
                         'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                         'https://www.youtube.com/watch?v=ZZ5LpwO-An4'
@@ -60,8 +60,8 @@ class VideoGallerySeeder {
                     'is_active' => 1
                 ],
                 [
-                    'name' => 'Campus Life',
-                    'description' => 'A glimpse into daily campus life, showing the vibrant community and activities that make our school special.',
+                    'name' => 'Church Life & Fellowship',
+                    'description' => 'A glimpse into our church community life, showing the love, fellowship, and unity that makes our church special.',
                     'video_links' => [
                         'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
                         'https://www.youtube.com/watch?v=OPf0YbXqDm0',

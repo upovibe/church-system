@@ -16,87 +16,17 @@ class TeamSeeder {
     public function run() {
         $teams = [
             [
-                'name' => 'Dr. Sarah Johnson',
+                'name' => 'Pastor Daniel & Mrs. Faustina',
                 'profile_image' => null,
-                'position' => 'Principal',
-                'department' => 'Administration',
+                'position' => 'District Pastor',
+                'department' => 'Pastoral',
                 'is_active' => 1
             ],
             [
-                'name' => 'Mr. Michael Chen',
+                'name' => 'Dr. John & Dr.(Mrs.) Christiana Ntumy',
                 'profile_image' => null,
-                'position' => 'Vice Principal',
-                'department' => 'Administration',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Ms. Emily Rodriguez',
-                'profile_image' => null,
-                'position' => 'Head of Mathematics',
-                'department' => 'Teaching',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Mr. David Thompson',
-                'profile_image' => null,
-                'position' => 'Science Teacher',
-                'department' => 'Teaching',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Ms. Lisa Wang',
-                'profile_image' => null,
-                'position' => 'English Teacher',
-                'department' => 'Teaching',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Mr. James Wilson',
-                'profile_image' => null,
-                'position' => 'Physical Education Teacher',
-                'department' => 'Teaching',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Ms. Maria Garcia',
-                'profile_image' => null,
-                'position' => 'School Nurse',
-                'department' => 'Support Staff',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Mr. Robert Brown',
-                'profile_image' => null,
-                'position' => 'IT Administrator',
-                'department' => 'IT',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Ms. Jennifer Lee',
-                'profile_image' => null,
-                'position' => 'Finance Manager',
-                'department' => 'Finance',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Mr. Thomas Anderson',
-                'profile_image' => null,
-                'position' => 'Human Resources Director',
-                'department' => 'Human Resources',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Ms. Amanda White',
-                'profile_image' => null,
-                'position' => 'Maintenance Supervisor',
-                'department' => 'Maintenance',
-                'is_active' => 1
-            ],
-            [
-                'name' => 'Mr. Carlos Martinez',
-                'profile_image' => null,
-                'position' => 'Security Officer',
-                'department' => 'Security',
+                'position' => 'Presiding Elder',
+                'department' => 'Pastoral',
                 'is_active' => 1
             ]
         ];
