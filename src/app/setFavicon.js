@@ -19,4 +19,4 @@ export async function setDynamicFavicon() {
 }
 
 // Optionally, auto-run if imported directly
-setDynamicFavicon(); 
+setDynamicFavicon();
