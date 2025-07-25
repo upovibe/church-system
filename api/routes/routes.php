@@ -129,11 +129,6 @@ Router::get('/life-groups/{id}', 'LifeGroupController@show');
 Router::put('/life-groups/{id}', 'LifeGroupController@update');
 Router::delete('/life-groups/{id}', 'LifeGroupController@destroy');
 
-// Guest Applications
-Router::get('/applications', 'ApplicationController@index');
-Router::get('/applications/{id}', 'ApplicationController@show');
-Router::post('/applications', 'ApplicationController@store');
-
 // Sermon Management Routes (admin only for create/update/delete, public for view)
 Router::get('/sermons', 'SermonController@index');
 Router::post('/sermons', 'SermonController@store');
