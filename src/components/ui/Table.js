@@ -330,7 +330,7 @@ class Table extends HTMLElement {
                 
                 .upo-table-scroll-container {
                     overflow-x: auto;
-                    max-height: 400px;
+                    max-height: 60rem;
                     overflow-y: auto;
                     -webkit-overflow-scrolling: touch;
                 }
