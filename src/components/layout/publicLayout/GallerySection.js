@@ -62,6 +62,8 @@ class GallerySection extends App {
             const baseUrl = window.location.origin;
             return baseUrl + imagePath;
         }
+        // For relative paths like "uploads/galleries/filename.jpg"
+        // Construct the URL by adding the base URL and /api
         const baseUrl = window.location.origin;
         const apiPath = '/api';
         return baseUrl + apiPath + '/' + imagePath;

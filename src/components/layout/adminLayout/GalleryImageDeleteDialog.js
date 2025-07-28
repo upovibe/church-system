@@ -74,7 +74,8 @@ class GalleryImageDeleteDialog extends HTMLElement {
             return baseUrl + imagePath;
         }
         
-        // If it's a relative path without /, construct the URL
+        // For relative paths like "uploads/galleries/filename.jpg"
+        // Construct the URL by adding the base URL and /api
         const baseUrl = window.location.origin;
         const apiPath = '/api';
         return baseUrl + apiPath + '/' + imagePath;
