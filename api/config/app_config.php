@@ -16,9 +16,9 @@ return [
         'from_address' => 'noreply@churchsystem.com',
         'from_name' => 'Church System',
     ],
-    'client_url' => 'http://localhost:3000',
-    'api_url' => 'http://localhost:3000/api',
-    'app_url' => 'http://localhost:3000',
+    'client_url' => 'http://localhost:8080',
+    'api_url' => 'http://localhost:8080/api',
+    'app_url' => 'http://localhost:8080',
 ]; 
 
 // cd church-system; php -S localhost:8080
