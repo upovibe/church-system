@@ -275,7 +275,7 @@ class EventList extends App {
         return `
             <!-- Search and Filter Bar -->
             <div class="mb-10">
-                <div class="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
+                <div class="flex flex-row gap-4 max-w-4xl mx-auto">
                     <!-- Search Bar -->
                     <div class="relative flex-1">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
