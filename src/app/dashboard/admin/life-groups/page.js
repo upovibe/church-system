@@ -311,29 +311,23 @@ class LifeGroupsPage extends App {
                     </div>
                 ` : `
                     <div class="mb-8">
-                        ${lifeGroups && lifeGroups.length > 0 ? `
-                            <ui-table 
-                                title="Life Groups"
-                                data='${JSON.stringify(tableData)}'
-                                columns='${JSON.stringify(tableColumns)}'
-                                sortable
-                                searchable
-                                search-placeholder="Search life groups..."
-                                pagination
-                                page-size="10"
-                                action
-                                addable
-                                refresh
-                                print
-                                bordered
-                                striped
-                                class="w-full">
-                            </ui-table>
-                        ` : `
-                            <div class="text-center py-8 text-gray-500">
-                                <p>No life groups found in database</p>
-                            </div>
-                        `}
+                        <ui-table 
+                            title="Life Groups"
+                            data='${JSON.stringify(tableData)}'
+                            columns='${JSON.stringify(tableColumns)}'
+                            sortable
+                            searchable
+                            search-placeholder="Search life groups..."
+                            pagination
+                            page-size="10"
+                            action
+                            addable
+                            refresh
+                            print
+                            bordered
+                            striped
+                            class="w-full">
+                        </ui-table>
                     </div>
                 `}
             </div>

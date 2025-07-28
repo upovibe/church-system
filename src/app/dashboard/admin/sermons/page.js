@@ -292,29 +292,23 @@ class SermonsPage extends App {
                 ` : `
                     <!-- Sermons Table Section -->
                     <div class="mb-8">
-                        ${sermons && sermons.length > 0 ? `
-                            <ui-table 
-                                title="Sermon Management"
-                                data='${JSON.stringify(tableData)}'
-                                columns='${JSON.stringify(tableColumns)}'
-                                sortable
-                                searchable
-                                search-placeholder="Search sermons..."
-                                pagination
-                                page-size="10"
-                                action
-                                addable
-                                refresh
-                                print
-                                bordered
-                                striped
-                                class="w-full">
-                            </ui-table>
-                        ` : `
-                            <div class="text-center py-8 text-gray-500">
-                                <p>No sermons found in database</p>
-                            </div>
-                        `}
+                        <ui-table 
+                            title="Sermon Management"
+                            data='${JSON.stringify(tableData)}'
+                            columns='${JSON.stringify(tableColumns)}'
+                            sortable
+                            searchable
+                            search-placeholder="Search sermons..."
+                            pagination
+                            page-size="10"
+                            action
+                            addable
+                            refresh
+                            print
+                            bordered
+                            striped
+                            class="w-full">
+                        </ui-table>
                     </div>
                 `}
             </div>          
