@@ -180,6 +180,50 @@ class SystemViewModal extends HTMLElement {
                     </div>
                 `;
             
+            case 'array':
+                let arrayValues = [];
+                if (Array.isArray(currentValue)) {
+                    arrayValues = currentValue;
+                } else if (typeof currentValue === 'string' && currentValue.trim()) {
+                    // Try to parse as JSON
+                    try {
+                        const parsed = JSON.parse(currentValue);
+                        if (Array.isArray(parsed)) {
+                            arrayValues = parsed;
+                        }
+                    } catch {
+                        // If not JSON, treat as single value
+                        arrayValues = [currentValue];
+                    }
+                }
+                
+                if (arrayValues.length === 0) {
+                    return `
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <span class="text-sm text-gray-500">No array items</span>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="space-y-2">
+                        ${arrayValues.map((item, index) => `
+                            <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                <div class="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium">
+                                    ${index + 1}
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-sm text-gray-900">${item}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                        <div class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            ${arrayValues.length} item${arrayValues.length !== 1 ? 's' : ''} in array
+                        </div>
+                    </div>
+                `;
+            
             default:
                 return `
                     <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
