@@ -69,7 +69,7 @@ class MissionVisionSection extends App {
     }
 
     return `
-        <section class="my-10">
+        <section class="">
             <div class="container mx-auto px-4">
                 <!-- Banner and Title -->
                 <div class="relative w-full h-[30rem] overflow-hidden rounded-2xl mb-8">
@@ -87,8 +87,8 @@ class MissionVisionSection extends App {
                     </div>
                     `
                     }
-                    <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent rounded-2xl my-10 p"></div>
-                    <div class="absolute top-0 left-0 w-full p-8">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent rounded-2xl"></div>
+                    <div class="absolute inset-0 w-full p-8 flex flex-col justify-end">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-wide text-[${textColor}] mb-3 drop-shadow-lg">${
       pageData.title || 'Mission & Vision'
     }</h1>

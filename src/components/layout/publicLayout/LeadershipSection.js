@@ -130,7 +130,17 @@ class LeadershipSection extends App {
 
     return `
             <!-- Our Team Section -->
-            <section class="container mx-auto px-4">
+            <section class="container mx-auto px-4 py-16">
+                <!-- Title and Subtitle Section -->
+                <div class="text-center mb-12 mt-8">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-wide text-[${secondaryColor}] mb-4 drop-shadow-lg border-b-4 border-[${accentColor}] pb-4 inline-block">
+                        ${pageData?.title || 'Our Leadership'}
+                    </h1>
+                    <p class="text-xl md:text-2xl text-[${secondaryColor}]/80 max-w-3xl mx-auto leading-relaxed">
+                        ${pageData?.subtitle || 'Meet our dedicated team of pastors and ministry leaders'}
+                    </p>
+                </div>
+                
                 <!-- Main Content Section (No Banner, No BG) -->
                 ${
                   pageData.content

@@ -158,7 +158,7 @@ class TenantsBeliefsSection extends App {
         <div class="container mx-auto px-4 py-8">   
             <!-- Content Display -->
             ${pageData.content ? `
-                <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
+                <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden">
                     <div class="p-5 lg:p-12">
                         <content-display 
                             content="${pageData.content.replace(/"/g, '&quot;')}"

@@ -126,18 +126,17 @@ class AboutPage extends App {
                     page-data='${pageData}'>
                 </about-us-section>
                 
-                <!-- Mission Vision Section Component -->
-                <mission-vision-section 
-                    colors='${colorsData}'
-                    page-data='${missionVisionPageData}'>
-                </mission-vision-section>
-                
                 <!-- Tenants Beliefs Section Component -->
                 <tenants-beliefs-section 
                     colors='${colorsData}'
                     page-data='${tenantsBeliefsPageData}'>
                 </tenants-beliefs-section>
-                
+                                
+                <!-- Mission Vision Section Component -->
+                <mission-vision-section 
+                    colors='${colorsData}'
+                    page-data='${missionVisionPageData}'>
+                </mission-vision-section>
                 <!-- Leadership Section Component -->
                 <leadership-section 
                     colors='${colorsData}'
