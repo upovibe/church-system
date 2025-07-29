@@ -172,7 +172,7 @@ class PhotoGalleryList extends App {
                             </div>
                         </div>
                         <div class="p-4">
-                            <h3 class="text-xl font-bold text-[${secondaryColor}] mb-2 truncate">${gallery.name}</h3>
+                            <h3 class="text-xl font-bold mb-2 truncate">${gallery.name}</h3>
                             ${gallery.description ? `<p class="text-gray-600 text-sm mb-2 truncate">${gallery.description}</p>` : ''}
                             <div class="w-16 h-1 bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] rounded-full mb-2"></div>
                         </div>

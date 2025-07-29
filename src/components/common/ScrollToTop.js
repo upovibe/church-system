@@ -68,7 +68,7 @@ class ScrollToTop extends App {
         return `
             <button
                 id="scroll-to-top-btn"
-                class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 ease-in-out opacity-0 pointer-events-none translate-y-2 flex items-center justify-center group"
+                class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-blue-500 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 ease-in-out opacity-0 pointer-events-none translate-y-2 flex items-center justify-center group"
                 aria-label="Scroll to top"
                 title="Scroll to top"
             >

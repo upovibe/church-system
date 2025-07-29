@@ -152,7 +152,18 @@ class EventsSection extends App {
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-3xl"></div>
                         </div>
                     </div>
-                ` : ''}
+                ` : `
+                    <!-- Placeholder Banner -->
+                    <div class="mb-8">
+                        <div class="relative w-full h-96 bg-gradient-to-br from-gray-600 to-gray-800 rounded-3xl shadow-lg flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fas fa-calendar-alt text-6xl mb-4 opacity-50"></i>
+                                <h1 class="text-3xl font-bold mb-2">Events</h1>
+                                <p class="text-lg opacity-75">Stay updated with our latest events and activities</p>
+                            </div>
+                        </div>
+                    </div>
+                `}
 
 
                 

@@ -260,7 +260,7 @@ class Header extends App {
     return `
         <div class="relative">
           ${style}
-          <header class="sticky top-0 z-50 bg-[${primaryColor}]/30 backdrop-blur-md bg-opacity-60 -mb-28">
+          <header class="sticky top-0 z-50 bg-[${primaryColor}]">
             <div class="flex container mx-auto items-center justify-between p-3 lg:p-5">
               <!-- Logo on the left -->
               <ui-link href="/" class="flex items-center mr-4">

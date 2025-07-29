@@ -3,6 +3,7 @@ import api from '@/services/api.js';
 import '@/components/layout/Header.js';
 import '@/components/layout/Footer.js';
 import '@/components/layout/DbSetupDialog.js';
+import '@/components/common/ScrollToTop.js';
 
 /**
  * Root Layout Component
@@ -63,6 +64,7 @@ class RootLayout extends App {
                         <db-setup-dialog></db-setup-dialog>
                     </main>
                     <app-footer></app-footer>
+                    <ui-scroll-to-top></ui-scroll-to-top>
                 </div>
             `;
         }
@@ -73,6 +75,7 @@ class RootLayout extends App {
                     <!-- Page content will be injected here -->
                 </main>
                 <app-footer></app-footer>
+                <ui-scroll-to-top></ui-scroll-to-top>
             </div>
         `;
     }
