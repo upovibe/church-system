@@ -239,18 +239,20 @@ class GalleriesPage extends App {
             const tableData = galleries.map((gallery, index) => ({
                 id: gallery.id,
                 index: index + 1,
-                name: gallery.name,
-                slug: gallery.slug,
+                name: gallery.name || '',
+                slug: gallery.slug || '',
                 images_count: gallery.images ? gallery.images.length : 0,
                 status: gallery.is_active ? 'Active' : 'Inactive',
-                created: new Date(gallery.created_at).toLocaleString(),
-                updated: new Date(gallery.updated_at).toLocaleString(),
+                created: gallery.created_at ? new Date(gallery.created_at).toLocaleString() : '',
+                updated: gallery.updated_at ? new Date(gallery.updated_at).toLocaleString() : '',
             }));
 
             // Find the table component and update its data
             const tableComponent = this.querySelector('ui-table');
             if (tableComponent) {
-                tableComponent.setAttribute('data', JSON.stringify(tableData));
+                // Properly escape the JSON data to prevent parsing errors
+                const safeTableData = JSON.stringify(tableData).replace(/"/g, '&quot;');
+                tableComponent.setAttribute('data', safeTableData);
             }
         }
     }
@@ -277,12 +279,12 @@ class GalleriesPage extends App {
         const tableData = galleries ? galleries.map((gallery, index) => ({
             id: gallery.id,
             index: index + 1,
-            name: gallery.name,
-            slug: gallery.slug,
+            name: gallery.name || '',
+            slug: gallery.slug || '',
             images_count: gallery.images ? gallery.images.length : 0,
             status: gallery.is_active ? 'Active' : 'Inactive',
-            created: new Date(gallery.created_at).toLocaleString(),
-            updated: new Date(gallery.updated_at).toLocaleString(),
+            created: gallery.created_at ? new Date(gallery.created_at).toLocaleString() : '',
+            updated: gallery.updated_at ? new Date(gallery.updated_at).toLocaleString() : '',
         })) : [];
 
         const tableColumns = [
@@ -292,6 +294,10 @@ class GalleriesPage extends App {
             { key: 'status', label: 'Status' },
             { key: 'updated', label: 'Updated' }
         ];
+        
+        // Properly escape the JSON data to prevent parsing errors
+        const safeTableData = JSON.stringify(tableData).replace(/"/g, '&quot;');
+        const safeTableColumns = JSON.stringify(tableColumns).replace(/"/g, '&quot;');
         
         return `
             <div class="bg-white rounded-lg shadow-lg p-4">
@@ -307,8 +313,8 @@ class GalleriesPage extends App {
                     <div class="mb-8">
                         <ui-table 
                             title="Gallery Management"
-                            data='${JSON.stringify(tableData)}'
-                            columns='${JSON.stringify(tableColumns)}'
+                            data="${safeTableData}"
+                            columns="${safeTableColumns}"
                             sortable
                             searchable
                             search-placeholder="Search galleries..."
