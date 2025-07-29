@@ -111,6 +111,18 @@ class PageSeeder
                 'banner_image' => json_encode(['uploads/pages/Values_1752713324_68784868g'])
             ],
             [
+                'slug' => 'tenants-beliefs',
+                'name' => 'Tenants & Beliefs',
+                'subtitle' => 'Our core beliefs and values',
+                'title' => 'Tenants & Beliefs',
+                'content' => '<h2>Our Vision & Beliefs</h2><p>A church where people encounter God, grow in faith, and impact the world. Our vision is to become a vibrant, Christ-centered community that passionately pursues God\'s presence and reflects His love to the world around us.</p><h3>Our Vision</h3><p>We envision a church that is not just a place to gather, but a movement of people living out their faith with boldness and joy. We see a church where worship is passionate, prayer is powerful, and the Word of God is taught with clarity and conviction.</p><h3>Core Beliefs</h3><ul><li><strong>Biblical Authority:</strong> We believe in the authority and sufficiency of God\'s Word</li><li><strong>Salvation by Grace:</strong> We believe salvation comes through faith in Jesus Christ alone</li><li><strong>Holy Spirit:</strong> We believe in the presence and power of the Holy Spirit</li><li><strong>Community:</strong> We believe in the importance of Christian fellowship and community</li><li><strong>Mission:</strong> We believe in sharing God\'s love with the world</li></ul><h3>Our Values</h3><p>We are committed to authentic worship, biblical teaching, prayer, fellowship, and service. We strive to create an environment where people can grow spiritually and develop meaningful relationships with God and others.</p>',
+                'meta_description' => 'Discover our church\'s core beliefs, values, and vision for creating a vibrant Christ-centered community.',
+                'category' => 'about',
+                'is_active' => 1,
+                'sort_order' => 8,
+                'banner_image' => json_encode(['uploads/pages/Values_1752713298_6878485214266g'])
+            ],
+            [
                 'slug' => 'ministries',
                 'name' => 'Ministries',
                 'subtitle' => 'Serving God and community',
@@ -119,7 +131,7 @@ class PageSeeder
                 'meta_description' => 'Explore our various ministries and find opportunities to serve, grow, and connect within our church community.',
                 'category' => 'community',
                 'is_active' => 1,
-                'sort_order' => 8,
+                'sort_order' => 9,
                 'banner_image' => json_encode(['uploads/pages/About_1752713342_6878487ef2458.jpg'])
             ],
             [
@@ -131,7 +143,7 @@ class PageSeeder
                 'meta_description' => 'Life group',
                 'category' => 'community',
                 'is_active' => 1,
-                'sort_order' => 9,
+                'sort_order' => 10,
                 'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
             ],
 
@@ -145,7 +157,7 @@ class PageSeeder
                 'meta_description' => 'Explore our church gallery featuring photos and videos of events, services, and community activities.',
                 'category' => 'gallery',
                 'is_active' => 1,
-                'sort_order' => 10,
+                'sort_order' => 11,
                 'banner_image' => json_encode(['uploads/pages/5_1752713285_687848450g'])
             ],
             // ===== HIGHLIGHTS PAGES =====
@@ -158,7 +170,7 @@ class PageSeeder
                 'meta_description' => 'Stay updated with all the exciting events and activities happening at our church throughout the year.',
                 'category' => 'community',
                 'is_active' => 1,
-                'sort_order' => 11,
+                'sort_order' => 12,
                 'banner_image' => json_encode(['uploads/pages/1_1752790102_68797456e2b8c.jpg'])
             ],
             [
@@ -170,7 +182,7 @@ class PageSeeder
                 'meta_description' => 'Browse sermons and messages from our church, featuring biblical teaching and encouragement.',
                 'category' => 'highlights',
                 'is_active' => 1,
-                'sort_order' => 12,
+                'sort_order' => 13,
                 'banner_image' => json_encode(['uploads/pages/sermons_default.jpg'])
             ],
             [
@@ -182,7 +194,7 @@ class PageSeeder
                 'meta_description' => 'Inspiring testimonials and stories of faith from our church community.',
                 'category' => 'highlights',
                 'is_active' => 1,
-                'sort_order' => 13,
+                'sort_order' => 14,
                 'banner_image' => json_encode(['uploads/pages/testimonials_default.jpg'])
             ],
             [
@@ -194,7 +206,7 @@ class PageSeeder
                 'meta_description' => 'Browse our photo gallery featuring church events, services, and community activities.',
                 'category' => 'gallery',
                 'is_active' => 1,
-                'sort_order' => 13,
+                'sort_order' => 15,
                 'banner_image' => json_encode(['uploads/pages/About_1752713342_6878487ef2458.jpg'])
             ],
             [
@@ -206,7 +218,7 @@ class PageSeeder
                 'meta_description' => 'Watch videos from church services, ministry events, and community activities.',
                 'category' => 'gallery',
                 'is_active' => 1,
-                'sort_order' => 14,
+                'sort_order' => 16,
                 'banner_image' => json_encode(['uploads/pages/About_1752713456_687848f08022c.jpg'])
             ],
         ];

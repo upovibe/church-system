@@ -7,6 +7,7 @@ import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/AboutUsSection.js';
 import '@/components/layout/publicLayout/LeadershipSection.js';
 import '@/components/layout/publicLayout/MissionVisionSection.js';
+import '@/components/layout/publicLayout/TenantsBeliefsSection.js';
 
 /**
  * About Page Component (/about)
@@ -32,6 +33,8 @@ class AboutPage extends App {
             const teamPageData = await this.fetchPageData('our-leaders');
             // Load mission vision page data
             const missionVisionPageData = await this.fetchPageData('mission-vision');
+            // Load tenants beliefs page data
+            const tenantsBeliefsPageData = await this.fetchPageData('tenants-beliefs');
             // Load team members
             const teamMembers = await this.fetchTeamMembers();
             // Combine all data
@@ -40,6 +43,7 @@ class AboutPage extends App {
                 page: aboutPageData,
                 teamPage: teamPageData,
                 missionVisionPage: missionVisionPageData,
+                tenantsBeliefsPage: tenantsBeliefsPageData,
                 teamMembers
             };
             // Cache in global store
@@ -111,6 +115,7 @@ class AboutPage extends App {
         const pageData = escapeJsonForAttribute(allData.page);
         const teamPageData = escapeJsonForAttribute(allData.teamPage);
         const missionVisionPageData = escapeJsonForAttribute(allData.missionVisionPage);
+        const tenantsBeliefsPageData = escapeJsonForAttribute(allData.tenantsBeliefsPage);
         const teamMembersData = escapeJsonForAttribute(allData.teamMembers);
 
         return `
@@ -126,6 +131,12 @@ class AboutPage extends App {
                     colors='${colorsData}'
                     page-data='${missionVisionPageData}'>
                 </mission-vision-section>
+                
+                <!-- Tenants Beliefs Section Component -->
+                <tenants-beliefs-section 
+                    colors='${colorsData}'
+                    page-data='${tenantsBeliefsPageData}'>
+                </tenants-beliefs-section>
                 
                 <!-- Leadership Section Component -->
                 <leadership-section 

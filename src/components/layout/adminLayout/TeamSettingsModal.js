@@ -196,16 +196,12 @@ class TeamSettingsModal extends HTMLElement {
                                 data-field="department"
                                 placeholder="Select department"
                                 class="w-full">
-                                <ui-option value="Administration">Administration</ui-option>
-                                <ui-option value="Teaching">Teaching</ui-option>
-                                <ui-option value="Support Staff">Support Staff</ui-option>
-                                <ui-option value="Management">Management</ui-option>
-                                <ui-option value="IT">IT</ui-option>
-                                <ui-option value="Finance">Finance</ui-option>
-                                <ui-option value="Human Resources">Human Resources</ui-option>
-                                <ui-option value="Maintenance">Maintenance</ui-option>
-                                <ui-option value="Security">Security</ui-option>
-                                <ui-option value="Other">Other</ui-option>
+                                <ui-option value="District Pastor">District Pastor</ui-option>
+                                <ui-option value="Presiding Elder">Presiding Elder</ui-option>
+                                <ui-option value="Senior Pastor">Senior Pastor</ui-option>
+                                <ui-option value="Associate Pastor">Associate Pastor</ui-option>
+                                <ui-option value="Youth Pastor">Youth Pastor</ui-option>
+                                <ui-option value="Worship Pastor">Worship Pastor</ui-option>
                             </ui-dropdown>
                         </div>
                         
