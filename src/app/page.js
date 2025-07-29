@@ -110,7 +110,8 @@ class RootPage extends App {
         try {
             const settingsKeys = [
                 'application_logo', 'contact_email', 'contact_phone',
-                'facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url', 'youtube_url'
+                'facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url', 'youtube_url',
+                'service_times'
             ];
 
             const settingsPromises = settingsKeys.map(async (key) => {
@@ -179,7 +180,8 @@ class RootPage extends App {
                 <!-- About Section Component -->
                 <about-section 
                     colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.about)}'>
+                    page-data='${escapeJsonForAttribute(allData.pages.about)}'
+                    service-times='${escapeJsonForAttribute(allData.settings.service_times)}'>
                 </about-section>
 
                 <!-- Highlights Section Component -->

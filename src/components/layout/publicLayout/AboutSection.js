@@ -21,6 +21,7 @@ class AboutSection extends App {
     // Get data from props/attributes
     const colorsAttr = this.getAttribute('colors');
     const pageDataAttr = this.getAttribute('page-data');
+    const serviceTimesAttr = this.getAttribute('service-times');
 
     if (colorsAttr) {
       try {
@@ -40,6 +41,13 @@ class AboutSection extends App {
       }
     }
 
+    if (serviceTimesAttr) {
+      const serviceTimes = unescapeJsonFromAttribute(serviceTimesAttr);
+      if (serviceTimes) {
+        this.set('serviceTimes', serviceTimes);
+      }
+    }
+
     // Render immediately with the data
     this.render();
   }
@@ -55,11 +63,35 @@ class AboutSection extends App {
     const hoverPrimary = this.get('hover_primary');
     const hoverSecondary = this.get('hover_secondary');
     const hoverAccent = this.get('hover_accent');
+    const serviceTimes = this.get('serviceTimes');
 
     // Only render if there's content
     if (!pageData?.content || pageData.content.trim() === '') {
       return '';
     }
+
+    // Render service times section
+    const renderServiceTimes = () => {
+      if (!serviceTimes || !Array.isArray(serviceTimes) || serviceTimes.length === 0) {
+        return '';
+      }
+
+      return `
+        <div class="mt-6 p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+          <h3 class="text-3xl font-semibold text-[${secondaryColor}] mb-3 flex items-center">
+            Service Times
+          </h3>
+          <div class="space-y-2">
+            ${serviceTimes.map(time => `
+              <div class="flex items-center text-[${secondaryColor}]/90">
+                <i class="fas fa-church mr-3 text-[${accentColor}]"></i>
+                <span class="text-sm">${time}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    };
 
     return `
         
@@ -101,6 +133,7 @@ class AboutSection extends App {
                     <p class="text-lg lg:text-xl leading-8 text-gray-500 mt-4"  >
                         ${pageData.meta_description || ''}
                     </p>
+                    ${renderServiceTimes()}
                 </div>
                 <!-- Right: Octagon Banner Image -->
                 <div class="w-full md:w-1/2 flex justify-center items-center">
