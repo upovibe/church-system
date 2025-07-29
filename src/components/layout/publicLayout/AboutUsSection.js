@@ -107,7 +107,7 @@ class AboutUsSection extends App {
                 z-index: 2;
             }
         </style>
-        <section class="container mx-auto px-4 pt-40">
+        <section class="container mx-auto px-4">
             <div class="mx-auto mb-8">
                 ${
                   title
