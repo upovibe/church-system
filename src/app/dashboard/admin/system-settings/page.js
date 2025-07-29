@@ -321,7 +321,6 @@ class SystemSettingsPage extends App {
                             pagination
                             page-size="10"
                             action
-                            addable
                             actions="view,edit"                                
                             refresh
                             print
