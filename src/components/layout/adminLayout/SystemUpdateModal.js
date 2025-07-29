@@ -92,6 +92,13 @@ class SystemUpdateModal extends HTMLElement {
                 this.removeArrayItem(index);
             }
         });
+
+        // Listen for array input changes to update setting value
+        this.addEventListener('input', (event) => {
+            if (event.target.matches('#array-inputs input[data-array-index]')) {
+                this.updateArrayValues();
+            }
+        });
     }
 
     open() {
@@ -341,6 +348,8 @@ class SystemUpdateModal extends HTMLElement {
         this._syncArrayItemsFromDOM(); // Save current values before removing one
         if (this.arrayItems.length > 1) {
             this.arrayItems.splice(index, 1);
+            // Update the setting value with the new array
+            this.settingData.setting_value = this.arrayItems.filter(item => item.trim());
             this.updateValueInput();
         }
     }
