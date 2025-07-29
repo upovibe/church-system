@@ -24,6 +24,7 @@ class SystemUpdateModal extends HTMLElement {
     constructor() {
         super();
         this.settingData = null;
+        this.arrayItems = [''];
     }
 
     static get observedAttributes() {
@@ -78,6 +79,19 @@ class SystemUpdateModal extends HTMLElement {
                 }
             }
         });
+
+        // Listen for array item add/remove events
+        this.addEventListener('click', (e) => {
+            if (e.target.closest('[data-action="add-array-item"]')) {
+                e.preventDefault();
+                this.addArrayItem();
+            }
+            if (e.target.closest('[data-action="remove-array-item"]')) {
+                e.preventDefault();
+                const index = parseInt(e.target.closest('[data-action="remove-array-item"]').dataset.index, 10);
+                this.removeArrayItem(index);
+            }
+        });
     }
 
     open() {
@@ -117,7 +131,12 @@ class SystemUpdateModal extends HTMLElement {
     // Render the appropriate input component based on setting type
     renderValueInput() {
         const settingType = this.settingData?.setting_type || 'text';
-        const currentValue = this.settingData?.setting_value || '';
+        let currentValue = this.settingData?.setting_value || '';
+
+        // Handle array type - convert array to string for display
+        if (settingType === 'array' && Array.isArray(currentValue)) {
+            currentValue = currentValue.join('\n');
+        }
 
         switch (settingType) {
             case 'text':
@@ -221,6 +240,26 @@ class SystemUpdateModal extends HTMLElement {
                     </ui-textarea>
                 `;
             
+            case 'array':
+                return `
+                    <div class="space-y-2">
+                        <div id="array-inputs" class="space-y-2">
+                            ${this.renderArrayInputs()}
+                        </div>
+                        <div class="flex justify-end mt-2">
+                            <ui-button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                data-action="add-array-item"
+                                class="px-3">
+                                <i class="fas fa-plus mr-1"></i>
+                                Add Item
+                            </ui-button>
+                        </div>
+                    </div>
+                `;
+            
             default:
                 return `
                     <ui-input 
@@ -232,6 +271,85 @@ class SystemUpdateModal extends HTMLElement {
                     </ui-input>
                 `;
         }
+    }
+
+    // Render array inputs for existing values
+    renderArrayInputs() {
+        // Use arrayItems state if available, otherwise fall back to settingData
+        let arrayValues = this.arrayItems && this.arrayItems.length > 0 ? this.arrayItems : [''];
+        
+        // If we have settingData with array values, use those
+        if (this.settingData && this.settingData.setting_value) {
+            const currentValue = this.settingData.setting_value;
+            if (Array.isArray(currentValue)) {
+                arrayValues = currentValue;
+                this.arrayItems = [...currentValue];
+            } else if (typeof currentValue === 'string' && currentValue.trim()) {
+                // Try to parse as JSON
+                try {
+                    const parsed = JSON.parse(currentValue);
+                    if (Array.isArray(parsed)) {
+                        arrayValues = parsed;
+                        this.arrayItems = [...parsed];
+                    }
+                } catch {
+                    // If not JSON, use as single value
+                    arrayValues = [currentValue];
+                    this.arrayItems = [currentValue];
+                }
+            }
+        }
+        
+        return arrayValues.map((value, index) => `
+            <div class="flex gap-2 items-center">
+                <div class="flex-1">
+                    <input
+                        type="text"
+                        placeholder="Enter array item"
+                        value="${value}"
+                        data-array-index="${index}"
+                        class="w-full upo-input-default">
+                </div>
+                ${arrayValues.length > 1 ? `
+                    <ui-button
+                        type="button"
+                        variant="danger-outline"
+                        size="sm"
+                        data-action="remove-array-item"
+                        data-index="${index}"
+                        class="px-3">
+                        <i class="fas fa-trash"></i>
+                    </ui-button>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+
+    // Helper to read the current values from the DOM into our state array
+    _syncArrayItemsFromDOM() {
+        const arrayItemInputs = this.querySelectorAll('input[data-array-index]');
+        this.arrayItems = Array.from(arrayItemInputs).map(input => input.value || '');
+    }
+
+    addArrayItem() {
+        this._syncArrayItemsFromDOM(); // Save current values before adding a new one
+        this.arrayItems.push('');
+        this.updateValueInput();
+    }
+
+    removeArrayItem(index) {
+        this._syncArrayItemsFromDOM(); // Save current values before removing one
+        if (this.arrayItems.length > 1) {
+            this.arrayItems.splice(index, 1);
+            this.updateValueInput();
+        }
+    }
+
+    // Update array values from inputs
+    updateArrayValues() {
+        const inputs = this.querySelectorAll('#array-inputs input[data-array-index]');
+        const values = Array.from(inputs).map(input => input.value).filter(value => value.trim());
+        this.settingData.setting_value = values;
     }
 
     // Update the setting
@@ -263,6 +381,11 @@ class SystemUpdateModal extends HTMLElement {
                 case 'select':
                     const textarea = this.querySelector('ui-textarea[name="setting_value"]');
                     valueInput = textarea ? textarea.value : '';
+                    break;
+                case 'array':
+                    // Collect values from dynamic array inputs
+                    this._syncArrayItemsFromDOM();
+                    valueInput = this.arrayItems.filter(value => value.trim());
                     break;
                 case 'file':
                 case 'image':
@@ -361,17 +484,10 @@ class SystemUpdateModal extends HTMLElement {
                 duration: 3000
             });
 
-            // Construct the updated setting data from response
-            const updatedSetting = {
-                ...this.settingData, // Keep existing fields like id, created_at
-                ...settingData,
-                updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
-            };
-
             // Close modal and dispatch event
             this.close();
             this.dispatchEvent(new CustomEvent('setting-updated', {
-                detail: { setting: updatedSetting },
+                detail: { setting: response.data.data },
                 bubbles: true,
                 composed: true
             }));
@@ -422,6 +538,7 @@ class SystemUpdateModal extends HTMLElement {
                             <ui-option value="textarea">Textarea</ui-option>
                             <ui-option value="select">Select</ui-option>
                             <ui-option value="image">Image</ui-option>
+                            <ui-option value="array">Array</ui-option>
                         </ui-dropdown>
                     </div>
                     
@@ -446,6 +563,7 @@ class SystemUpdateModal extends HTMLElement {
                             <ui-option value="map">Map</ui-option>
                             <ui-option value="branding">Branding</ui-option>
                             <ui-option value="system">System</ui-option>
+                            <ui-option value="services">Services</ui-option>
                         </ui-dropdown>
                     </div>
                     

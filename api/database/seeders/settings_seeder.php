@@ -81,6 +81,13 @@ class SettingsSeeder
             ['setting_key' => 'paystack_payment_link', 'setting_value' => 'https://paystack.com/pay/your-church-donations', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Paystack direct payment link'],
             ['setting_key' => 'stripe_payment_link', 'setting_value' => 'https://buy.stripe.com/your-church-donations', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Stripe direct payment link'],
             
+            // Service Times Settings
+            ['setting_key' => 'service_times', 'setting_value' => json_encode([
+                'Sunday Service: 10am—12 noon',
+                'Wednesday midweek Bible discussions & prayer: 6pm - 7:30pm',
+                'Friday prayer service: 7pm - 8:30pm'
+            ]), 'setting_type' => 'array', 'category' => 'services', 'description' => 'Church service times and schedules'],
+            
         ];
 
         foreach ($defaultSettings as $setting) {

@@ -29,6 +29,9 @@ class SettingController {
             
             $settings = $this->settingModel->findAll();
             
+            // Decode array settings for all settings
+            $settings = array_map([$this, 'decodeArraySetting'], $settings);
+            
             http_response_code(200);
             echo json_encode([
                 'success' => true,
@@ -103,7 +106,32 @@ class SettingController {
                 $data['is_active'] = filter_var($data['is_active'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
             }
             
+            // Handle array type settings - encode as JSON
+            if (isset($data['setting_type']) && $data['setting_type'] === 'array' && isset($data['setting_value'])) {
+                if (is_array($data['setting_value'])) {
+                    $data['setting_value'] = json_encode($data['setting_value']);
+                } elseif (is_string($data['setting_value'])) {
+                    // If it's already a JSON string, validate it
+                    $decoded = json_decode($data['setting_value'], true);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        http_response_code(400);
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Invalid JSON format for array setting'
+                        ]);
+                        return;
+                    }
+                }
+            }
+            
             $settingId = $this->settingModel->create($data);
+            
+            // Get the created setting to return full data
+            $createdSetting = $this->settingModel->findById($settingId);
+            if ($createdSetting) {
+                // Decode array settings
+                $createdSetting = $this->decodeArraySetting($createdSetting);
+            }
             
             // Log the action
             $this->logAction('setting_created', "Created setting: {$data['setting_key']}", [
@@ -115,7 +143,7 @@ class SettingController {
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'data' => ['id' => $settingId],
+                'data' => $createdSetting,
                 'message' => 'Setting created successfully'
             ]);
         } catch (Exception $e) {
@@ -145,6 +173,9 @@ class SettingController {
                 ]);
                 return;
             }
+            
+            // Decode array settings
+            $setting = $this->decodeArraySetting($setting);
             
             http_response_code(200);
             echo json_encode([
@@ -190,6 +221,9 @@ class SettingController {
                     return;
                 }
             }
+            
+            // Decode array settings
+            $setting = $this->decodeArraySetting($setting);
             
             http_response_code(200);
             echo json_encode([
@@ -275,6 +309,24 @@ class SettingController {
                 $data['is_active'] = filter_var($data['is_active'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
             }
             
+            // Handle array type settings - encode as JSON
+            if (isset($data['setting_type']) && $data['setting_type'] === 'array' && isset($data['setting_value'])) {
+                if (is_array($data['setting_value'])) {
+                    $data['setting_value'] = json_encode($data['setting_value']);
+                } elseif (is_string($data['setting_value'])) {
+                    // If it's already a JSON string, validate it
+                    $decoded = json_decode($data['setting_value'], true);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        http_response_code(400);
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Invalid JSON format for array setting'
+                        ]);
+                        return;
+                    }
+                }
+            }
+
             // Delete old file if new file is uploaded and setting type is file/image
             if (isset($_FILES['setting_value']) && in_array($existingSetting['setting_type'], ['file', 'image'])) {
                 if ($existingSetting['setting_value']) {
@@ -285,6 +337,13 @@ class SettingController {
             $result = $this->settingModel->update($id, $data);
             
             if ($result) {
+                // Get the updated setting to return full data
+                $updatedSetting = $this->settingModel->findById($id);
+                if ($updatedSetting) {
+                    // Decode array settings
+                    $updatedSetting = $this->decodeArraySetting($updatedSetting);
+                }
+                
                 // Log the action
                 $this->logAction('setting_updated', "Updated setting: {$existingSetting['setting_key']}", [
                     'setting_id' => $id,
@@ -295,6 +354,7 @@ class SettingController {
                 http_response_code(200);
                 echo json_encode([
                     'success' => true,
+                    'data' => $updatedSetting,
                     'message' => 'Setting updated successfully'
                 ]);
             } else {
@@ -377,6 +437,9 @@ class SettingController {
             RoleMiddleware::requireAdmin($this->pdo);
             
             $settings = $this->settingModel->getByCategory($category);
+            
+            // Decode array settings for all settings
+            $settings = array_map([$this, 'decodeArraySetting'], $settings);
             
             http_response_code(200);
             echo json_encode([
@@ -652,6 +715,22 @@ class SettingController {
         $bytes /= pow(1024, $pow);
         
         return round($bytes, 2) . ' ' . $units[$pow];
+    }
+
+    /**
+     * Decode array settings from the database.
+     * This is necessary because the setting_value column in the database is JSON.
+     * @param array $setting The setting data from the database.
+     * @return array The decoded setting data.
+     */
+    private function decodeArraySetting($setting) {
+        if ($setting['setting_type'] === 'array' && $setting['setting_value']) {
+            $decoded = json_decode($setting['setting_value'], true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return array_merge($setting, ['setting_value' => $decoded]);
+            }
+        }
+        return $setting;
     }
 }
 ?>

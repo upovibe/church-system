@@ -202,16 +202,34 @@ class SystemSettingsPage extends App {
         if (!settings) return;
 
         // Prepare table data
-        const tableData = settings.map((setting, index) => ({
-            id: setting.id, // Keep ID for internal use
-            index: index + 1, // Add index number for display
-            setting_key: setting.setting_key,
-            setting_value: setting.setting_value.length > 50 ? setting.setting_value.substring(0, 50) + '...' : setting.setting_value,
-            setting_type: setting.setting_type,
-            category: setting.category,
-            status: setting.is_active ? 'Active' : 'Inactive',
-            updated: new Date(setting.updated_at).toLocaleString(),
-        }));
+        const tableData = settings.map((setting, index) => {
+            let displayValue = setting.setting_value;
+            
+            // Handle array values
+            if (Array.isArray(setting.setting_value)) {
+                displayValue = setting.setting_value.join(', ');
+            } else if (typeof setting.setting_value === 'string') {
+                displayValue = setting.setting_value;
+            } else {
+                displayValue = String(setting.setting_value || '');
+            }
+            
+            // Truncate long values
+            if (displayValue.length > 50) {
+                displayValue = displayValue.substring(0, 50) + '...';
+            }
+            
+            return {
+                id: setting.id, // Keep ID for internal use
+                index: index + 1, // Add index number for display
+                setting_key: setting.setting_key,
+                setting_value: displayValue,
+                setting_type: setting.setting_type,
+                category: setting.category,
+                status: setting.is_active ? 'Active' : 'Inactive',
+                updated: new Date(setting.updated_at).toLocaleString(),
+            };
+        });
 
         // Find the table component and update its data
         const tableComponent = this.querySelector('ui-table');
@@ -239,16 +257,34 @@ class SystemSettingsPage extends App {
         const showViewModal = this.get('showViewModal');
         const showDeleteDialog = this.get('showDeleteDialog');
         
-        const tableData = settings ? settings.map((setting, index) => ({
-            id: setting.id, // Keep ID for internal use
-            index: index + 1, // Add index number for display
-            setting_key: setting.setting_key || '',
-            setting_value: (setting.setting_value || '').length > 50 ? (setting.setting_value || '').substring(0, 50) + '...' : (setting.setting_value || ''),
-            setting_type: setting.setting_type || '',
-            category: setting.category || '',
-            status: setting.is_active ? 'Active' : 'Inactive',
-            updated: new Date(setting.updated_at || Date.now()).toLocaleString(),
-        })) : [];
+        const tableData = settings ? settings.map((setting, index) => {
+            let displayValue = setting.setting_value;
+            
+            // Handle array values
+            if (Array.isArray(setting.setting_value)) {
+                displayValue = setting.setting_value.join(', ');
+            } else if (typeof setting.setting_value === 'string') {
+                displayValue = setting.setting_value;
+            } else {
+                displayValue = String(setting.setting_value || '');
+            }
+            
+            // Truncate long values
+            if (displayValue.length > 50) {
+                displayValue = displayValue.substring(0, 50) + '...';
+            }
+            
+            return {
+                id: setting.id, // Keep ID for internal use
+                index: index + 1, // Add index number for display
+                setting_key: setting.setting_key || '',
+                setting_value: displayValue,
+                setting_type: setting.setting_type || '',
+                category: setting.category || '',
+                status: setting.is_active ? 'Active' : 'Inactive',
+                updated: new Date(setting.updated_at || Date.now()).toLocaleString(),
+            };
+        }) : [];
 
         const tableColumns = [
             // { key: 'id', label: 'ID' }, // Hidden but kept for reference
@@ -285,6 +321,7 @@ class SystemSettingsPage extends App {
                             pagination
                             page-size="10"
                             action
+                            addable
                             actions="view,edit"                                
                             refresh
                             print
