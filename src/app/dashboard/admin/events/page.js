@@ -120,16 +120,34 @@ class EventsPage extends App {
             // Load events data
             const eventsResponse = await api.withToken(token).get('/events');
             
-            this.set('events', eventsResponse.data.data);
+            if (eventsResponse.data && eventsResponse.data.success) {
+                this.set('events', eventsResponse.data.data);
+            } else {
+                Toast.show({
+                    title: 'Error',
+                    message: eventsResponse.data?.message || 'Failed to load events data',
+                    variant: 'error',
+                    duration: 3000
+                });
+            }
+            
             this.set('loading', false);
             
         } catch (error) {
-            console.error('❌ Error loading data:', error);
             this.set('loading', false);
+            
+            let errorMessage = 'Failed to load events data';
+            if (error.response?.status === 401) {
+                errorMessage = 'Authentication failed. Please log in again.';
+                // Redirect to login
+                window.location.href = '/auth/login';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
             
             Toast.show({
                 title: 'Error',
-                message: error.response?.data?.message || 'Failed to load events data',
+                message: errorMessage,
                 variant: 'error',
                 duration: 3000
             });
@@ -203,20 +221,22 @@ class EventsPage extends App {
         const tableData = events.map((event, index) => ({
             id: event.id, // Keep ID for internal use
             index: index + 1, // Add index number for display
-            title: event.title,
-            category: event.category,
-            start_date: new Date(event.start_date).toLocaleDateString(),
-            end_date: new Date(event.end_date).toLocaleDateString(),
+            title: event.title || '',
+            category: event.category || '',
+            start_date: event.start_date ? new Date(event.start_date).toLocaleDateString() : '',
+            end_date: event.end_date ? new Date(event.end_date).toLocaleDateString() : '',
             location: event.location || 'TBD',
-            status: event.status,
-            created: new Date(event.created_at).toLocaleString(),
-            updated: new Date(event.updated_at).toLocaleString(),
+            status: event.status || '',
+            created: event.created_at ? new Date(event.created_at).toLocaleString() : '',
+            updated: event.updated_at ? new Date(event.updated_at).toLocaleString() : '',
         }));
 
         // Find the table component and update its data
         const tableComponent = this.querySelector('ui-table');
         if (tableComponent) {
-            tableComponent.setAttribute('data', JSON.stringify(tableData));
+            // Properly escape the JSON data to prevent parsing errors
+            const safeTableData = JSON.stringify(tableData).replace(/"/g, '&quot;');
+            tableComponent.setAttribute('data', safeTableData);
         }
     }
 
@@ -242,14 +262,14 @@ class EventsPage extends App {
         const tableData = events ? events.map((event, index) => ({
             id: event.id, // Keep ID for internal use
             index: index + 1, // Add index number for display
-            title: event.title,
-            category: event.category,
-            start_date: new Date(event.start_date).toLocaleDateString(),
-            end_date: new Date(event.end_date).toLocaleDateString(),
+            title: event.title || '',
+            category: event.category || '',
+            start_date: event.start_date ? new Date(event.start_date).toLocaleDateString() : '',
+            end_date: event.end_date ? new Date(event.end_date).toLocaleDateString() : '',
             location: event.location || 'TBD',
-            status: event.status,
-            created: new Date(event.created_at).toLocaleString(),
-            updated: new Date(event.updated_at).toLocaleString(),
+            status: event.status || '',
+            created: event.created_at ? new Date(event.created_at).toLocaleString() : '',
+            updated: event.updated_at ? new Date(event.updated_at).toLocaleString() : '',
         })) : [];
 
         const tableColumns = [
@@ -262,6 +282,10 @@ class EventsPage extends App {
             { key: 'status', label: 'Status' },
             { key: 'updated', label: 'Updated' }
         ];
+        
+        // Properly escape the JSON data to prevent parsing errors
+        const safeTableData = JSON.stringify(tableData).replace(/"/g, '&quot;');
+        const safeTableColumns = JSON.stringify(tableColumns).replace(/"/g, '&quot;');
         
         return `
             <div class="bg-white rounded-lg shadow-lg p-4">
@@ -278,8 +302,8 @@ class EventsPage extends App {
                         ${events && events.length > 0 ? `
                             <ui-table 
                                 title="Events Management"
-                                data='${JSON.stringify(tableData)}'
-                                columns='${JSON.stringify(tableColumns)}'
+                                data="${safeTableData}"
+                                columns="${safeTableColumns}"
                                 sortable
                                 searchable
                                 search-placeholder="Search events..."
