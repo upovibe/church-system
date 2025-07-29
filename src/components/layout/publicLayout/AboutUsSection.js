@@ -107,7 +107,7 @@ class AboutUsSection extends App {
                 z-index: 2;
             }
         </style>
-        <section class="container mx-auto px-4">
+        <section class="container mx-auto px-4 my-10">
             <div class="mx-auto mb-8">
                 ${
                   title
@@ -151,7 +151,7 @@ class AboutUsSection extends App {
             ${
               content
                 ? `
-            <div class="mx-auto mt-10 bg-[#D9C97B]/90 rounded-2xl shadow p-8">
+            <div class="mx-auto mt-10 bg-[#D9C97B]/90 rounded-2xl shadow p-8 my-10">
                 <content-display content="${content.replace(
                   /"/g,
                   '&quot;',
