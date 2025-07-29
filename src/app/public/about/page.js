@@ -6,6 +6,7 @@ import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/AboutUsSection.js';
 import '@/components/layout/publicLayout/LeadershipSection.js';
+import '@/components/layout/publicLayout/MissionVisionSection.js';
 
 /**
  * About Page Component (/about)
@@ -29,6 +30,8 @@ class AboutPage extends App {
             const aboutPageData = await this.fetchPageData('about-us');
             // Load our team page data
             const teamPageData = await this.fetchPageData('our-leaders');
+            // Load mission vision page data
+            const missionVisionPageData = await this.fetchPageData('mission-vision');
             // Load team members
             const teamMembers = await this.fetchTeamMembers();
             // Combine all data
@@ -36,6 +39,7 @@ class AboutPage extends App {
                 colors,
                 page: aboutPageData,
                 teamPage: teamPageData,
+                missionVisionPage: missionVisionPageData,
                 teamMembers
             };
             // Cache in global store
@@ -106,6 +110,7 @@ class AboutPage extends App {
         const colorsData = escapeJsonForAttribute(allData.colors);
         const pageData = escapeJsonForAttribute(allData.page);
         const teamPageData = escapeJsonForAttribute(allData.teamPage);
+        const missionVisionPageData = escapeJsonForAttribute(allData.missionVisionPage);
         const teamMembersData = escapeJsonForAttribute(allData.teamMembers);
 
         return `
@@ -115,7 +120,14 @@ class AboutPage extends App {
                     colors='${colorsData}'
                     page-data='${pageData}'>
                 </about-us-section>
-                <!-- Our Team Section Component -->
+                
+                <!-- Mission Vision Section Component -->
+                <mission-vision-section 
+                    colors='${colorsData}'
+                    page-data='${missionVisionPageData}'>
+                </mission-vision-section>
+                
+                <!-- Leadership Section Component -->
                 <leadership-section 
                     colors='${colorsData}'
                     page-data='${teamPageData}'

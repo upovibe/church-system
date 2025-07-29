@@ -92,9 +92,9 @@ class AboutSection extends App {
 
         <!-- About Section -->
         <section class="py-10 bg-[${primaryColor}]">
-            <div class="container mx-auto w-full flex flex-col md:flex-row items-center gap-8 ">
+            <div class="container mx-auto w-full flex flex-col md:flex-row items-center gap-8">
                 <!-- Left: Title and Subtitle -->
-                <div class="flex-1 flex flex-col gap-3 justify-center items-start text-[${secondaryColor}] lg:max-w-md lg:pl-8 self-start">
+                <div class="w-full md:w-1/2 flex flex-col gap-3 justify-center items-start text-[${secondaryColor}] lg:pl-8 self-start p-5">
                     <h2 class="text-4xl md:text-5xl lg:text-6xl tracking-wide font-black drop-shadow-lg" style="line-height: 1.2;">
                         ${pageData.title || ''}
                     </h2>
@@ -103,8 +103,8 @@ class AboutSection extends App {
                     </p>
                 </div>
                 <!-- Right: Octagon Banner Image -->
-                <div class="flex-1 flex justify-center items-center">
-                    <div class="octagon-container w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[30rem] lg:h-[30rem] xl:w-[35rem] xl:h-[35rem]">
+                <div class="w-full md:w-1/2 flex justify-center items-center">
+                    <div class="octagon-container w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[30rem] lg:h-[30rem] xl:w-[35rem] xl:h-[35rem] flex items-center justify-center">
                         <div class="octagon-mask">
                             <img src="/api/${(() => {
                               let img = pageData.banner_image;
