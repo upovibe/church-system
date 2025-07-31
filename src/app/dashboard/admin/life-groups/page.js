@@ -319,7 +319,7 @@ class LifeGroupsPage extends App {
                             searchable
                             search-placeholder="Search life groups..."
                             pagination
-                            page-size="10"
+                            page-size="50"
                             action
                             addable
                             refresh

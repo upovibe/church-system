@@ -222,7 +222,7 @@ class TestimonialsPage extends App {
                             searchable
                             search-placeholder="Search testimonials..."
                             pagination
-                            page-size="10"
+                            page-size="50"
                             action
                             addable
                             refresh

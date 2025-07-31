@@ -300,7 +300,7 @@ class SermonsPage extends App {
                             searchable
                             search-placeholder="Search sermons..."
                             pagination
-                            page-size="10"
+                            page-size="50"
                             action
                             addable
                             refresh

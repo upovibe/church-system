@@ -279,7 +279,7 @@ class LeadersManagementPage extends App {
                             searchable
                             search-placeholder="Search leadership members..."
                             pagination
-                            page-size="10"
+                            page-size="50"
                             action
                             addable
                             refresh
