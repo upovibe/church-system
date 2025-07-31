@@ -3,6 +3,7 @@ import api from '@/services/api.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
+import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/HeroSection.js';
 import '@/components/layout/publicLayout/AboutSection.js';
 import '@/components/layout/publicLayout/HighlightsSection.js';
@@ -19,7 +20,7 @@ import '@/components/layout/DbSetupDialog.js';
 class RootPage extends App {
     async connectedCallback() {
         super.connectedCallback();
-        document.title = 'Home';
+        
         // 1. Check DB connection first
         try {
             const dbCheck = await fetch('/api/db/check').then(r => r.json());
@@ -33,8 +34,12 @@ class RootPage extends App {
             this.render();
             return;
         }
+        
         // 2. If connected, load data as usual
-        this.loadAllData();
+        await this.loadAllData();
+        
+        // 3. Set document title using application name
+        await setDocumentTitle('Home');
     }
 
     async loadAllData() {

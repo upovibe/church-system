@@ -4,6 +4,7 @@ import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
+import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/LifeGroupSection.js';
 
 /**
@@ -14,10 +15,10 @@ import '@/components/layout/publicLayout/LifeGroupSection.js';
  * File-based routing: /life-group → app/public/life-group/page.js
  */
 class LifeGroupPage extends App {
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
-        document.title = 'Life Group | Church System';
-        this.loadAllData();
+        await this.loadAllData();
+        await setDocumentTitle('Life Group');
     }
 
     async loadAllData() {

@@ -4,6 +4,7 @@ import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
+import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/AboutUsSection.js';
 import '@/components/layout/publicLayout/LeadershipSection.js';
 import '@/components/layout/publicLayout/MissionVisionSection.js';
@@ -17,10 +18,10 @@ import '@/components/layout/publicLayout/TenantsBeliefsSection.js';
  * File-based routing: /about → app/public/about/page.js
  */
 class AboutPage extends App {
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
-        document.title = 'About | Church System';
-        this.loadAllData();
+        await this.loadAllData();
+        await setDocumentTitle('About');
     }
 
     async loadAllData() {

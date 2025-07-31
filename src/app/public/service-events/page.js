@@ -4,6 +4,7 @@ import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
+import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/ServiceEventsSection.js';
 
 /**
@@ -14,10 +15,10 @@ import '@/components/layout/publicLayout/ServiceEventsSection.js';
  * File-based routing: /service-events → app/public/service-events/page.js
  */
 class ServiceEventsPage extends App {
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
-        document.title = 'Service Events | Church System';
-        this.loadAllData();
+        await this.loadAllData();
+        await setDocumentTitle('Service Events');
     }
 
     async loadAllData() {

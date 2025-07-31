@@ -290,38 +290,32 @@ class EventsPage extends App {
         return `
             <div class="bg-white rounded-lg shadow-lg p-4">
                 ${loading ? `
-                    <!-- Simple Skeleton Loading -->
+                    <!-- Gallery Skeleton Loading -->
                     <div class="space-y-4">
                         <ui-skeleton class="h-24 w-full"></ui-skeleton>
                         <ui-skeleton class="h-24 w-full"></ui-skeleton>
                         <ui-skeleton class="h-24 w-full"></ui-skeleton>
                     </div>
                 ` : `
-                    <!-- Events Table Section -->
+                    <!-- Gallery Table Section -->
                     <div class="mb-8">
-                        ${events && events.length > 0 ? `
-                            <ui-table 
-                                title="Events Management"
-                                data="${safeTableData}"
-                                columns="${safeTableColumns}"
-                                sortable
-                                searchable
-                                search-placeholder="Search events..."
-                                pagination
-                                page-size="10"
-                                action
-                                addable
-                                refresh
-                                print
-                                bordered
-                                striped
-                                class="w-full">
-                            </ui-table>
-                        ` : `
-                            <div class="text-center py-8 text-gray-500">
-                                <p>No events found in database</p>
-                            </div>
-                        `}
+                        <ui-table 
+                            title="Gallery Management"
+                            data="${safeTableData}"
+                            columns="${safeTableColumns}"
+                            sortable
+                            searchable
+                            search-placeholder="Search galleries..."
+                            pagination
+                            page-size="10"
+                            action
+                            addable
+                            refresh
+                            print
+                            bordered
+                            striped
+                            class="w-full">
+                        </ui-table>
                     </div>
                 `}
             </div>

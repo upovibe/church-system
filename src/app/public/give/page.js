@@ -5,13 +5,14 @@ import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import { fetchPaymentSettings } from '@/utils/paymentSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
+import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/GiveSection.js';
 
 class GivePage extends App {
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
-        document.title = 'Give | Church System';
-        this.loadAllData();
+        await this.loadAllData();
+        await setDocumentTitle('Give');
     }
 
     async loadAllData() {
