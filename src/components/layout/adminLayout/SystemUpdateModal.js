@@ -24,7 +24,6 @@ class SystemUpdateModal extends HTMLElement {
     constructor() {
         super();
         this.settingData = null;
-        this.arrayItems = [''];
     }
 
     static get observedAttributes() {
@@ -47,19 +46,7 @@ class SystemUpdateModal extends HTMLElement {
             this.close();
         });
 
-        // Listen for setting type dropdown change
-        this.addEventListener('change', (event) => {
-            if (event.target.matches('ui-dropdown[data-field="setting_type"]')) {
-                // Store current value before changing type
-                const currentValueInput = this.querySelector('[data-value-input] input, [data-value-input] ui-input, [data-value-input] ui-textarea, [data-value-input] ui-radio-group');
-                if (currentValueInput) {
-                    this.settingData.setting_value = currentValueInput.value || currentValueInput.getAttribute('value') || '';
-                }
-                
-                this.settingData.setting_type = event.target.value;
-                this.updateValueInput();
-            }
-        });
+
 
         // Listen for color input and text input changes for color type
         this.addEventListener('input', (event) => {
@@ -77,26 +64,6 @@ class SystemUpdateModal extends HTMLElement {
                         colorInput.value = event.target.value;
                     }
                 }
-            }
-        });
-
-        // Listen for array item add/remove events
-        this.addEventListener('click', (e) => {
-            if (e.target.closest('[data-action="add-array-item"]')) {
-                e.preventDefault();
-                this.addArrayItem();
-            }
-            if (e.target.closest('[data-action="remove-array-item"]')) {
-                e.preventDefault();
-                const index = parseInt(e.target.closest('[data-action="remove-array-item"]').dataset.index, 10);
-                this.removeArrayItem(index);
-            }
-        });
-
-        // Listen for array input changes to update setting value
-        this.addEventListener('input', (event) => {
-            if (event.target.matches('#array-inputs input[data-array-index]')) {
-                this.updateArrayValues();
             }
         });
     }
@@ -138,12 +105,7 @@ class SystemUpdateModal extends HTMLElement {
     // Render the appropriate input component based on setting type
     renderValueInput() {
         const settingType = this.settingData?.setting_type || 'text';
-        let currentValue = this.settingData?.setting_value || '';
-
-        // Handle array type - convert array to string for display
-        if (settingType === 'array' && Array.isArray(currentValue)) {
-            currentValue = currentValue.join('\n');
-        }
+        const currentValue = this.settingData?.setting_value || '';
 
         switch (settingType) {
             case 'text':
@@ -247,26 +209,6 @@ class SystemUpdateModal extends HTMLElement {
                     </ui-textarea>
                 `;
             
-            case 'array':
-                return `
-                    <div class="space-y-2">
-                        <div id="array-inputs" class="space-y-2">
-                            ${this.renderArrayInputs()}
-                        </div>
-                        <div class="flex justify-end mt-2">
-                            <ui-button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                data-action="add-array-item"
-                                class="px-3">
-                                <i class="fas fa-plus mr-1"></i>
-                                Add Item
-                            </ui-button>
-                        </div>
-                    </div>
-                `;
-            
             default:
                 return `
                     <ui-input 
@@ -280,87 +222,6 @@ class SystemUpdateModal extends HTMLElement {
         }
     }
 
-    // Render array inputs for existing values
-    renderArrayInputs() {
-        // Use arrayItems state if available, otherwise fall back to settingData
-        let arrayValues = this.arrayItems && this.arrayItems.length > 0 ? this.arrayItems : [''];
-        
-        // If we have settingData with array values, use those
-        if (this.settingData && this.settingData.setting_value) {
-            const currentValue = this.settingData.setting_value;
-            if (Array.isArray(currentValue)) {
-                arrayValues = currentValue;
-                this.arrayItems = [...currentValue];
-            } else if (typeof currentValue === 'string' && currentValue.trim()) {
-                // Try to parse as JSON
-                try {
-                    const parsed = JSON.parse(currentValue);
-                    if (Array.isArray(parsed)) {
-                        arrayValues = parsed;
-                        this.arrayItems = [...parsed];
-                    }
-                } catch {
-                    // If not JSON, use as single value
-                    arrayValues = [currentValue];
-                    this.arrayItems = [currentValue];
-                }
-            }
-        }
-        
-        return arrayValues.map((value, index) => `
-            <div class="flex gap-2 items-center">
-                <div class="flex-1">
-                    <input
-                        type="text"
-                        placeholder="Enter array item"
-                        value="${value}"
-                        data-array-index="${index}"
-                        class="w-full upo-input-default">
-                </div>
-                ${arrayValues.length > 1 ? `
-                    <ui-button
-                        type="button"
-                        variant="danger-outline"
-                        size="sm"
-                        data-action="remove-array-item"
-                        data-index="${index}"
-                        class="px-3">
-                        <i class="fas fa-trash"></i>
-                    </ui-button>
-                ` : ''}
-            </div>
-        `).join('');
-    }
-
-    // Helper to read the current values from the DOM into our state array
-    _syncArrayItemsFromDOM() {
-        const arrayItemInputs = this.querySelectorAll('input[data-array-index]');
-        this.arrayItems = Array.from(arrayItemInputs).map(input => input.value || '');
-    }
-
-    addArrayItem() {
-        this._syncArrayItemsFromDOM(); // Save current values before adding a new one
-        this.arrayItems.push('');
-        this.updateValueInput();
-    }
-
-    removeArrayItem(index) {
-        this._syncArrayItemsFromDOM(); // Save current values before removing one
-        if (this.arrayItems.length > 1) {
-            this.arrayItems.splice(index, 1);
-            // Update the setting value with the new array
-            this.settingData.setting_value = this.arrayItems.filter(item => item.trim());
-            this.updateValueInput();
-        }
-    }
-
-    // Update array values from inputs
-    updateArrayValues() {
-        const inputs = this.querySelectorAll('#array-inputs input[data-array-index]');
-        const values = Array.from(inputs).map(input => input.value).filter(value => value.trim());
-        this.settingData.setting_value = values;
-    }
-
     // Update the setting
     async updateSetting() {
         try {
@@ -368,18 +229,14 @@ class SystemUpdateModal extends HTMLElement {
             await new Promise(resolve => setTimeout(resolve, 100));
             
             // Get values from custom UI components
-            const allInputs = this.querySelectorAll('ui-input');
-            const keyInput = allInputs[0]; // First ui-input is the setting key
-            const settingValueInput = allInputs[1]; // Second ui-input is the setting value
-            const typeDropdown = this.querySelector('ui-dropdown[data-field="setting_type"]');
-            const categoryDropdown = this.querySelector('ui-dropdown[data-field="category"]');
+            const settingValueInput = this.querySelector('ui-input[name="setting_value"]');
             const descriptionTextarea = this.querySelector('ui-textarea[name="description"]');
             const statusSwitch = this.querySelector('ui-switch[name="is_active"]');
 
             // Get value based on the type
             let valueInput;
             let fileUpload = null; // Declare fileUpload variable
-            const settingType = typeDropdown ? typeDropdown.value : 'text';
+            const settingType = this.settingData?.setting_type || 'text';
             
             switch (settingType) {
                 case 'boolean':
@@ -390,11 +247,6 @@ class SystemUpdateModal extends HTMLElement {
                 case 'select':
                     const textarea = this.querySelector('ui-textarea[name="setting_value"]');
                     valueInput = textarea ? textarea.value : '';
-                    break;
-                case 'array':
-                    // Collect values from dynamic array inputs
-                    this._syncArrayItemsFromDOM();
-                    valueInput = this.arrayItems.filter(value => value.trim());
                     break;
                 case 'file':
                 case 'image':
@@ -411,21 +263,6 @@ class SystemUpdateModal extends HTMLElement {
                     break;
             }
 
-            // Fallback: Try to get value from the input element directly if component isn't initialized
-            let settingKey = '';
-            if (keyInput) {
-                settingKey = keyInput.value || keyInput.getAttribute('value') || '';
-            } else {
-                // Try to find the actual input element inside the component
-                const actualInput = this.querySelector('ui-input[name="setting_key"] input');
-                if (actualInput) {
-                    settingKey = actualInput.value || '';
-                } else {
-                    // Try to get from the setting data directly
-                    settingKey = this.settingData?.setting_key || '';
-                }
-            }
-            
             // Fallback for setting value if not found
             if (!valueInput && (settingType === 'text' || settingType === 'number')) {
                 // Try to get from the setting data directly
@@ -433,10 +270,10 @@ class SystemUpdateModal extends HTMLElement {
             }
 
             const settingData = {
-                setting_key: settingKey,
+                setting_key: this.settingData?.setting_key || '',
                 setting_value: valueInput,
-                setting_type: settingType,
-                category: categoryDropdown ? categoryDropdown.value : 'general',
+                setting_type: this.settingData?.setting_type || 'text',
+                category: this.settingData?.category || 'general',
                 description: descriptionTextarea ? descriptionTextarea.value : '',
                 is_active: statusSwitch ? statusSwitch.checked : true
             };
@@ -493,10 +330,17 @@ class SystemUpdateModal extends HTMLElement {
                 duration: 3000
             });
 
+            // Construct the updated setting data from response
+            const updatedSetting = {
+                ...this.settingData, // Keep existing fields like id, created_at
+                ...settingData,
+                updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            };
+
             // Close modal and dispatch event
             this.close();
             this.dispatchEvent(new CustomEvent('setting-updated', {
-                detail: { setting: response.data.data },
+                detail: { setting: updatedSetting },
                 bubbles: true,
                 composed: true
             }));
@@ -522,58 +366,10 @@ class SystemUpdateModal extends HTMLElement {
                 
                 <form id="setting-update-form" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Setting Key</label>
-                        <ui-input 
-                            name="setting_key"
-                            type="text" 
-                            placeholder="Enter setting key"
-                            value="${this.settingData?.setting_key || ''}"
-                            class="w-full">
-                        </ui-input>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Setting Type</label>
-                        <ui-dropdown 
-                            data-field="setting_type"
-                            placeholder="Select type"
-                            value="${this.settingData?.setting_type || 'text'}"
-                            class="w-full">
-                            <ui-option value="text">Text</ui-option>
-                            <ui-option value="number">Number</ui-option>
-                            <ui-option value="boolean">Boolean</ui-option>
-                            <ui-option value="color">Color</ui-option>
-                            <ui-option value="file">File</ui-option>
-                            <ui-option value="textarea">Textarea</ui-option>
-                            <ui-option value="select">Select</ui-option>
-                            <ui-option value="image">Image</ui-option>
-                            <ui-option value="array">Array</ui-option>
-                        </ui-dropdown>
-                    </div>
-                    
-                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Setting Value</label>
                         <div data-value-input>
                             ${this.renderValueInput()}
                         </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                        <ui-dropdown 
-                            data-field="category"
-                            placeholder="Select category"
-                            value="${this.settingData?.category || 'general'}"
-                            class="w-full">
-                            <ui-option value="general">General</ui-option>
-                            <ui-option value="theme">Theme</ui-option>
-                            <ui-option value="contact">Contact</ui-option>
-                            <ui-option value="social">Social</ui-option>
-                            <ui-option value="map">Map</ui-option>
-                            <ui-option value="branding">Branding</ui-option>
-                            <ui-option value="system">System</ui-option>
-                            <ui-option value="services">Services</ui-option>
-                        </ui-dropdown>
                     </div>
                     
                     <div>
