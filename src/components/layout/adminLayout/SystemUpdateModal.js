@@ -47,8 +47,6 @@ class SystemUpdateModal extends HTMLElement {
             this.close();
         });
 
-
-
         // Listen for input changes to update setting data
         this.addEventListener('input', (event) => {
             if (this.settingData) {
@@ -77,15 +75,23 @@ class SystemUpdateModal extends HTMLElement {
             }
         });
 
-        // Listen for array item add/remove events
+        // Listen for array item add/remove events - use event delegation
         this.addEventListener('click', (e) => {
-            if (e.target.closest('[data-action="add-array-item"]')) {
+            const addButton = e.target.closest('[data-action="add-array-item"]');
+            const removeButton = e.target.closest('[data-action="remove-array-item"]');
+            
+            if (addButton) {
+                console.log('🎯 Add button clicked');
                 e.preventDefault();
+                e.stopPropagation();
                 this.addArrayItem();
             }
-            if (e.target.closest('[data-action="remove-array-item"]')) {
+            
+            if (removeButton) {
+                console.log('🗑️ Remove button clicked');
                 e.preventDefault();
-                const index = parseInt(e.target.closest('[data-action="remove-array-item"]').dataset.index, 10);
+                e.stopPropagation();
+                const index = parseInt(removeButton.dataset.index, 10);
                 this.removeArrayItem(index);
             }
         });
@@ -144,38 +150,56 @@ class SystemUpdateModal extends HTMLElement {
 
     // Update the value input based on selected type
     updateValueInput() {
+        console.log('🔄 Updating value input');
         const valueInputContainer = this.querySelector('[data-value-input]');
         if (valueInputContainer) {
             valueInputContainer.innerHTML = this.renderValueInput();
+            console.log('✅ Value input updated');
+            
+            // Re-attach event listeners for array inputs if needed
+            if (this.settingData?.setting_type === 'array') {
+                // Add event listeners to the new array input elements
+                const arrayInputs = valueInputContainer.querySelectorAll('input[data-array-index]');
+                console.log('📝 Found array inputs:', arrayInputs.length);
+                arrayInputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        this._syncArrayItemsFromDOM();
+                    });
+                });
+            }
         }
     }
 
     // Render array inputs for existing values
     renderArrayInputs() {
-        // Use arrayItems state if available, otherwise fall back to settingData
+        // Always use the current arrayItems state
         let arrayValues = this.arrayItems && this.arrayItems.length > 0 ? this.arrayItems : [''];
         
-        // If we have settingData with array values, use those
-        if (this.settingData && this.settingData.setting_value) {
-            const currentValue = this.settingData.setting_value;
-            if (Array.isArray(currentValue)) {
-                arrayValues = currentValue;
-                this.arrayItems = [...currentValue];
-            } else if (typeof currentValue === 'string' && currentValue.trim()) {
-                // Try to parse as JSON
-                try {
-                    const parsed = JSON.parse(currentValue);
-                    if (Array.isArray(parsed)) {
-                        arrayValues = parsed;
-                        this.arrayItems = [...parsed];
+        // Only initialize from settingData if arrayItems is empty or hasn't been set
+        if (arrayValues.length === 0 || (arrayValues.length === 1 && arrayValues[0] === '')) {
+            if (this.settingData && this.settingData.setting_value) {
+                const currentValue = this.settingData.setting_value;
+                if (Array.isArray(currentValue)) {
+                    arrayValues = currentValue;
+                    this.arrayItems = [...currentValue];
+                } else if (typeof currentValue === 'string' && currentValue.trim()) {
+                    // Try to parse as JSON
+                    try {
+                        const parsed = JSON.parse(currentValue);
+                        if (Array.isArray(parsed)) {
+                            arrayValues = parsed;
+                            this.arrayItems = [...parsed];
+                        }
+                    } catch {
+                        // If not JSON, use as single value
+                        arrayValues = [currentValue];
+                        this.arrayItems = [currentValue];
                     }
-                } catch {
-                    // If not JSON, use as single value
-                    arrayValues = [currentValue];
-                    this.arrayItems = [currentValue];
                 }
             }
         }
+        
+        console.log('🎨 Rendering array inputs with values:', arrayValues);
         
         return arrayValues.map((value, index) => `
             <div class="flex gap-2 items-center">
@@ -209,8 +233,11 @@ class SystemUpdateModal extends HTMLElement {
     }
 
     addArrayItem() {
+        console.log('➕ Adding array item');
         this._syncArrayItemsFromDOM(); // Save current values before adding a new one
+        console.log('📋 Current array items:', this.arrayItems);
         this.arrayItems.push('');
+        console.log('📋 Array items after adding:', this.arrayItems);
         this.updateValueInput();
     }
 
