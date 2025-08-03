@@ -174,9 +174,22 @@ class SermonUpdateModal extends HTMLElement {
                 });
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Updating Sermon',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             const response = await api.withToken(token).put(`/sermons/${this.sermonData.id}`, formData);
 
-            Toast.show({ title: 'Success', message: 'Sermon updated successfully', variant: 'success', duration: 3000 });
+            Toast.show({ 
+                title: 'Sermon Updated!', 
+                message: `"${sermonData.title}" has been successfully updated in the sermons library.`, 
+                variant: 'success', 
+                duration: 5000 
+            });
 
             this.close();
             this.dispatchEvent(new CustomEvent('sermon-updated', {

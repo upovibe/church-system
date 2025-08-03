@@ -155,9 +155,22 @@ class SermonSettingsModal extends HTMLElement {
                 });
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Adding Sermon',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             const response = await api.withToken(token).post('/sermons', formData);
 
-            Toast.show({ title: 'Success', message: 'Sermon created successfully', variant: 'success', duration: 3000 });
+            Toast.show({ 
+                title: 'Sermon Added!', 
+                message: `"${sermonData.title}" has been successfully added to the sermons library.`, 
+                variant: 'success', 
+                duration: 5000 
+            });
 
             const newSermon = response.data.data;
 
