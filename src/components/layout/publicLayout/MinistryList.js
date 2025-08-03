@@ -131,7 +131,7 @@ class MinistryList extends App {
 
     openMinistryPage(slugOrId) {
         // Navigate to the ministry page using SPA router
-        const ministryUrl = `/ministries/${slugOrId}`;
+        const ministryUrl = `/public/ministries/${slugOrId}`;
         if (window.router) {
             window.router.navigate(ministryUrl);
         } else {
