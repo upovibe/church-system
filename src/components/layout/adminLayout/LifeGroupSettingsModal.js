@@ -114,15 +114,23 @@ class LifeGroupSettingsModal extends HTMLElement {
                 formData.append('banner', bannerFileUpload.getFiles()[0]);
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Adding Life Group',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             // Create the life group
             const response = await api.withToken(token).post('/life-groups', formData);
 
             if (response.data.success) {
                 Toast.show({
-                    title: 'Success',
-                    message: 'Life group created successfully',
+                    title: 'Life Group Added!',
+                    message: `"${lifeGroupData.title}" has been successfully added to the life groups.`,
                     variant: 'success',
-                    duration: 3000
+                    duration: 5000
                 });
 
                 // Dispatch event with the created life group data

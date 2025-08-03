@@ -132,10 +132,10 @@ class LifeGroupUpdateModal extends HTMLElement {
 
             if (response.data.success) {
                 Toast.show({
-                    title: 'Success',
-                    message: 'Life group updated successfully',
+                    title: 'Life Group Updated!',
+                    message: `"${lifeGroupData.title}" has been successfully updated in the life groups.`,
                     variant: 'success',
-                    duration: 3000
+                    duration: 5000
                 });
 
                 // Dispatch event with the updated life group data
