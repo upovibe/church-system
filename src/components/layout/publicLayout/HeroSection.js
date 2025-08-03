@@ -240,7 +240,7 @@ class HeroSection extends App {
                             <h1 class="tracking-wide lg:max-w-[70%] text-4xl md:text-5xl lg:text-6xl font-black drop-shadow-lg" style="line-height: 1.1;">
                                 ${heroTitle}
                             </h1>
-                            <p class="text-xl md:text-2xl lg:text-4xl opacity-95 leading-relaxed mx-auto drop-shadow-md">
+                            <p class="text-xl md:text-2xl opacity-95 leading-relaxed mx-auto drop-shadow-md">
                                 ${heroSubtitle}
                             </p>
                             <div class="flex flex-row gap-2 sm:gap-4 justify-center w-fit pt-6">
