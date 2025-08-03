@@ -34,43 +34,44 @@ class HeroSection extends App {
     }
   }
 
-  loadDataFromProps() {
-    // Get data from props/attributes
-    const colorsAttr = this.getAttribute('colors');
-    const pageDataAttr = this.getAttribute('page-data');
-    const settingsAttr = this.getAttribute('settings');
+      loadDataFromProps() {
+        // Get data from props/attributes
+        const colorsAttr = this.getAttribute('colors');
+        const pageDataAttr = this.getAttribute('page-data');
+        const settingsAttr = this.getAttribute('settings');
 
-    if (colorsAttr) {
-      try {
-        const colors = JSON.parse(colorsAttr);
-        Object.entries(colors).forEach(([key, value]) => {
-          this.set(key, value);
-        });
-      } catch (error) {
-        console.error('Error parsing colors:', error);
-      }
+        if (colorsAttr) {
+            try {
+                const colors = JSON.parse(colorsAttr);
+                Object.entries(colors).forEach(([key, value]) => {
+                    this.set(key, value);
+                });
+            } catch (error) {
+                console.error('Error parsing colors:', error);
+            }
+        }
+
+        if (pageDataAttr) {
+            const pageData = unescapeJsonFromAttribute(pageDataAttr);
+            if (pageData) {
+                this.set('pageData', pageData);
+            }
+        }
+
+        if (settingsAttr) {
+            const settings = unescapeJsonFromAttribute(settingsAttr);
+            if (settings) {
+                if (settings.hero_title) this.set('heroTitle', settings.hero_title);
+                if (settings.hero_subtitle)
+                    this.set('heroSubtitle', settings.hero_subtitle);
+                if (settings.quote_of_the_day) this.set('quoteOfTheDay', settings.quote_of_the_day);
+            }
+        }
+
+        // Render immediately with the data
+        this.render();
+        this.startSlideshow();
     }
-
-    if (pageDataAttr) {
-      const pageData = unescapeJsonFromAttribute(pageDataAttr);
-      if (pageData) {
-        this.set('pageData', pageData);
-      }
-    }
-
-    if (settingsAttr) {
-      const settings = unescapeJsonFromAttribute(settingsAttr);
-      if (settings) {
-        if (settings.hero_title) this.set('heroTitle', settings.hero_title);
-        if (settings.hero_subtitle)
-          this.set('heroSubtitle', settings.hero_subtitle);
-      }
-    }
-
-    // Render immediately with the data
-    this.render();
-    this.startSlideshow();
-  }
 
   startSlideshow() {
     const bannerImages = this.getBannerImages(this.get('pageData')) || [];
@@ -142,19 +143,20 @@ class HeroSection extends App {
     return bannerImages.filter((img) => img && img.trim() !== '');
   }
 
-  render() {
-    const pageData = this.get('pageData');
-    const error = this.get('error');
-    const heroTitle = pageData && pageData.title ? pageData.title : '';
-    const heroSubtitle = pageData && pageData.subtitle ? pageData.subtitle : '';
-    const primaryColor = this.get('primary_color');
-    const secondaryColor = this.get('secondary_color');
-    const accentColor = this.get('accent_color');
-    const textColor = this.get('text_color');
-    const darkColor = this.get('dark_color');
-    const hoverPrimary = this.get('hover_primary');
-    const hoverSecondary = this.get('hover_secondary');
-    const hoverAccent = this.get('hover_accent');
+      render() {
+        const pageData = this.get('pageData');
+        const error = this.get('error');
+        const heroTitle = pageData && pageData.title ? pageData.title : '';
+        const heroSubtitle = pageData && pageData.subtitle ? pageData.subtitle : '';
+        const quoteOfTheDay = this.get('quoteOfTheDay') || 'For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life. - John 3:16';
+        const primaryColor = this.get('primary_color');
+        const secondaryColor = this.get('secondary_color');
+        const accentColor = this.get('accent_color');
+        const textColor = this.get('text_color');
+        const darkColor = this.get('dark_color');
+        const hoverPrimary = this.get('hover_primary');
+        const hoverSecondary = this.get('hover_secondary');
+        const hoverAccent = this.get('hover_accent');
 
     if (error) {
       this.innerHTML = `
@@ -242,10 +244,14 @@ class HeroSection extends App {
                                 ${heroSubtitle}
                             </p>
                             <div class="flex flex-row gap-2 sm:gap-4 justify-center w-fit pt-6">
-                                <button class="px-5 py-2 bg-[${secondaryColor}] text-[${darkColor}] rounded-full text-lg shadow-lg flex items-center gap-2 mx-auto">
-                                    <i class="fas fa-quote-left text-base"></i>
-                                    Quote of the Day
-                                </button>
+                                <blockquote class="px-6 py-4 bg-[${secondaryColor}] text-[${darkColor}] rounded-xl shadow-lg max-w-2xl border-l-4 border-[${accentColor}]">
+                                    <div class="flex items-start gap-3">
+                                        <i class="fas fa-quote-left text-2xl opacity-70"></i>
+                                        <div class="flex-1">
+                                            <p class="text-lg leading-relaxed italic">${quoteOfTheDay}</p>
+                                        </div>
+                                    </div>
+                                </blockquote>
                             </div>
                         </div>
                     </div>

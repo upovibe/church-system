@@ -88,6 +88,9 @@ class SettingsSeeder
                 'Friday prayer service: 7pm - 8:30pm'
             ]), 'setting_type' => 'array', 'category' => 'services', 'description' => 'Church service times and schedules'],
             
+            // Quote of the Day Settings
+            ['setting_key' => 'quote_of_the_day', 'setting_value' => 'For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life. - John 3:16', 'setting_type' => 'textarea', 'category' => 'general', 'description' => 'Daily inspirational quote or scripture verse'],
+            
         ];
 
         foreach ($defaultSettings as $setting) {
