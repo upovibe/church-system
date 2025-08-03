@@ -308,17 +308,29 @@ class SermonList extends App {
                         </div>
                     </div>
                 ` : sermons.length > 0 ? sermons.map(sermon => {
-                    // Get sermon image
+                    // Get sermon image - handle different data formats
                     let sermonImage = '';
+                    
                     if (sermon.images) {
-                        try {
-                            const images = JSON.parse(sermon.images);
-                            if (images && images.length > 0) {
-                                sermonImage = images[0]; // Use the first image
+                        // If images is already an array
+                        if (Array.isArray(sermon.images)) {
+                            if (sermon.images.length > 0) {
+                                sermonImage = sermon.images[0];
                             }
-                        } catch (error) {
-                            // If parsing fails, treat as single path
-                            sermonImage = sermon.images;
+                        }
+                        // If images is a JSON string
+                        else if (typeof sermon.images === 'string') {
+                            try {
+                                const images = JSON.parse(sermon.images);
+                                if (Array.isArray(images) && images.length > 0) {
+                                    sermonImage = images[0];
+                                } else if (typeof images === 'string') {
+                                    sermonImage = images;
+                                }
+                            } catch (error) {
+                                // If parsing fails, treat as single path
+                                sermonImage = sermon.images;
+                            }
                         }
                     }
 
