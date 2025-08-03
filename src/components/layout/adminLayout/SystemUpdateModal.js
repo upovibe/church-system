@@ -81,14 +81,12 @@ class SystemUpdateModal extends HTMLElement {
             const removeButton = e.target.closest('[data-action="remove-array-item"]');
             
             if (addButton) {
-                console.log('🎯 Add button clicked');
                 e.preventDefault();
                 e.stopPropagation();
                 this.addArrayItem();
             }
             
             if (removeButton) {
-                console.log('🗑️ Remove button clicked');
                 e.preventDefault();
                 e.stopPropagation();
                 const index = parseInt(removeButton.dataset.index, 10);
@@ -150,17 +148,14 @@ class SystemUpdateModal extends HTMLElement {
 
     // Update the value input based on selected type
     updateValueInput() {
-        console.log('🔄 Updating value input');
         const valueInputContainer = this.querySelector('[data-value-input]');
         if (valueInputContainer) {
             valueInputContainer.innerHTML = this.renderValueInput();
-            console.log('✅ Value input updated');
             
             // Re-attach event listeners for array inputs if needed
             if (this.settingData?.setting_type === 'array') {
                 // Add event listeners to the new array input elements
                 const arrayInputs = valueInputContainer.querySelectorAll('input[data-array-index]');
-                console.log('📝 Found array inputs:', arrayInputs.length);
                 arrayInputs.forEach(input => {
                     input.addEventListener('input', () => {
                         this._syncArrayItemsFromDOM();
@@ -199,8 +194,6 @@ class SystemUpdateModal extends HTMLElement {
             }
         }
         
-        console.log('🎨 Rendering array inputs with values:', arrayValues);
-        
         return arrayValues.map((value, index) => `
             <div class="flex gap-2 items-center">
                 <div class="flex-1">
@@ -233,11 +226,8 @@ class SystemUpdateModal extends HTMLElement {
     }
 
     addArrayItem() {
-        console.log('➕ Adding array item');
         this._syncArrayItemsFromDOM(); // Save current values before adding a new one
-        console.log('📋 Current array items:', this.arrayItems);
         this.arrayItems.push('');
-        console.log('📋 Array items after adding:', this.arrayItems);
         this.updateValueInput();
     }
 
