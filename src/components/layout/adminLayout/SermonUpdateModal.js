@@ -251,14 +251,18 @@ class SermonUpdateModal extends HTMLElement {
                             data-field="description"
                             placeholder="Enter sermon description"
                             rows="3"
-                            class="w-full">${this.sermonData.description || ''}</ui-textarea>
+                            value="${this.sermonData.description || ''}"
+                            class="w-full">
+                        </ui-textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
                         <ui-wysiwyg 
                             data-field="content"
                             placeholder="Enter sermon content"
-                            class="w-full">${this.sermonData.content || ''}</ui-wysiwyg>
+                            value="${this.sermonData.content || ''}"
+                            class="w-full">
+                        </ui-wysiwyg>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Images</label>
