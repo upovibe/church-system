@@ -113,9 +113,22 @@ class VideoGalleryUpdateModal extends HTMLElement {
                 return;
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Updating Video Gallery',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             const response = await api.withToken(token).put(`/video-galleries/${this.videoGalleryData.id}`, data);
 
-            Toast.show({ title: 'Success', message: 'Video gallery updated successfully', variant: 'success' });
+            Toast.show({ 
+                title: 'Video Gallery Updated!', 
+                message: `"${data.name}" has been successfully updated in the video galleries.`, 
+                variant: 'success', 
+                duration: 5000 
+            });
 
             this.dispatchEvent(new CustomEvent('video-gallery-updated', {
                 detail: { videoGallery: response.data.data },

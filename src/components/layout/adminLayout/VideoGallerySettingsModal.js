@@ -107,9 +107,22 @@ class VideoGallerySettingsModal extends HTMLElement {
                 return;
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Adding Video Gallery',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             const response = await api.withToken(token).post('/video-galleries', videoGalleryData);
             
-            Toast.show({ title: 'Success', message: 'Video gallery created successfully', variant: 'success' });
+            Toast.show({ 
+                title: 'Video Gallery Added!', 
+                message: `"${videoGalleryData.name}" has been successfully added to the video galleries.`, 
+                variant: 'success', 
+                duration: 5000 
+            });
 
             const newVideoGallery = response.data.data;
 
