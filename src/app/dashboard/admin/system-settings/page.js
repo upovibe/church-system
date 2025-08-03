@@ -87,6 +87,12 @@ class SystemSettingsPage extends App {
             }
         });
         
+        // Listen for general settings refresh event
+        this.addEventListener('settings-refreshed', () => {
+            // Reload all data to ensure everything is up to date
+            this.loadData();
+        });
+        
         // Listen for modal opened event to pass data
         this.addEventListener('modal-opened', (event) => {
             const modal = event.target;
@@ -320,6 +326,7 @@ class SystemSettingsPage extends App {
                             search-placeholder="Search settings..."
                             pagination
                             page-size="50"
+                            addable
                             action
                             actions="view,edit"                                
                             refresh

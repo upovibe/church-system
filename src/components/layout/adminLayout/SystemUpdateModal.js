@@ -24,6 +24,7 @@ class SystemUpdateModal extends HTMLElement {
     constructor() {
         super();
         this.settingData = null;
+        this.arrayItems = [''];
     }
 
     static get observedAttributes() {
@@ -48,22 +49,44 @@ class SystemUpdateModal extends HTMLElement {
 
 
 
-        // Listen for color input and text input changes for color type
+        // Listen for input changes to update setting data
         this.addEventListener('input', (event) => {
-            if (this.settingData && this.settingData.setting_type === 'color') {
-                if (event.target.name === 'setting_value_color') {
+            if (this.settingData) {
+                if (event.target.name === 'setting_value') {
+                    this.settingData.setting_value = event.target.value;
+                } else if (event.target.name === 'setting_value_color') {
                     this.settingData.setting_value = event.target.value;
                     // Update the text input value
                     const textInput = this.querySelector('ui-input[name="setting_value"]');
                     if (textInput) textInput.value = event.target.value;
-                } else if (event.target.name === 'setting_value') {
-                    this.settingData.setting_value = event.target.value;
-                    // Update the color input value if it's a valid hex
-                    const colorInput = this.querySelector('input[name="setting_value_color"]');
-                    if (colorInput && /^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/.test(event.target.value)) {
-                        colorInput.value = event.target.value;
-                    }
                 }
+            }
+        });
+
+        // Listen for change events on UI components
+        this.addEventListener('change', (event) => {
+            if (this.settingData && event.target.name === 'setting_value') {
+                this.settingData.setting_value = event.target.value;
+            }
+        });
+
+        // Listen for custom UI component events
+        this.addEventListener('value-changed', (event) => {
+            if (this.settingData && event.target.name === 'setting_value') {
+                this.settingData.setting_value = event.target.value;
+            }
+        });
+
+        // Listen for array item add/remove events
+        this.addEventListener('click', (e) => {
+            if (e.target.closest('[data-action="add-array-item"]')) {
+                e.preventDefault();
+                this.addArrayItem();
+            }
+            if (e.target.closest('[data-action="remove-array-item"]')) {
+                e.preventDefault();
+                const index = parseInt(e.target.closest('[data-action="remove-array-item"]').dataset.index, 10);
+                this.removeArrayItem(index);
             }
         });
     }
@@ -80,6 +103,31 @@ class SystemUpdateModal extends HTMLElement {
     // Set setting data for editing
     setSettingData(settingData) {
         this.settingData = settingData;
+        
+        // Initialize array items if setting type is array
+        if (settingData.setting_type === 'array') {
+            if (settingData.setting_value) {
+                if (Array.isArray(settingData.setting_value)) {
+                    this.arrayItems = [...settingData.setting_value];
+                } else if (typeof settingData.setting_value === 'string' && settingData.setting_value.trim()) {
+                    try {
+                        const parsed = JSON.parse(settingData.setting_value);
+                        if (Array.isArray(parsed)) {
+                            this.arrayItems = [...parsed];
+                        } else {
+                            this.arrayItems = [settingData.setting_value];
+                        }
+                    } catch {
+                        this.arrayItems = [settingData.setting_value];
+                    }
+                } else {
+                    this.arrayItems = [''];
+                }
+            } else {
+                this.arrayItems = [''];
+            }
+        }
+        
         // Re-render the modal with the new data
         this.render();
         
@@ -100,6 +148,85 @@ class SystemUpdateModal extends HTMLElement {
         if (valueInputContainer) {
             valueInputContainer.innerHTML = this.renderValueInput();
         }
+    }
+
+    // Render array inputs for existing values
+    renderArrayInputs() {
+        // Use arrayItems state if available, otherwise fall back to settingData
+        let arrayValues = this.arrayItems && this.arrayItems.length > 0 ? this.arrayItems : [''];
+        
+        // If we have settingData with array values, use those
+        if (this.settingData && this.settingData.setting_value) {
+            const currentValue = this.settingData.setting_value;
+            if (Array.isArray(currentValue)) {
+                arrayValues = currentValue;
+                this.arrayItems = [...currentValue];
+            } else if (typeof currentValue === 'string' && currentValue.trim()) {
+                // Try to parse as JSON
+                try {
+                    const parsed = JSON.parse(currentValue);
+                    if (Array.isArray(parsed)) {
+                        arrayValues = parsed;
+                        this.arrayItems = [...parsed];
+                    }
+                } catch {
+                    // If not JSON, use as single value
+                    arrayValues = [currentValue];
+                    this.arrayItems = [currentValue];
+                }
+            }
+        }
+        
+        return arrayValues.map((value, index) => `
+            <div class="flex gap-2 items-center">
+                <div class="flex-1">
+                    <input
+                        type="text"
+                        placeholder="Enter array item"
+                        value="${value}"
+                        data-array-index="${index}"
+                        class="w-full upo-input-default">
+                </div>
+                ${arrayValues.length > 1 ? `
+                    <ui-button
+                        type="button"
+                        variant="danger-outline"
+                        size="sm"
+                        data-action="remove-array-item"
+                        data-index="${index}"
+                        class="px-3">
+                        <i class="fas fa-trash"></i>
+                    </ui-button>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+
+    // Helper to read the current values from the DOM into our state array
+    _syncArrayItemsFromDOM() {
+        const arrayItemInputs = this.querySelectorAll('input[data-array-index]');
+        this.arrayItems = Array.from(arrayItemInputs).map(input => input.value || '');
+    }
+
+    addArrayItem() {
+        this._syncArrayItemsFromDOM(); // Save current values before adding a new one
+        this.arrayItems.push('');
+        this.updateValueInput();
+    }
+
+    removeArrayItem(index) {
+        this._syncArrayItemsFromDOM(); // Save current values before removing one
+        if (this.arrayItems.length > 1) {
+            this.arrayItems.splice(index, 1);
+            this.updateValueInput();
+        }
+    }
+
+    // Update array values from inputs
+    updateArrayValues() {
+        const inputs = this.querySelectorAll('#array-inputs input[data-array-index]');
+        const values = Array.from(inputs).map(input => input.value).filter(value => value.trim());
+        this.settingData.setting_value = values;
     }
 
     // Render the appropriate input component based on setting type
@@ -209,6 +336,26 @@ class SystemUpdateModal extends HTMLElement {
                     </ui-textarea>
                 `;
             
+            case 'array':
+                return `
+                    <div class="space-y-2">
+                        <div id="array-inputs" class="space-y-2">
+                            ${this.renderArrayInputs()}
+                        </div>
+                        <div class="flex justify-end mt-2">
+                            <ui-button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                data-action="add-array-item"
+                                class="px-3">
+                                <i class="fas fa-plus mr-1"></i>
+                                Add Item
+                            </ui-button>
+                        </div>
+                    </div>
+                `;
+            
             default:
                 return `
                     <ui-input 
@@ -238,6 +385,16 @@ class SystemUpdateModal extends HTMLElement {
             let fileUpload = null; // Declare fileUpload variable
             const settingType = this.settingData?.setting_type || 'text';
             
+            // For text and number types, try to get the actual input element inside the component
+            if (settingType === 'text' || settingType === 'number') {
+                const actualInput = this.querySelector('ui-input[name="setting_value"] input');
+                if (actualInput) {
+                    valueInput = actualInput.value;
+                } else if (settingValueInput) {
+                    valueInput = settingValueInput.value;
+                }
+            }
+            
             switch (settingType) {
                 case 'boolean':
                     const radioGroup = this.querySelector('ui-radio-group[name="setting_value"]');
@@ -248,18 +405,27 @@ class SystemUpdateModal extends HTMLElement {
                     const textarea = this.querySelector('ui-textarea[name="setting_value"]');
                     valueInput = textarea ? textarea.value : '';
                     break;
+                case 'array':
+                    // Collect values from dynamic array inputs
+                    this._syncArrayItemsFromDOM();
+                    valueInput = this.arrayItems.filter(value => value.trim());
+                    break;
                 case 'file':
                 case 'image':
                     fileUpload = this.querySelector('ui-file-upload[name="setting_value"]');
-                    valueInput = fileUpload ? fileUpload.value : '';
+                    // For file/image types, we need to handle the file upload separately
+                    // The value will be set after the file is uploaded
+                    valueInput = this.settingData?.setting_value || '';
                     break;
                 case 'color':
                     const colorInput = this.querySelector('input[name="setting_value"]');
                     valueInput = colorInput ? colorInput.value : '#000000';
                     break;
                 default:
-                    // For text and number types, use the settingValueInput directly
-                    valueInput = settingValueInput ? settingValueInput.value : '';
+                    // For text and number types, use the value we already got above
+                    if (!valueInput) {
+                        valueInput = settingValueInput ? settingValueInput.value : '';
+                    }
                     break;
             }
 
@@ -334,6 +500,8 @@ class SystemUpdateModal extends HTMLElement {
             const updatedSetting = {
                 ...this.settingData, // Keep existing fields like id, created_at
                 ...settingData,
+                // Use the response data if available, otherwise use the form data
+                setting_value: response?.data?.data?.setting_value || settingData.setting_value,
                 updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
             };
 
@@ -341,6 +509,12 @@ class SystemUpdateModal extends HTMLElement {
             this.close();
             this.dispatchEvent(new CustomEvent('setting-updated', {
                 detail: { setting: updatedSetting },
+                bubbles: true,
+                composed: true
+            }));
+            
+            // Also dispatch a general refresh event to ensure UI updates
+            this.dispatchEvent(new CustomEvent('settings-refreshed', {
                 bubbles: true,
                 composed: true
             }));
