@@ -56,14 +56,12 @@ class EventController {
             // Handle multipart form data or JSON data for PUT/PATCH requests
             $data = [];
             $content_type = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-            $rawData = file_get_contents('php://input');
 
             if (strpos($content_type, 'multipart/form-data') !== false) {
-                $parsed = MultipartFormParser::parse($rawData, $content_type);
-                $data = $parsed['data'] ?? [];
-                $_FILES = $parsed['files'] ?? [];
+                $data = $_POST;
             } else {
                 // Fall back to JSON
+                $rawData = file_get_contents('php://input');
                 $data = json_decode($rawData, true) ?? [];
             }
             
@@ -294,14 +292,12 @@ class EventController {
             // Handle multipart form data or JSON data for PUT/PATCH requests
             $data = [];
             $content_type = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-            $rawData = file_get_contents('php://input');
 
             if (strpos($content_type, 'multipart/form-data') !== false) {
-                $parsed = MultipartFormParser::parse($rawData, $content_type);
-                $data = $parsed['data'] ?? [];
-                $_FILES = $parsed['files'] ?? [];
+                $data = $_POST;
             } else {
                 // Fall back to JSON
+                $rawData = file_get_contents('php://input');
                 $data = json_decode($rawData, true) ?? [];
             }
             

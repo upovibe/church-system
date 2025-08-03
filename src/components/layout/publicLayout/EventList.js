@@ -264,6 +264,27 @@ class EventList extends App {
         }
     }
 
+    // Helper method to get proper image URL
+    getImageUrl(imagePath) {
+        if (!imagePath) return null;
+        
+        // If it's already a full URL, return as is
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+        }
+        
+        // If it's a relative path starting with /, construct the full URL
+        if (imagePath.startsWith('/')) {
+            const baseUrl = window.location.origin;
+            return baseUrl + imagePath;
+        }
+        
+        // If it's a relative path without /, construct the URL
+        const baseUrl = window.location.origin;
+        const apiPath = '/api';
+        return baseUrl + apiPath + '/' + imagePath;
+    }
+
     render() {
         const loading = this.get('loading');
         const events = this.get('events') || [];
