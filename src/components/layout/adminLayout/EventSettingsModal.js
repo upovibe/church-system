@@ -124,6 +124,13 @@ class EventSettingsModal extends HTMLElement {
                 return;
             }
 
+            Toast.show({
+                title: 'Adding Event',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             // Prepare form data for multipart request
             const formData = new FormData();
             

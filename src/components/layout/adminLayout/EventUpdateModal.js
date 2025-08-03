@@ -140,6 +140,13 @@ class EventUpdateModal extends HTMLElement {
                 return;
             }
 
+            Toast.show({
+                title: 'Updating Event',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             // Prepare form data for multipart request
             const formData = new FormData();
             
