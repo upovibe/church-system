@@ -81,6 +81,13 @@ class SermonView extends App {
         return baseUrl + apiPath + '/' + imagePath;
     }
 
+    getFileUrl(path) {
+        if (!path) return null;
+        if (path.startsWith('http://') || path.startsWith('https://')) return path;
+        if (path.startsWith('/')) return window.location.origin + path;
+        return window.location.origin + '/api/' + path;
+    }
+
     getBannerImages(sermon) {
         if (!sermon || !sermon.images) {
             return [];
@@ -111,14 +118,27 @@ class SermonView extends App {
     }
 
     parseLinks(linksString) {
-        if (!linksString) return [];
-        
-        try {
-            const parsed = JSON.parse(linksString);
-            return Array.isArray(parsed) ? parsed : [linksString];
-        } catch (e) {
-            return [linksString];
+        if (!linksString) {
+            return [];
         }
+        
+        // If it's already an array, return it directly
+        if (Array.isArray(linksString)) {
+            return linksString;
+        }
+        
+        // If it's a string, try to parse as JSON
+        if (typeof linksString === 'string') {
+            try {
+                const parsed = JSON.parse(linksString);
+                return Array.isArray(parsed) ? parsed : [linksString];
+            } catch (e) {
+                return [linksString];
+            }
+        }
+        
+        // Fallback: wrap in array
+        return [linksString];
     }
 
     formatDate(dateString) {
@@ -178,7 +198,9 @@ class SermonView extends App {
 
     // Helper function to get video platform and ID from URL
     getVideoInfo(videoUrl) {
-        if (!videoUrl) return { platform: 'unknown', id: null, embedUrl: null };
+        if (!videoUrl) {
+            return { platform: 'unknown', id: null, embedUrl: null };
+        }
         
         // YouTube
         if (videoUrl.includes('youtube.com/watch') || videoUrl.includes('youtu.be/')) {
@@ -197,17 +219,18 @@ class SermonView extends App {
         }
         
         // Facebook
-        if (videoUrl.includes('facebook.com/')) {
+        if (videoUrl.includes('facebook.com/') && videoUrl.includes('/videos/')) {
+            const videoId = videoUrl.match(/\/videos\/(\d+)/)?.[1];
             return {
                 platform: 'facebook',
-                id: videoUrl,
-                embedUrl: videoUrl.replace('www.facebook.com', 'www.facebook.com/plugins/video.php')
+                id: videoId,
+                embedUrl: videoId ? `https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/videos/${videoId}` : null
             };
         }
         
         // Vimeo
         if (videoUrl.includes('vimeo.com/')) {
-            const videoId = videoUrl.split('vimeo.com/')[1];
+            const videoId = videoUrl.match(/vimeo\.com\/(\d+)/)?.[1];
             return {
                 platform: 'vimeo',
                 id: videoId,
@@ -216,8 +239,8 @@ class SermonView extends App {
         }
         
         // Dailymotion
-        if (videoUrl.includes('dailymotion.com/')) {
-            const videoId = videoUrl.split('dailymotion.com/video/')[1];
+        if (videoUrl.includes('dailymotion.com/video/')) {
+            const videoId = videoUrl.match(/dailymotion\.com\/video\/([^_]+)/)?.[1];
             return {
                 platform: 'dailymotion',
                 id: videoId,
@@ -388,7 +411,10 @@ class SermonView extends App {
                                 <!-- Video Content -->
                                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     ${videoLinks.map((videoUrl, index) => {
-                                        const videoInfo = this.getVideoInfo(videoUrl);
+                                        // If videoUrl is an array, take the first element
+                                        const actualVideoUrl = Array.isArray(videoUrl) ? videoUrl[0] : videoUrl;
+                                        
+                                        const videoInfo = this.getVideoInfo(actualVideoUrl);
                                         return `
                                             <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                                                 <div class="relative aspect-video">
@@ -406,7 +432,7 @@ class SermonView extends App {
                                                             <div class="text-center">
                                                                 <i class="fas fa-video text-gray-400 text-4xl mb-2"></i>
                                                                 <p class="text-gray-500">Video not available</p>
-                                                                <a href="${videoUrl}" target="_blank" class="text-blue-500 hover:underline mt-2 inline-block">
+                                                                <a href="${actualVideoUrl}" target="_blank" class="text-blue-500 hover:underline mt-2 inline-block">
                                                                     View on ${videoInfo.platform}
                                                                 </a>
                                                             </div>
@@ -430,7 +456,7 @@ class SermonView extends App {
                                                 
                                                 <!-- Video Link -->
                                                 <div class="p-3">
-                                                    <a href="${videoUrl}" target="_blank" 
+                                                    <a href="${actualVideoUrl}" target="_blank" 
                                                        class="inline-flex items-center gap-2 text-[${primaryColor}] hover:text-[${accentColor}] transition-colors">
                                                         <i class="fas fa-external-link-alt"></i>
                                                         <span class="text-sm">View on ${videoInfo.platform}</span>
@@ -465,7 +491,8 @@ class SermonView extends App {
                                             filePath = `sermons/audio-${index + 1}.mp3`;
                                         }
                                         
-
+                                        // Get proper file URL using the same logic as the modal
+                                        const audioUrl = this.getFileUrl(filePath);
                                         
                                         return `
                                             <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
@@ -477,14 +504,8 @@ class SermonView extends App {
                                                     <p class="text-sm text-gray-500 truncate">Sermon audio file (${fileExtension})</p>
                                                 </div>
                                                 <div class="flex gap-2 flex-shrink-0">
-                                                    <a href="/api/${filePath}" 
-                                                       class="size-8 flex items-center justify-center bg-[${primaryColor}] text-white rounded-lg hover:bg-[${accentColor}] transition-colors"
-                                                       download="${fileName}"
-                                                       title="Download ${fileName}">
-                                                        <i class="fas fa-download"></i>
-                                                    </a>
                                                     <audio controls class="h-10">
-                                                        <source src="/api/${filePath}" type="audio/${fileExtension.toLowerCase()}">
+                                                        <source src="${audioUrl}" type="audio/${fileExtension.toLowerCase()}">
                                                         Your browser does not support the audio element.
                                                     </audio>
                                                 </div>
