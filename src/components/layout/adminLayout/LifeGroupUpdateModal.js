@@ -107,6 +107,13 @@ class LifeGroupUpdateModal extends HTMLElement {
                 return;
             }
 
+            Toast.show({
+                title: 'Updating Life Group',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             // Prepare form data for file upload
             const formData = new FormData();
             
