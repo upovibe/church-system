@@ -60,30 +60,23 @@
         }
 
         try {
-            console.log('Fetching ministry data for:', slugOrId);
-            
             // Try to fetch by slug first, then by ID if that fails
             let response = await fetch(`/api/news/slug/${slugOrId}`);
             
             if (!response.ok) {
                 // If slug fetch fails, try by ID
-                console.log('Slug fetch failed, trying by ID...');
                 response = await fetch(`/api/news/${slugOrId}`);
             }
             
             if (response.ok) {
                 const data = await response.json();
-                console.log('Ministry API Response:', data);
                 
                 if (data.success && data.data) {
-                    console.log('Ministry Data:', data.data);
                     this.set('ministry', data.data);
                 } else {
-                    console.log('No ministry data found for:', slugOrId);
                     this.set('error', 'Ministry not found');
                 }
             } else {
-                console.log('Failed to fetch ministry:', response.statusText);
                 this.set('error', 'Failed to load ministry');
             }
         } catch (error) {
