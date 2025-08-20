@@ -737,20 +737,20 @@ class DashboardLayout extends App {
                     <!-- Header -->
                     <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 flex-shrink-0">
                         <div class="flex items-center justify-between px-4 py-2">
-                            <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-4 min-w-0 flex-1">
                                 <button type="button" data-sidebar-toggle class="xl:hidden size-8 rounded-md text-[${
                                   darkColor || '#9ca3af'
                                 }] hover:text-[${
       darkColor || '#4b5563'
-    }] hover:bg-gray-100">
+    }] hover:bg-gray-100 flex-shrink-0">
                                     <i class="fas fa-bars text-lg"></i>
                                 </button>
                                 <h1 class="text-xl font-semibold text-[${
                                   darkColor || '#111827'
-                                }]">${this.getPageTitle()}</h1>
+                                }] header-title">${this.getPageTitle()}</h1>
                             </div>
 
-                            <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-4 flex-shrink-0">
                                 <ui-dropdown-menu>
                                     <ui-dropdown-menu-trigger>
                                         <div class="flex items-center p-1 rounded-full hover:bg-gray-100 transition-colors">
@@ -775,11 +775,7 @@ class DashboardLayout extends App {
                                         </ui-dropdown-menu-item>
                                         <ui-dropdown-menu-separator></ui-dropdown-menu-separator>
                                         <ui-dropdown-menu-item color="red">
-                                            <button data-action="logout" class="w-full text-left bg-transparent border-none p-0 m-0 cursor-pointer text-[${
-                                              errorColor || '#ef4444'
-                                            }] hover:text-[${
-      errorColor || '#dc2626'
-    }] flex items-center">
+                                            <button data-action="logout" class="w-full text-left bg-transparent border-none p-0 m-0 cursor-pointer text-[${errorColor || '#ef4444'}] hover:text-[${errorColor || '#dc2626'}] flex items-center">
                                                 <i class="fas fa-sign-out-alt w-4 h-4 mr-3"></i> Logout
                                             </button>
                                         </ui-dropdown-menu-item>
