@@ -16,11 +16,11 @@ return [
         'from_address' => 'noreply@churchsystem.com',
         'from_name' => 'Church System',
     ],
-    'client_url' => 'http://localhost:8080',
-    'api_url' => 'http://localhost:8080/api',
-    'app_url' => 'http://localhost:8080',
+    'client_url' => 'http://localhost:8081',
+    'api_url' => 'http://localhost:8081/api',
+    'app_url' => 'http://localhost:8081',
 ]; 
 
-// cd church-system; php -S localhost:8080
+// cd church-system; php -S localhost:8081
 
 // cd church-system; php api/index.php --help
