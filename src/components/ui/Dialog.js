@@ -257,12 +257,34 @@ class Dialog extends HTMLElement {
         const closeBtn = this.shadowRoot.getElementById('close-dialog');
         const cancelBtn = this.shadowRoot.getElementById('cancel-btn');
         const confirmBtn = this.shadowRoot.getElementById('confirm-btn');
+        
+        // Bind custom footer buttons placed in the light DOM with dialog-action attributes
+        if (!this._customFooterBound) {
+            this.addEventListener('click', (e) => {
+                try {
+                    const path = (e.composedPath && e.composedPath()) || [];
+                    const actionEl = path.find((el) => el && el.getAttribute && el.getAttribute('dialog-action'));
+                    if (!actionEl) return;
+                    const action = actionEl.getAttribute('dialog-action');
+                    if (action === 'cancel') {
+                        e.stopPropagation();
+                        this.dispatchEvent(new CustomEvent('cancel', { bubbles: true }));
+                        this.close();
+                    } else if (action === 'confirm') {
+                        e.stopPropagation();
+                        this.dispatchEvent(new CustomEvent('confirm', { bubbles: true }));
+                        this.close();
+                    }
+                } catch (_) { /* noop */ }
+            });
+            this._customFooterBound = true;
+        }
 
         // Overlay click
         if (overlay) {
             overlay.onclick = (e) => {
                 if (e.target === overlay) {
-                    this.close();
+                    this.showCloseConfirmation();
                 }
             };
         }
@@ -296,9 +318,16 @@ class Dialog extends HTMLElement {
         // Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.isOpen) {
-                this.close();
+                this.showCloseConfirmation();
             }
         });
+    }
+
+    showCloseConfirmation() {
+        const userWantsToClose = confirm('Do you want to close this dialog?');
+        if (userWantsToClose) {
+            this.close();
+        }
     }
 
     open() {

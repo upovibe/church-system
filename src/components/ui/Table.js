@@ -39,7 +39,7 @@
  */
 class Table extends HTMLElement {
     static get observedAttributes() {
-        return ['data', 'columns', 'title', 'sortable', 'selectable', 'pagination', 'page-size', 'striped', 'bordered', 'compact', 'searchable', 'search-placeholder', 'clickable', 'filterable', 'addable', 'action', 'actions', 'refresh', 'print'];
+        return ['data', 'columns', 'title', 'sortable', 'selectable', 'pagination', 'page-size', 'striped', 'bordered', 'compact', 'searchable', 'search-placeholder', 'clickable', 'filterable', 'addable', 'action', 'actions', 'custom-actions', 'refresh', 'print'];
     }
 
     constructor() {
@@ -65,6 +65,7 @@ class Table extends HTMLElement {
         this.refresh = this.hasAttribute('refresh');
         this.print = this.hasAttribute('print');
         this.actions = (this.getAttribute('actions') || '').split(',').map(a => a.trim()).filter(Boolean);
+        this.customActions = this.parseJSONAttribute('custom-actions', []);
         
         // Internal state
         this.currentPage = 1;
@@ -277,6 +278,16 @@ class Table extends HTMLElement {
                 .upo-table-action-button.delete:hover {
                     color: #ef4444;
                 }
+
+                .upo-table-action-button.custom {
+                    background-color: #f3f4f6;
+                    color: #374151;
+                }
+
+                .upo-table-action-button.custom:hover {
+                    background-color: #e5e7eb;
+                    color: #111827;
+                }
                 
                 .upo-table-checkbox {
                     width: 1rem;
@@ -385,20 +396,56 @@ class Table extends HTMLElement {
                 
                 .upo-table-controls-row {
                     display: flex;
+                    flex-direction: row;
                     justify-content: space-between;
-                    align-items: center;
-                    gap: 0.5rem;
+                    align-items: flex-start;
+                    gap: 0.75rem;
                 }
                 
                 .upo-table-controls-left {
                     display: flex;
                     align-items: center;
                     gap: 0.5rem;
+                    width: auto;
                 }
                 
                 .upo-table-controls-right {
                     display: flex;
                     align-items: center;
+                    gap: 0.5rem;
+                    justify-content: flex-end;
+                }
+                
+                /* Responsive layout - switch to vertical on small screens */
+                @media (max-width: 640px) {
+                    .upo-table-controls-row {
+                        gap: 0.75rem;
+                    }
+                    
+                    .upo-table-controls-left {
+                        // flex-direction: column;
+                        align-items: stretch;
+                        width: 100%;
+                    }
+                    
+                    .upo-table-search-input {
+                        width: 100%;
+                    }
+                    
+                    .upo-table-filter-select {
+                        width: 100%;
+                    }
+                    
+                    .upo-table-pagination {
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                    
+                    .upo-table-pagination-left {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 0.75rem;
+                    }
                 }
                 
                 .upo-table-search {
@@ -414,7 +461,7 @@ class Table extends HTMLElement {
                     border-radius: 0.375rem;
                     outline: none;
                     transition: all 0.15s ease-in-out;
-                    width: 200px;
+                    width: 100%;
                 }
                 
                 .upo-table-search-input:focus {
@@ -480,6 +527,7 @@ class Table extends HTMLElement {
                     color: #374151;
                     cursor: pointer;
                     transition: all 0.15s ease-in-out;
+                    width: 100%;
                 }
                 
                 .upo-table-filter-select:focus {
@@ -527,8 +575,10 @@ class Table extends HTMLElement {
                 
                 .upo-table-pagination {
                     display: flex;
+                    flex-direction: col;
                     justify-content: space-between;
                     align-items: center;
+                    gap: 1rem;
                     padding: 1rem;
                     background-color: #f9fafb;
                     border-top: 1px solid #e5e7eb;
@@ -688,6 +738,8 @@ class Table extends HTMLElement {
                 this[name] = this.hasAttribute(name);
             } else if (name === 'actions') {
                 this.actions = (newValue || '').split(',').map(a => a.trim()).filter(Boolean);
+            } else if (name === 'custom-actions') {
+                this.customActions = this.parseJSONAttribute('custom-actions', []);
             } else if (name === 'page-size') {
                 this.pageSize = parseInt(newValue) || 10;
             } else if (name === 'search-placeholder') {
@@ -882,6 +934,21 @@ class Table extends HTMLElement {
         if (row) {
             this.dispatchEvent(new CustomEvent('table-delete', {
                 detail: { row, rowIndex },
+                bubbles: true
+            }));
+        }
+    }
+
+    /**
+     * Custom action handler
+     * @param {number} rowIndex - The index of the row
+     * @param {string} actionName - The name of the custom action
+     */
+    customAction(rowIndex, actionName) {
+        const row = this.getVisibleData()[rowIndex];
+        if (row) {
+            this.dispatchEvent(new CustomEvent('table-custom-action', {
+                detail: { row, rowIndex, actionName },
                 bubbles: true
             }));
         }
@@ -1403,18 +1470,12 @@ class Table extends HTMLElement {
      * @param {Event} event - The click event
      */
     handleRowClick(event) {
-        console.log('🔍 Table handleRowClick called');
-        console.log('🔍 Clickable attribute:', this.clickable);
-        console.log('🔍 Event target:', event.target);
-        
         const tr = event.target.closest('tr');
         if (!tr) {
-            console.log('🔍 No tr element found');
             return;
         }
 
         const rowIndex = parseInt(tr.dataset.rowIndex);
-        console.log('🔍 Row index:', rowIndex);
         
         if (!isNaN(rowIndex)) {
             // Handle selection if selectable
@@ -1424,17 +1485,13 @@ class Table extends HTMLElement {
             
             // Handle row click if clickable
             if (this.clickable) {
-                console.log('🔍 Clickable is true, dispatching event');
                 const row = this.getVisibleData()[rowIndex];
                 if (row) {
-                    console.log('🔍 Row data:', row);
                     this.dispatchEvent(new CustomEvent('table-row-click', {
                         detail: { row, rowIndex, event },
                         bubbles: true
                     }));
                 }
-            } else {
-                console.log('🔍 Clickable is false');
             }
         }
     }
@@ -1585,7 +1642,7 @@ class Table extends HTMLElement {
         // Add button (icon only) - right side (only if addable is enabled)
         if (this.addable) {
             tableHTML += `
-                <button class="upo-table-add" onclick="this.closest('ui-table').add()" aria-label="Add new item">
+                <button class="upo-table-add" onclick="event.stopPropagation(); this.closest('ui-table').add()" aria-label="Add new item">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1684,6 +1741,23 @@ class Table extends HTMLElement {
                                         </svg>
                                     </button>
                                     ` : ''}
+                                    ${this.customActions.map(customAction => {
+                                        // Check if the custom action should be shown for this row
+                                        let shouldShow = true;
+                                        if (typeof customAction.show === 'function') {
+                                            shouldShow = customAction.show(row);
+                                        } else if (customAction.showField) {
+                                            // If a showField string is provided, use the row boolean value
+                                            try { shouldShow = !!row[customAction.showField]; } catch (_) { shouldShow = false; }
+                                        }
+                                        if (!shouldShow) return '';
+                                        
+                                        return `
+                                        <button class="upo-table-action-button custom" onclick="this.closest('ui-table').customAction(${index}, '${customAction.name}')" aria-label="${customAction.label || customAction.name}" title="${customAction.tooltip || customAction.label || customAction.name}">
+                                            ${customAction.icon ? `<i class="${customAction.icon}"></i>` : customAction.text || customAction.name}
+                                        </button>
+                                        `;
+                                    }).join('')}
                                 </div>
                             </td>
                         ` : ''}
