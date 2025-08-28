@@ -86,6 +86,9 @@ class LoginPage extends App {
             }));
             localStorage.setItem('token', user.token);
 
+            // Mark the session as active in sessionStorage.
+            sessionStorage.setItem('session_active', 'true');
+
             // Check if user needs to change password
             if (requires_password_change) {
                 // Set flag in localStorage
