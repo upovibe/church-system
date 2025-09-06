@@ -276,7 +276,7 @@ class UserRolePage extends App {
                             pagination
                             page-size="50"
                             action
-                            addable
+                            actions="view"
                             refresh
                             print
                             bordered
