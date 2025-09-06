@@ -22,7 +22,8 @@ class UserAddDialog extends HTMLElement {
         this.userData = {
             name: '',
             email: '',
-            role_id: ''
+            role_id: '',
+            password: ''
         };
         this.roles = [];
     }
@@ -68,7 +69,8 @@ class UserAddDialog extends HTMLElement {
         this.userData = {
             name: '',
             email: '',
-            role_id: ''
+            role_id: '',
+            password: ''
         };
         this.render();
     }
@@ -99,11 +101,13 @@ class UserAddDialog extends HTMLElement {
             const nameInput = this.querySelector('#user-name-input');
             const emailInput = this.querySelector('#user-email-input');
             const roleDropdown = this.querySelector('#user-role-dropdown');
+            const passwordInput = this.querySelector('#user-password-input');
             
             const userData = {
                 name: nameInput ? nameInput.value : '',
                 email: emailInput ? emailInput.value : '',
-                role_id: roleDropdown ? roleDropdown.value : ''
+                role_id: roleDropdown ? roleDropdown.value : '',
+                password: passwordInput ? passwordInput.value : ''
             };
 
             // Validate required fields
@@ -137,6 +141,27 @@ class UserAddDialog extends HTMLElement {
                 return;
             }
 
+            // Validate required password field
+            if (!userData.password?.trim()) {
+                Toast.show({
+                    title: 'Validation Error',
+                    message: 'Password is required',
+                    variant: 'error',
+                    duration: 3000
+                });
+                return;
+            }
+
+            if (userData.password.trim().length < 8) {
+                Toast.show({
+                    title: 'Validation Error',
+                    message: 'Password must be at least 8 characters long',
+                    variant: 'error',
+                    duration: 3000
+                });
+                return;
+            }
+
             // Get auth token
             const token = localStorage.getItem('token');
             if (!token) {
@@ -156,7 +181,7 @@ class UserAddDialog extends HTMLElement {
             if (response.status === 201 || response.data.id) {
                 // Show appropriate message based on email status
                 const message = response.data.email_sent 
-                    ? 'User created successfully. Password will be sent via email.'
+                    ? 'User created successfully. The user will receive a welcome email with the provided password.'
                     : 'User created successfully. Email could not be sent. Please check email configuration.';
                 
                 const toastVariant = response.data.email_sent ? 'success' : 'warning';
@@ -245,6 +270,21 @@ class UserAddDialog extends HTMLElement {
                                 required>
                             </ui-input>
                         </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                            <ui-input 
+                                id="user-password-input"
+                                type="password" 
+                                name="password"
+                                placeholder="Enter password"
+                                minlength="8"
+                                required>
+                            </ui-input>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Password must be at least 8 characters long
+                            </p>
+                        </div>
                     </form>
                     
                     <!-- Information Notice -->
@@ -258,11 +298,7 @@ class UserAddDialog extends HTMLElement {
                                 <ul class="text-sm text-blue-700 space-y-1">
                                     <li class="flex items-start">
                                         <i class="fas fa-check text-blue-500 text-xs mt-1 mr-2"></i>
-                                        A secure password will be auto-generated and sent to the user's email
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check text-blue-500 text-xs mt-1 mr-2"></i>
-                                        The user will receive a welcome email with login credentials
+                                        The user will receive a welcome email with the provided password
                                     </li>
                                     <li class="flex items-start">
                                         <i class="fas fa-check text-blue-500 text-xs mt-1 mr-2"></i>
@@ -271,6 +307,10 @@ class UserAddDialog extends HTMLElement {
                                     <li class="flex items-start">
                                         <i class="fas fa-check text-blue-500 text-xs mt-1 mr-2"></i>
                                         Account will be active immediately after creation
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 text-xs mt-1 mr-2"></i>
+                                        Make sure to provide a secure password (minimum 8 characters)
                                     </li>
                                 </ul>
                             </div>

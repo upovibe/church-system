@@ -51,9 +51,16 @@ class UserController {
             $data = json_decode(file_get_contents('php://input'), true);
             
             // Validate required fields
-            if (!isset($data['name']) || !isset($data['email'])) {
+            if (!isset($data['name']) || !isset($data['email']) || !isset($data['password'])) {
                 http_response_code(400);
-                echo json_encode(['error' => 'Name and email are required'], JSON_PRETTY_PRINT);
+                echo json_encode(['error' => 'Name, email, and password are required'], JSON_PRETTY_PRINT);
+                return;
+            }
+            
+            // Validate password length
+            if (strlen($data['password']) < 8) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Password must be at least 8 characters long'], JSON_PRETTY_PRINT);
                 return;
             }
             
@@ -65,15 +72,15 @@ class UserController {
                 return;
             }
             
-            // Auto-generate a secure password
-            $generatedPassword = $this->generateSecurePassword();
+            // Store the provided password for email
+            $providedPassword = $data['password'];
             
-            // Hash the generated password
-            $data['password'] = password_hash($generatedPassword, PASSWORD_DEFAULT);
+            // Hash the provided password
+            $data['password'] = password_hash($providedPassword, PASSWORD_DEFAULT);
             
             // Set default role if not provided
             if (!isset($data['role_id'])) {
-                $data['role_id'] = 3; // Default to student role
+                $data['role_id'] = 3; // Default to elder role
             }
             
             // Set default status
@@ -86,7 +93,7 @@ class UserController {
             // Log user creation
             $this->logModel->logAction($id, 'user_created', 'New user created', $data);
             
-            // Send welcome email with generated password
+            // Send welcome email with provided password
             try {
                 require_once __DIR__ . '/../core/EmailService.php';
                 $emailService = new EmailService();
@@ -94,12 +101,12 @@ class UserController {
                 // Get login URL from environment or use default
                 $loginUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:8000/auth/login';
                 
-                // Send the welcome email with generated password
+                // Send the welcome email with provided password
                 $emailSent = $emailService->sendUserCreatedEmail(
                     $data['email'],
                     $data['name'],
                     $data['email'],
-                    $generatedPassword,
+                    $providedPassword,
                     $loginUrl
                 );
                 
@@ -228,6 +235,13 @@ class UserController {
             
             // Hash password if provided
             if (isset($data['password'])) {
+                // Validate password length
+                if (strlen($data['password']) < 8) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Password must be at least 8 characters long'], JSON_PRETTY_PRINT);
+                    return;
+                }
+                
                 $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
                 $changes[] = 'Password was updated';
             }

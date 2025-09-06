@@ -107,6 +107,7 @@ class UserEditDialog extends HTMLElement {
             const emailInput = this.querySelector('#user-edit-email-input');
             const roleDropdown = this.querySelector('#user-edit-role-dropdown');
             const statusDropdown = this.querySelector('#user-edit-status-dropdown');
+            const passwordInput = this.querySelector('#user-edit-password-input');
             
             const userData = {
                 name: nameInput ? nameInput.value : '',
@@ -114,6 +115,11 @@ class UserEditDialog extends HTMLElement {
                 role_id: roleDropdown ? roleDropdown.value : '',
                 status: statusDropdown ? statusDropdown.value : 'active'
             };
+
+            // Add password only if provided
+            if (passwordInput && passwordInput.value.trim()) {
+                userData.password = passwordInput.value.trim();
+            }
 
             // Validate required fields
             if (!userData.name?.trim()) {
@@ -140,6 +146,17 @@ class UserEditDialog extends HTMLElement {
                 Toast.show({
                     title: 'Validation Error',
                     message: 'Role is required',
+                    variant: 'error',
+                    duration: 3000
+                });
+                return;
+            }
+
+            // Validate password if provided
+            if (userData.password && userData.password.length < 8) {
+                Toast.show({
+                    title: 'Validation Error',
+                    message: 'Password must be at least 8 characters long',
                     variant: 'error',
                     duration: 3000
                 });
@@ -264,6 +281,20 @@ class UserEditDialog extends HTMLElement {
                                 required>
                             </ui-input>
                         </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">New Password (Optional)</label>
+                            <ui-input 
+                                id="user-edit-password-input"
+                                type="password" 
+                                name="password"
+                                placeholder="Enter new password (leave empty to keep current)"
+                                minlength="8">
+                            </ui-input>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Leave empty to keep current password, or enter a new password (min 8 characters)
+                            </p>
+                        </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Account Status *</label>
@@ -297,8 +328,8 @@ class UserEditDialog extends HTMLElement {
                                         Name, email, role, and account status will be updated
                                     </li>
                                     <li class="flex items-start">
-                                        <i class="fas fa-check text-green-500 text-xs mt-1 mr-2"></i>
-                                        User will continue to use their existing password
+                                        <i class="fas fa-key text-green-500 text-xs mt-1 mr-2"></i>
+                                        <strong>Password: Leave empty to keep current, or enter new password (min 8 chars)</strong>
                                     </li>
                                     <li class="flex items-start">
                                         <i class="fas fa-user-check text-green-500 text-xs mt-1 mr-2"></i>
