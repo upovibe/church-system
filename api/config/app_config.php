@@ -21,6 +21,12 @@ return [
     'app_url' => 'http://localhost:8081',
 ]; 
 
-// cd church-system; php -S localhost:8081
+// cd church-system; php -S localhost:8081           # Run server
 
-// cd church-system; php api/index.php --help
+// cd church-system; php api/index.php --help       # Show help
+
+// cd church-system; php api/index.php --fresh    # Drop tables, create tables, add default data
+
+// cd church-system; php api/index.php --migrate    # Create tables
+
+// cd church-system; php api/index.php --seed       # Add default data

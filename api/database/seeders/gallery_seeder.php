@@ -19,62 +19,62 @@ class GallerySeeder {
         
         $galleries = [
             [
-                'name' => 'School Events 2024',
-                'description' => 'A collection of memorable moments from various school events throughout 2024, including sports days, cultural festivals, and academic celebrations.',
+                'name' => 'Sunday Worship Services',
+                'description' => 'A collection of memorable moments from our weekly worship services, featuring praise, prayer, and biblical teaching.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Graduation Ceremony',
-                'description' => 'Photos from our annual graduation ceremony, capturing the proud moments of our graduating students and their families.',
+                'name' => 'Baptism Ceremonies',
+                'description' => 'Photos from our baptism services, capturing the joyful moments of new believers taking their public stand for Christ.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Sports Day',
-                'description' => 'Highlights from our annual sports day featuring students participating in various athletic events, team sports, and friendly competitions.',
+                'name' => 'Church Events',
+                'description' => 'Highlights from our various church events including conferences, retreats, and special celebrations.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Cultural Festival',
-                'description' => 'Images from our cultural festival showcasing student performances, art exhibitions, and traditional celebrations.',
+                'name' => 'Ministry Activities',
+                'description' => 'Images from our various ministries including children\'s ministry, youth group, and adult Bible studies.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Science Fair',
-                'description' => 'Photos from our annual science fair where students showcase their innovative projects and scientific discoveries.',
+                'name' => 'Community Outreach',
+                'description' => 'Photos from our community service activities and outreach programs where we share God\'s love with others.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Campus Life',
-                'description' => 'Daily life at our school campus, including classroom activities, library sessions, and student interactions.',
+                'name' => 'Church Life',
+                'description' => 'Daily life at our church, including fellowship gatherings, prayer meetings, and community building activities.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Field Trips',
-                'description' => 'Educational field trips and outdoor learning experiences that enrich our students\' educational journey.',
+                'name' => 'Mission Trips',
+                'description' => 'Photos from our mission trips and outreach activities, both local and international.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Teacher Appreciation',
-                'description' => 'Special moments celebrating our dedicated teachers and their contributions to student success.',
+                'name' => 'Pastor Appreciation',
+                'description' => 'Special moments celebrating our dedicated pastors and their faithful service to our church community.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Art Exhibition',
-                'description' => 'Student artwork and creative projects displayed in our annual art exhibition.',
+                'name' => 'Church Celebrations',
+                'description' => 'Photos from special church celebrations including anniversaries, dedications, and holiday services.',
                 'images' => [],
                 'is_active' => true
             ],
             [
-                'name' => 'Community Service',
-                'description' => 'Photos from various community service activities and volunteer programs organized by our school.',
+                'name' => 'Fellowship Events',
+                'description' => 'Photos from various fellowship activities and community building events that strengthen our church family.',
                 'images' => [],
                 'is_active' => true
             ]
