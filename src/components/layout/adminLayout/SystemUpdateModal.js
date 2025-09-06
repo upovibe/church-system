@@ -517,10 +517,13 @@ class SystemUpdateModal extends HTMLElement {
             const updatedSetting = {
                 ...this.settingData, // Keep existing fields like id, created_at
                 ...settingData,
-                // Use the response data if available, otherwise use the form data
-                setting_value: response?.data?.data?.setting_value || settingData.setting_value,
                 updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
             };
+            
+            // If it's a file/image type and we have a response, use the server's file path
+            if ((settingType === 'file' || settingType === 'image') && response && response.data && response.data.data) {
+                updatedSetting.setting_value = response.data.data.setting_value || this.settingData.setting_value;
+            }
 
             // Close modal and dispatch event
             this.close();
@@ -530,11 +533,8 @@ class SystemUpdateModal extends HTMLElement {
                 composed: true
             }));
             
-            // Also dispatch a general refresh event to ensure UI updates
-            this.dispatchEvent(new CustomEvent('settings-refreshed', {
-                bubbles: true,
-                composed: true
-            }));
+            // Reset the setting data to prevent issues
+            this.settingData = null;
 
         } catch (error) {
             console.error('❌ Error updating setting:', error);

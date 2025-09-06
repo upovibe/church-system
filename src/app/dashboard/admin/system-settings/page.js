@@ -79,9 +79,13 @@ class SystemSettingsPage extends App {
                     setting.id === updatedSetting.id ? updatedSetting : setting
                 );
                 this.set('settings', updatedSettings);
-                this.updateTableData();
-                // Close the update modal
+                
+                // Close the update modal first
                 this.set('showUpdateModal', false);
+                this.set('updateSettingData', null);
+                
+                // Update table data
+                this.updateTableData();
             } else {
                 this.loadData();
             }
