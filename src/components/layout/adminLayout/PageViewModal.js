@@ -259,6 +259,9 @@ class PageViewModal extends HTMLElement {
                             <p class="text-gray-500">No page data available</p>
                         </div>
                     `}
+                </div>  
+                <div slot="footer" class="flex justify-end">
+                    <ui-button variant="outline" color="secondary" modal-action="cancel">Close</ui-button>
                 </div>
             </ui-modal>
         `;
