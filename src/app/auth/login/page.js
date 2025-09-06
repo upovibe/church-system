@@ -66,13 +66,11 @@ class LoginPage extends App {
 
             const { user, requires_password_change } = response.data;
             
-            // Map role_id to role name (temporary solution)
+            // Map role_id to role name (church system roles)
             const roleMap = {
                 1: 'admin',
-                2: 'teacher', 
-                3: 'student',
-                4: 'parent',
-                5: 'staff'
+                2: 'pastor', 
+                3: 'elder'
             };
 
             const roleName = roleMap[user.role_id] || 'admin';
@@ -138,10 +136,8 @@ class LoginPage extends App {
     redirectToDashboard(role) {
         const dashboardRoutes = {
             'admin': '/dashboard/admin',
-            'teacher': '/dashboard/teacher',
-            'student': '/dashboard/student',
-            'parent': '/dashboard/parent',
-            'staff': '/dashboard/staff'
+            'pastor': '/dashboard/admin',
+            'elder': '/dashboard/admin'
         };
 
         const route = dashboardRoutes[role] || '/dashboard/admin';
