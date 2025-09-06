@@ -215,9 +215,18 @@ class SystemSettingsPage extends App {
         const tableData = settings.map((setting, index) => {
             let displayValue = setting.setting_value;
             
-            // Handle array values
+            // Handle different value types
             if (Array.isArray(setting.setting_value)) {
                 displayValue = setting.setting_value.join(', ');
+            } else if (typeof setting.setting_value === 'object' && setting.setting_value !== null) {
+                // Handle object values (like file uploads that return objects)
+                if (setting.setting_value.path || setting.setting_value.url) {
+                    displayValue = setting.setting_value.path || setting.setting_value.url;
+                } else if (setting.setting_value.name) {
+                    displayValue = setting.setting_value.name;
+                } else {
+                    displayValue = JSON.stringify(setting.setting_value);
+                }
             } else if (typeof setting.setting_value === 'string') {
                 displayValue = setting.setting_value;
             } else {
@@ -270,9 +279,18 @@ class SystemSettingsPage extends App {
         const tableData = settings ? settings.map((setting, index) => {
             let displayValue = setting.setting_value;
             
-            // Handle array values
+            // Handle different value types
             if (Array.isArray(setting.setting_value)) {
                 displayValue = setting.setting_value.join(', ');
+            } else if (typeof setting.setting_value === 'object' && setting.setting_value !== null) {
+                // Handle object values (like file uploads that return objects)
+                if (setting.setting_value.path || setting.setting_value.url) {
+                    displayValue = setting.setting_value.path || setting.setting_value.url;
+                } else if (setting.setting_value.name) {
+                    displayValue = setting.setting_value.name;
+                } else {
+                    displayValue = JSON.stringify(setting.setting_value);
+                }
             } else if (typeof setting.setting_value === 'string') {
                 displayValue = setting.setting_value;
             } else {
