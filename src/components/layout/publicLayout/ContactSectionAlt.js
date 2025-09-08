@@ -14,12 +14,6 @@ class ContactSectionAlt extends App {
     constructor() {
         super();
         this.set('loading', false);
-        this.set('formData', {
-            name: '',
-            email: '',
-            subject: '',
-            message: ''
-        });
     }
 
     connectedCallback() {
@@ -81,21 +75,6 @@ class ContactSectionAlt extends App {
     }
 
     setupEventListeners() {
-        this.addEventListener('input', (e) => {
-            const input = e.target;
-            const field = input.name;
-            if (field) {
-                const formData = this.get('formData') || {
-                    name: '',
-                    email: '',
-                    subject: '',
-                    message: ''
-                };
-                formData[field] = input.value;
-                this.set('formData', { ...formData });
-            }
-        });
-
         this.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleSubmit();
@@ -106,38 +85,20 @@ class ContactSectionAlt extends App {
         try {
             this.set('loading', true);
             
-            const formData = this.get('formData') || {
-                name: '',
-                email: '',
-                subject: '',
-                message: ''
+            // Get form data directly from DOM elements
+            const nameInput = this.querySelector('ui-input[name="name"]');
+            const emailInput = this.querySelector('ui-input[name="email"]');
+            const subjectInput = this.querySelector('ui-input[name="subject"]');
+            const messageInput = this.querySelector('ui-textarea[name="message"]');
+
+            const formData = {
+                name: nameInput ? nameInput.value : '',
+                email: emailInput ? emailInput.value : '',
+                subject: subjectInput ? subjectInput.value : '',
+                message: messageInput ? messageInput.value : ''
             };
             
-            // Basic validation
-            if (!formData.name || !formData.email || !formData.message) {
-                Toast.show({
-                    title: 'Validation Error',
-                    message: 'Please fill in all required fields',
-                    variant: 'error',
-                    duration: 3000
-                });
-                return;
-            }
-
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                Toast.show({
-                    title: 'Validation Error',
-                    message: 'Please enter a valid email address',
-                    variant: 'error',
-                    duration: 3000
-                });
-                return;
-            }
-
-            // Here you would typically send the form data to your API
-            // For now, we'll just show a success message
+            // Log form data
             console.log('Contact form data:', formData);
             
             Toast.show({
@@ -147,19 +108,11 @@ class ContactSectionAlt extends App {
                 duration: 5000
             });
 
-            // Reset form
-            this.set('formData', {
-                name: '',
-                email: '',
-                subject: '',
-                message: ''
-            });
-
             // Reset form inputs
-            const inputs = this.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.value = '';
-            });
+            if (nameInput) nameInput.value = '';
+            if (emailInput) emailInput.value = '';
+            if (subjectInput) subjectInput.value = '';
+            if (messageInput) messageInput.value = '';
 
         } catch (error) {
             console.error('Error submitting contact form:', error);
@@ -215,12 +168,6 @@ class ContactSectionAlt extends App {
     }
 
     render() {
-        const formData = this.get('formData') || {
-            name: '',
-            email: '',
-            subject: '',
-            message: ''
-        };
         const loading = this.get('loading');
         
         // Get colors from state
@@ -353,7 +300,6 @@ class ContactSectionAlt extends App {
                                         type="text"
                                         id="name"
                                         name="name"
-                                        value="${formData.name}"
                                         placeholder="Enter your full name"
                                         required>
                                     </ui-input>
@@ -367,7 +313,6 @@ class ContactSectionAlt extends App {
                                         type="email"
                                         id="email"
                                         name="email"
-                                        value="${formData.email}"
                                         placeholder="Enter your email address"
                                         required>
                                     </ui-input>
@@ -381,7 +326,6 @@ class ContactSectionAlt extends App {
                                         type="text"
                                         id="subject"
                                         name="subject"
-                                        value="${formData.subject}"
                                         placeholder="Enter message subject">
                                     </ui-input>
                                 </div>
@@ -395,7 +339,7 @@ class ContactSectionAlt extends App {
                                         name="message"
                                         rows="5"
                                         placeholder="Enter your message"
-                                        required>${formData.message}</ui-textarea>
+                                        required></ui-textarea>
                                 </div>
                                 <!-- Submit Button -->
                                 <button

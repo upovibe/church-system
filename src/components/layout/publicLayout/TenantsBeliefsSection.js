@@ -141,7 +141,7 @@ class TenantsBeliefsSection extends App {
                 <!-- Dark gradient overlay from bottom to top -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
                 <!-- Content Overlay -->
-                <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
+                <div class="absolute inset-0 flex items-end justify-start z-30 container mx-auto pb-16">
                     <div class="text-left text-white px-4 lg:px-8 max-w-4xl space-y-6">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg pb-2 border-b-4 border-[${accentColor}] w-fit" style="line-height: 1.1">
                             ${heroTitle}

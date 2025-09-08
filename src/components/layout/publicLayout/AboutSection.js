@@ -156,7 +156,7 @@ class AboutSection extends App {
                               }
                               return img || '';
                             })()}"
-                                 alt="About Our School"
+                                 alt="About Our Church"
                                  class="octagon-image"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="absolute inset-0 hidden items-center justify-center bg-gray-100">
