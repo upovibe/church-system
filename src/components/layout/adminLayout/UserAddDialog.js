@@ -174,6 +174,14 @@ class UserAddDialog extends HTMLElement {
                 return;
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Adding User',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 3000
+            });
+
             // Save user
             const response = await api.withToken(token).post('/users', userData);
             

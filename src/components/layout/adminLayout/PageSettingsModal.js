@@ -116,6 +116,14 @@ class PageSettingsModal extends HTMLElement {
                 return;
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Adding Page',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 2000
+            });
+
             // Prepare form data for multipart request
             const formData = new FormData();
             
