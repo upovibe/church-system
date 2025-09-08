@@ -175,6 +175,14 @@ class UserEditDialog extends HTMLElement {
                 return;
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Updating User',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 3000
+            });
+
             // Update user
             const response = await api.withToken(token).put(`/users/${this.userData.id}`, userData);
             

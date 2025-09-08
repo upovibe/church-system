@@ -130,6 +130,14 @@ class PageUpdateModal extends HTMLElement {
                 return;
             }
 
+            // Show loading toast
+            Toast.show({
+                title: 'Updating Page',
+                message: 'Please wait...',
+                variant: 'info',
+                duration: 3000
+            });
+
             // Prepare form data for multipart request
             const formData = new FormData();
             
