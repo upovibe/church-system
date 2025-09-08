@@ -19,14 +19,14 @@ class TeamSeeder {
                 'name' => 'Pastor Daniel & Mrs. Faustina',
                 'profile_image' => null,
                 'position' => 'District Pastor',
-                'department' => 'Pastoral',
+                'department' => 'District Pastor',
                 'is_active' => 1
             ],
             [
                 'name' => 'Dr. John & Dr.(Mrs.) Christiana Ntumy',
                 'profile_image' => null,
                 'position' => 'Presiding Elder',
-                'department' => 'Pastoral',
+                'department' => 'Presiding Elder',
                 'is_active' => 1
             ]
         ];

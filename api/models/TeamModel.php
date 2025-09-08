@@ -192,16 +192,12 @@ class TeamModel extends BaseModel {
      */
     public function getAvailableDepartments() {
         return [
-            'Administration',
-            'Teaching',
-            'Support Staff',
-            'Management',
-            'IT',
-            'Finance',
-            'Human Resources',
-            'Maintenance',
-            'Security',
-            'Other'
+            'District Pastor',
+            'Presiding Elder',
+            'Senior Pastor',
+            'Associate Pastor',
+            'Youth Pastor',
+            'Worship Pastor'
         ];
     }
 }
