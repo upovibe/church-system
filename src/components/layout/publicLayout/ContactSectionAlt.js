@@ -344,8 +344,7 @@ class ContactSectionAlt extends App {
                                 <!-- Submit Button -->
                                 <button
                                     type="submit"
-                                    disabled="${loading}"
-                                    class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg hover:from-[${primaryColor}] hover:to-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                                    class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg hover:from-[${primaryColor}] hover:to-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl">
                                     ${loading ? `
                                         <div class="flex items-center justify-center gap-2">
                                             <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
