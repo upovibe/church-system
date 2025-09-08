@@ -14,7 +14,7 @@ class Migration_20241001000026createteamstable {
                 name VARCHAR(255) NOT NULL,
                 profile_image VARCHAR(500),
                 position VARCHAR(255) NOT NULL,
-                department ENUM('Pastoral', 'Administration', 'Ministry', 'Support Staff', 'Management', 'IT', 'Finance', 'Human Resources', 'Maintenance', 'Security', 'Other') NOT NULL,
+                department ENUM('District Pastor', 'Presiding Elder', 'Senior Pastor', 'Associate Pastor', 'Youth Pastor', 'Worship Pastor') NOT NULL,
                 is_active BOOLEAN DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
