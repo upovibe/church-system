@@ -242,10 +242,12 @@ class GiveList extends App {
                                             <a href="${link}" 
                                                target="_blank" 
                                                rel="noopener noreferrer"
-                                               class="flex items-center justify-center gap-2 w-full px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-xs font-medium">
-                                                <i class="${this.getPaymentIcon(link)} flex-shrink-0"></i>
-                                                <span class="truncate">${this.getPaymentName(link)}</span>
-                                                <i class="fas fa-external-link-alt text-xs flex-shrink-0"></i>
+                                               class="flex items-center justify-between w-full px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-xs font-medium">
+                                                <div class="flex items-center gap-2 min-w-0 flex-1">
+                                                    <i class="${this.getPaymentIcon(link)} flex-shrink-0"></i>
+                                                    <span class="truncate">${this.getPaymentName(link)}</span>
+                                                </div>
+                                                <i class="fas fa-external-link-alt text-xs flex-shrink-0 ml-2"></i>
                                             </a>
                                         `).join('')}
                                     </div>
