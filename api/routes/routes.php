@@ -151,6 +151,14 @@ Router::put('/testimonials/{id}', 'TestimonialController@update'); // admin only
 Router::delete('/testimonials/{id}', 'TestimonialController@destroy'); // admin only
 Router::get('/public/testimonials', 'TestimonialController@getPublic'); // public
 
+// Give Management Routes (admin only for create/update/delete, public for view)
+Router::get('/give', 'GiveController@index'); // admin only
+Router::post('/give', 'GiveController@store'); // admin only
+Router::get('/give/active', 'GiveController@getActive'); // public
+Router::get('/give/{id}', 'GiveController@show'); // public
+Router::put('/give/{id}', 'GiveController@update'); // admin only
+Router::delete('/give/{id}', 'GiveController@destroy'); // admin only
+
 // DB setup endpoints
 Router::get('/db/test', 'DbController@test');
 Router::get('/db/check', 'DbController@check');
