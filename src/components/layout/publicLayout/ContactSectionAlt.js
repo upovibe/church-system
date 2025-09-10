@@ -14,6 +14,12 @@ class ContactSectionAlt extends App {
     constructor() {
         super();
         this.set('loading', false);
+        this.formValues = {
+            name: '',
+            email: '',
+            subject: '',
+            message: ''
+        };
     }
 
     connectedCallback() {
@@ -79,24 +85,47 @@ class ContactSectionAlt extends App {
             e.preventDefault();
             this.handleSubmit();
         });
+
+        // Add real-time debugging for input changes and capture values
+        this.addEventListener('input', (e) => {
+            console.log('Input event:', {
+                target: e.target.tagName,
+                id: e.target.id,
+                name: e.target.name,
+                value: e.target.value
+            });
+            
+            // Capture values in real-time
+            if (e.target.id === 'name' || e.target.name === 'name') {
+                this.formValues.name = e.target.value;
+            } else if (e.target.id === 'email' || e.target.name === 'email') {
+                this.formValues.email = e.target.value;
+            } else if (e.target.id === 'subject' || e.target.name === 'subject') {
+                this.formValues.subject = e.target.value;
+            } else if (e.target.id === 'message' || e.target.name === 'message') {
+                this.formValues.message = e.target.value;
+            }
+        });
     }
 
     async handleSubmit() {
         try {
             this.set('loading', true);
             
-            // Get form data directly from DOM elements
-            const nameInput = this.querySelector('ui-input[name="name"]');
-            const emailInput = this.querySelector('ui-input[name="email"]');
-            const subjectInput = this.querySelector('ui-input[name="subject"]');
-            const messageInput = this.querySelector('ui-textarea[name="message"]');
-
+            // Add a small delay to ensure all elements are fully rendered
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            // Use the captured form values
             const formData = {
-                name: nameInput ? nameInput.value.trim() : '',
-                email: emailInput ? emailInput.value.trim() : '',
-                subject: subjectInput ? subjectInput.value.trim() : '',
-                message: messageInput ? messageInput.value.trim() : ''
+                name: this.formValues.name.trim(),
+                email: this.formValues.email.trim(),
+                subject: this.formValues.subject.trim(),
+                message: this.formValues.message.trim()
             };
+            
+            // Debug: Check the captured form values
+            console.log('Captured form values:', this.formValues);
+            console.log('Final form data before validation:', formData);
             
             // Validate required fields
             if (!formData.name || !formData.email || !formData.message) {
@@ -143,11 +172,24 @@ class ContactSectionAlt extends App {
                     duration: 5000
                 });
 
-                // Reset form inputs
+                // Reset form inputs and captured values
+                const nameInput = this.querySelector('input#name');
+                const emailInput = this.querySelector('input#email');
+                const subjectInput = this.querySelector('input#subject');
+                const messageInput = this.querySelector('ui-textarea[name="message"]');
+                
                 if (nameInput) nameInput.value = '';
                 if (emailInput) emailInput.value = '';
                 if (subjectInput) subjectInput.value = '';
                 if (messageInput) messageInput.value = '';
+                
+                // Reset captured values
+                this.formValues = {
+                    name: '',
+                    email: '',
+                    subject: '',
+                    message: ''
+                };
             } else {
                 throw new Error(result.message || 'Failed to send message');
             }
@@ -338,6 +380,7 @@ class ContactSectionAlt extends App {
                                         type="text"
                                         id="name"
                                         name="name"
+                                        data-field="name"
                                         placeholder="Enter your full name"
                                         required>
                                     </ui-input>
@@ -351,6 +394,7 @@ class ContactSectionAlt extends App {
                                         type="email"
                                         id="email"
                                         name="email"
+                                        data-field="email"
                                         placeholder="Enter your email address"
                                         required>
                                     </ui-input>
@@ -364,6 +408,7 @@ class ContactSectionAlt extends App {
                                         type="text"
                                         id="subject"
                                         name="subject"
+                                        data-field="subject"
                                         placeholder="Enter message subject">
                                     </ui-input>
                                 </div>
@@ -375,6 +420,7 @@ class ContactSectionAlt extends App {
                                     <ui-textarea
                                         id="message"
                                         name="message"
+                                        data-field="message"
                                         rows="5"
                                         placeholder="Enter your message"
                                         required></ui-textarea>
