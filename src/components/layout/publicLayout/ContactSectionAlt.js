@@ -26,6 +26,9 @@ class ContactSectionAlt extends App {
         super.connectedCallback();
         this.loadDataFromProps();
         this.setupEventListeners();
+        
+        // Set initial form validation state
+        setTimeout(() => this.validateForm(), 100);
     }
 
     loadDataFromProps() {
@@ -86,7 +89,7 @@ class ContactSectionAlt extends App {
             this.handleSubmit();
         });
 
-        // Capture form values in real-time
+        // Capture form values in real-time and validate form
         this.addEventListener('input', (e) => {
             if (e.target.id === 'name' || e.target.name === 'name') {
                 this.formValues.name = e.target.value;
@@ -97,7 +100,32 @@ class ContactSectionAlt extends App {
             } else if (e.target.id === 'message' || e.target.name === 'message') {
                 this.formValues.message = e.target.value;
             }
+            
+            // Validate form and update button state
+            this.validateForm();
         });
+    }
+
+    validateForm() {
+        // Check if all required fields have values
+        const isFormValid = this.formValues.name.trim() !== '' && 
+                           this.formValues.email.trim() !== '' && 
+                           this.formValues.message.trim() !== '';
+        
+        // Find the submit button and enable/disable it
+        const submitButton = this.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = !isFormValid;
+            
+            // Update button appearance based on state
+            if (isFormValid) {
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                submitButton.classList.add('hover:opacity-90', 'hover:-translate-y-1', 'hover:scale-105', 'hover:shadow-xl');
+            } else {
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                submitButton.classList.remove('hover:opacity-90', 'hover:-translate-y-1', 'hover:scale-105', 'hover:shadow-xl');
+            }
+        }
     }
 
     async handleSubmit() {
@@ -410,7 +438,8 @@ class ContactSectionAlt extends App {
                                 <!-- Submit Button -->
                                 <button
                                     type="submit"
-                                    class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg hover:from-[${primaryColor}] hover:to-[${accentColor}] transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl">
+                                    disabled
+                                    class="w-full bg-gradient-to-r from-[${primaryColor}] to-[${accentColor}] text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform shadow-lg opacity-50 cursor-not-allowed">
                                     ${loading ? `
                                         <div class="flex items-center justify-center gap-2">
                                             <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
