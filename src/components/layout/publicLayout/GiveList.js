@@ -138,7 +138,7 @@ class GiveList extends App {
         return `
             <!-- Give Items Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" style="grid-auto-rows: min-content;" id="give-list">
-                ${loading ? `
+                ${loading ? Array(4).fill(`
                     <!-- Loading Skeleton -->
                     <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-3 animate-pulse">
                         <div class="flex flex-col">
@@ -157,41 +157,7 @@ class GiveList extends App {
                             </div>
                         </div>
                     </div>
-                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-3 animate-pulse">
-                        <div class="flex flex-col">
-                            <!-- Image Skeleton -->
-                            <div class="w-full h-32 bg-gray-600 rounded-xl mb-4"></div>
-                            <!-- Content Skeleton -->
-                            <div class="space-y-3">
-                                <div class="h-6 bg-gray-600 rounded"></div>
-                                <div class="h-4 bg-gray-600 rounded"></div>
-                                <div class="h-4 bg-gray-600 rounded w-3/4"></div>
-                            </div>
-                            <!-- Links Skeleton -->
-                            <div class="mt-4 space-y-2">
-                                <div class="h-8 bg-gray-600 rounded"></div>
-                                <div class="h-8 bg-gray-600 rounded"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-3 animate-pulse">
-                        <div class="flex flex-col">
-                            <!-- Image Skeleton -->
-                            <div class="w-full h-32 bg-gray-600 rounded-xl mb-4"></div>
-                            <!-- Content Skeleton -->
-                            <div class="space-y-3">
-                                <div class="h-6 bg-gray-600 rounded"></div>
-                                <div class="h-4 bg-gray-600 rounded"></div>
-                                <div class="h-4 bg-gray-600 rounded w-3/4"></div>
-                            </div>
-                            <!-- Links Skeleton -->
-                            <div class="mt-4 space-y-2">
-                                <div class="h-8 bg-gray-600 rounded"></div>
-                                <div class="h-8 bg-gray-600 rounded"></div>
-                            </div>
-                        </div>
-                    </div>
-                ` : giveItems.length > 0 ? giveItems.map(giveItem => {
+                `).join('') : giveItems.length > 0 ? giveItems.map(giveItem => {
                     // Parse links from JSON
                     let links = [];
                     if (giveItem.links) {
@@ -225,7 +191,7 @@ class GiveList extends App {
                             </div>
                             
                             <!-- Content Section -->
-                            <div class="p-4 flex flex-col flex-grow">
+                            <div class="p-3 flex flex-col flex-grow">
                                 <div class="text-white flex-grow">
                                     <h3 class="text-lg font-bold mb-2 line-clamp-2 truncate" title="${giveItem.title || 'Payment Method'}">
                                         ${giveItem.title || 'Payment Method'}
