@@ -22,6 +22,28 @@ class SystemReportPage extends App {
         this.viewLogData = null;
     }
 
+    getHeaderCounts() {
+        const logs = this.get('logs') || [];
+        const total = logs.length;
+        let today = 0;
+        let thisWeek = 0;
+        let thisMonth = 0;
+        let uniqueUsers = new Set();
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekStart = new Date(todayStart.getTime() - (todayStart.getDay() * 24 * 60 * 60 * 1000));
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        
+        logs.forEach((log) => {
+            const logDate = new Date(log.created_at);
+            if (logDate >= todayStart) today += 1;
+            if (logDate >= weekStart) thisWeek += 1;
+            if (logDate >= monthStart) thisMonth += 1;
+            if (log.user_name) uniqueUsers.add(log.user_name);
+        });
+        return { total, today, thisWeek, thisMonth, uniqueUsers: uniqueUsers.size };
+    }
+
     connectedCallback() {
         super.connectedCallback();
         document.title = 'System Reports';
@@ -191,6 +213,93 @@ class SystemReportPage extends App {
         this.set('viewLogData', null);
     }
 
+    renderHeader() {
+        const c = this.getHeaderCounts();
+        return `
+            <div class="space-y-8 mb-4">
+                <div class="bg-slate-700 rounded-xl shadow-lg p-5 text-white">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-2xl sm:text-3xl font-bold">System Reports</h1>
+                                <button 
+                                    onclick="this.closest('app-system-report-page').loadData()"
+                                    class="size-8 mt-2 flex items-center justify-center text-white/90 hover:text-white transition-colors duration-200 hover:bg-white/10 rounded-lg group"
+                                    title="Refresh data">
+                                    <i class="fas fa-sync-alt text-lg ${this.get('loading') ? 'animate-spin' : ''} group-hover:scale-110 transition-transform duration-200"></i>
+                                </button>
+                            </div>
+                            <p class="text-blue-100 text-base sm:text-lg">Monitor system activity and user logs</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0">
+                            <div class="text-right">
+                                <div class="text-xl sm:text-2xl font-bold">${c.total}</div>
+                                <div class="text-blue-100 text-xs sm:text-sm">Total Logs</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-green-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-calendar-day text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.today}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Today</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-yellow-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-calendar-week text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.thisWeek}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">This Week</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-blue-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.thisMonth}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">This Month</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-purple-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-users text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.uniqueUsers}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Active Users</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-orange-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-chart-line text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.total}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Total</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     render() {
         const logs = this.get('logs');
         const loading = this.get('loading');
@@ -218,6 +327,8 @@ class SystemReportPage extends App {
         ];
         
         return `
+            ${this.renderHeader()}
+            
             <div class="bg-white rounded-lg shadow-lg p-4">
                 ${loading ? `
                     <!-- Simple Skeleton Loading -->
