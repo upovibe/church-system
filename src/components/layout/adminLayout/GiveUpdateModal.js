@@ -141,28 +141,6 @@ class GiveUpdateModal extends HTMLElement {
                 return;
             }
 
-            // Prepare form data for multipart request
-            const formData = new FormData();
-            
-            // Add all form fields
-            Object.keys(data).forEach(key => {
-                if (key === 'links') {
-                    formData.append(key, JSON.stringify(data[key]));
-                } else {
-                    formData.append(key, data[key]);
-                }
-            });
-            
-            // Add image file if selected
-            if (imageFileUpload && imageFileUpload.getFiles().length > 0) {
-                const files = imageFileUpload.getFiles();
-                // Filter out existing files (which are strings/paths) and only include new File objects
-                const newFiles = files.filter(file => file instanceof File);
-                newFiles.forEach(file => {
-                    formData.append('image', file, file.name);
-                });
-            }
-
             // Show loading toast
             Toast.show({
                 title: 'Updating Give Entry',
@@ -171,7 +149,7 @@ class GiveUpdateModal extends HTMLElement {
                 duration: 2000
             });
 
-            const response = await api.withToken(token).put(`/give/${this.giveData.id}`, formData);
+            const response = await api.withToken(token).put(`/give/${this.giveData.id}`, data);
 
             Toast.show({ 
                 title: 'Give Entry Updated!', 

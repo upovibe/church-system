@@ -130,32 +130,8 @@ class GiveController {
                 return;
             }
             
-            // Handle both JSON and multipart form data
-            $data = [];
-            if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
-                // Handle multipart form data
-                $data = $_POST;
-                
-                // Handle file upload if present
-                if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
-                    $uploadResult = $this->handleFileUpload($_FILES['image']);
-                    if ($uploadResult['success']) {
-                        $data['image'] = $uploadResult['filepath'];
-                        
-                        // Delete old image if new one is uploaded
-                        if ($existingGive['image']) {
-                            deleteGiveFile($existingGive['image']);
-                        }
-                    } else {
-                        http_response_code(400);
-                        echo json_encode(['success' => false, 'message' => $uploadResult['message']]);
-                        return;
-                    }
-                }
-            } else {
-                // Handle JSON data
-                $data = json_decode(file_get_contents('php://input'), true) ?: [];
-            }
+            // Handle JSON data for updates
+            $data = json_decode(file_get_contents('php://input'), true) ?: [];
             
             // Handle links JSON encoding
             if (isset($data['links']) && is_array($data['links'])) {
