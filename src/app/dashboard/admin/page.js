@@ -107,12 +107,43 @@ class AdminDashboardPage extends App {
                 return;
             }
 
-            // Get current user data
-            const userResponse = await api.withToken(token).get('/auth/me');
-            this.set('currentUser', userResponse.data);
+            // Try to get user data from stored data first
+            const stored = localStorage.getItem('userData');
+            let userId = null;
+            if (stored) {
+                try { 
+                    userId = JSON.parse(stored)?.id || null; 
+                } catch (_) { 
+                    userId = null; 
+                }
+            }
+
+            if (userId) {
+                // Try to get fresh user data
+                const resp = await api.withToken(token).get(`/users/${userId}/profile`).catch(() => null);
+                if (resp?.data) {
+                    this.set('currentUser', resp.data);
+                } else if (stored) {
+                    // Fallback to stored data
+                    try { 
+                        this.set('currentUser', JSON.parse(stored)); 
+                    } catch (_) {}
+                }
+            } else {
+                // Fallback to /auth/me endpoint
+                const userResponse = await api.withToken(token).get('/auth/me');
+                this.set('currentUser', userResponse.data);
+            }
             
         } catch (error) {
             console.error('❌ Error loading user data:', error);
+            // Try to use stored data as last resort
+            const stored = localStorage.getItem('userData');
+            if (stored) {
+                try { 
+                    this.set('currentUser', JSON.parse(stored)); 
+                } catch (_) {}
+            }
         }
     }
 
@@ -130,7 +161,15 @@ class AdminDashboardPage extends App {
         };
         const loading = this.get('loading');
         const currentUser = this.get('currentUser');
-        const userName = currentUser?.name || 'Admin';
+        const userName = (currentUser && (
+            currentUser.name ||
+            currentUser.full_name ||
+            (currentUser.first_name && currentUser.last_name ? `${currentUser.first_name} ${currentUser.last_name}` : null) ||
+            currentUser.username ||
+            currentUser.email ||
+            currentUser.displayName
+        )) || '';
+        const userLoading = !currentUser;
         
         return `
             <div class="space-y-6">
@@ -139,9 +178,16 @@ class AdminDashboardPage extends App {
                     <h1 class="text-2xl font-bold text-gray-900 mb-2">
                         Admin Dashboard
                     </h1>
-                    <p class="text-gray-600">
-                        Welcome <span class="font-semibold text-blue-600">${userName}</span> as an Admin. Here you can manage all aspects of the church.
-                    </p>
+                    ${userLoading ? `
+                        <!-- User Name Skeleton -->
+                        <div class="animate-pulse">
+                            <div class="h-5 bg-gray-200 rounded w-80 mb-1"></div>
+                        </div>
+                    ` : `
+                        <p class="text-gray-600">
+                            Welcome <span class="font-semibold text-blue-600">${userName}</span> as an Admin. Here you can manage all aspects of the church.
+                        </p>
+                    `}
                 </div>
 
                 ${loading ? `
