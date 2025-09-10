@@ -14,7 +14,7 @@ return [
         'username' => 'info@piwcfranklincitytn.org',
         'password' => 'Piwc@FC2025',
         'from_address' => 'info@piwcfranklincitytn.org',
-        'from_name' => 'PIWC-FC Contact Us',
+        'from_name' => 'PIWC-FC',
     ],
     'client_url' => 'http://localhost:8081',
     'api_url' => 'http://localhost:8081/api',
