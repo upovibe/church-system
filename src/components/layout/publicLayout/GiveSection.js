@@ -1,89 +1,151 @@
 import App from '@/core/App.js';
+import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
 
 /**
  * Give Section Component
  *
- * Displays give content with dynamic data from payment settings.
- * Accepts color theming and payment settings via attributes.
+ * Displays give content with banner, title, and content from page data.
+ * Accepts color theming via 'colors' attribute and page data.
  */
 class GiveSection extends App {
     constructor() {
         super();
-        this.state = {
-            paymentSettings: null
-        };
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.parseAttributes();
-        this.render();
+        this.loadDataFromProps();
     }
 
-    parseAttributes() {
+    // Helper method to get proper image URL
+    getImageUrl(imagePath) {
+        if (!imagePath) return null;
+        
+        // If it's already a full URL, return as is
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+        }
+        
+        // If it's a relative path starting with /, construct the full URL
+        if (imagePath.startsWith('/')) {
+            const baseUrl = window.location.origin;
+            return baseUrl + imagePath;
+        }
+        
+        // If it's a relative path without /, construct the URL
+        const baseUrl = window.location.origin;
+        const apiPath = '/api';
+        return baseUrl + apiPath + '/' + imagePath;
+    }
+
+    // Helper method to parse banner images from various formats
+    getBannerImages(pageData) {
+        if (!pageData || !pageData.banner_image) {
+            return [];
+        }
+
+        let bannerImages = pageData.banner_image;
+
+        // If it's a string, try to parse as JSON
+        if (typeof bannerImages === 'string') {
+            try {
+                const parsed = JSON.parse(bannerImages);
+                if (Array.isArray(parsed)) {
+                    bannerImages = parsed;
+                } else {
+                    bannerImages = [bannerImages];
+                }
+            } catch (e) {
+                // If parsing fails, treat as single path
+                bannerImages = [bannerImages];
+            }
+        } else if (!Array.isArray(bannerImages)) {
+            // If it's not an array, wrap in array
+            bannerImages = [bannerImages];
+        }
+
+        // Filter out empty/null values and return only the first image
+        const filteredImages = bannerImages.filter(img => img && img.trim() !== '');
+        return filteredImages.length > 0 ? [filteredImages[0]] : [];
+    }
+
+    loadDataFromProps() {
+        // Get data from props/attributes
         const colorsAttr = this.getAttribute('colors');
+        const pageDataAttr = this.getAttribute('page-data');
+
         if (colorsAttr) {
             try {
                 const colors = JSON.parse(colorsAttr);
                 Object.entries(colors).forEach(([key, value]) => {
                     this.set(key, value);
                 });
-            } catch (e) {
-                console.error('Failed to parse colors attribute:', e);
+            } catch (error) {
+                console.error('Error parsing colors:', error);
             }
         }
 
-        const paymentAttr = this.getAttribute('payment-settings');
-        if (paymentAttr) {
-            try {
-                this.state.paymentSettings = JSON.parse(paymentAttr);
-            } catch (e) {
-                console.error('Failed to parse payment-settings attribute:', e);
+        if (pageDataAttr) {
+            const pageData = unescapeJsonFromAttribute(pageDataAttr);
+            if (pageData) {
+                this.set('pageData', pageData);
             }
         }
+
+        // Render immediately with the data
+        this.render();
     }
 
     render() {
-        // Color settings from state
-        const primaryColor = this.get('primary_color', '#000000');
-        const accentColor = this.get('accent_color', '#d9d917');
+        // Get page data from state
+        const pageData = this.get('pageData') || {};
+        
+        // Get banner images
+        const bannerImages = this.getBannerImages(pageData) || [];
+        const showImages = bannerImages.length > 0;
 
-        // Payment settings from state
-        const settings = this.state.paymentSettings || {};
-        const title = settings.payment_title || 'Support Our Mission';
-        const description = settings.payment_description || 'Your generosity helps us make a difference in our community and beyond. Every gift, no matter the size, is a blessing!';
-        const paystackLink = settings.paystack_payment_link;
-        const stripeLink = settings.stripe_payment_link;
-        const bannerImage = settings.payment_banner_image ? `/api/${settings.payment_banner_image}` : '';
+        // Get title and subtitle from page data
+        const heroTitle = (pageData && pageData.title) ? pageData.title : 'Give to Our Church';
+        const heroSubtitle = (pageData && pageData.subtitle) ? pageData.subtitle : 'Supporting our ministry';
+
+        // Get colors from state
+        const primaryColor = this.get('primary_color');
+        const secondaryColor = this.get('secondary_color');
+        const accentColor = this.get('accent_color');
+        const textColor = this.get('text_color');
+        const darkColor = this.get('dark_color');
+        const hoverPrimary = this.get('hover_primary');
+        const hoverSecondary = this.get('hover_secondary');
+        const hoverAccent = this.get('hover_accent');
+
+        // Get content from page data
+        const content = pageData.content || '';
 
         return `
-            <section 
-                class="w-full bg-cover bg-center bg-no-repeat rounded-2xl shadow-xl mt-[10rem] mb-12 flex flex-col items-center"
-                style="background-image: url('${bannerImage}');">
-                <div class="w-full max-w-3xl mx-auto bg-white/90 rounded-2xl p-8 md:p-12 my-12">
-                    <div class="w-full text-center mb-8">
-                        <h1 class="text-3xl md:text-4xl font-bold mb-2" style="color: ${primaryColor}">${title}</h1>
-                        <p class="text-lg text-gray-700 mb-4">${description}</p>
+        <!-- Give Banner Section with Background -->
+        <div class="">
+            <div class="relative w-full h-[500px] lg:h-[45vh] overflow-hidden">
+                ${showImages ? bannerImages.map((img, idx) => `
+                    <div
+                         class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                         style="background-image: url('${this.getImageUrl(img)}'); transition-property: opacity;">
                     </div>
-                    <div class="w-full flex flex-col items-center mt-4">
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            ${paystackLink ? `
-                                <a href="${paystackLink}" target="_blank" rel="noopener noreferrer" class="px-8 py-3 rounded-xl text-lg font-bold shadow-lg text-white text-center" style="background: ${primaryColor};">
-                                    <i class="fas fa-credit-card mr-2"></i> Give with Paystack
-                                </a>
-                            ` : ''}
-                            ${stripeLink ? `
-                                <a href="${stripeLink}" target="_blank" rel="noopener noreferrer" class="px-8 py-3 rounded-xl text-lg font-bold shadow-lg text-white text-center" style="background: ${accentColor};">
-                                    <i class="fab fa-stripe-s mr-2"></i> Give with Stripe
-                                </a>
-                            ` : ''}
-                        </div>
-                        ${!paystackLink && !stripeLink ? `
-                            <p class="text-gray-500 mt-4">Online giving is not yet available. Please check back later.</p>
-                        ` : ''}
+                `).join('') : ''}
+                <!-- Dark gradient overlay from bottom to top -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
+                <!-- Content Overlay -->
+                <div class="absolute inset-0 flex items-center justify-start z-30 container mx-auto">
+                    <div class="text-left text-white px-4 lg:px-8 max-w-4xl space-y-6">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg pb-2 border-b-4 border-[${accentColor}] w-fit" style="line-height: 1.1">
+                            ${heroTitle}
+                        </h1>
+                        <p class="text-lg md:text-xl lg:text-2xl opacity-95 leading-relaxed drop-shadow-md">
+                            ${heroSubtitle}
+                        </p>
                     </div>
                 </div>
-            </section>
+            </div>
+        </div>
         `;
     }
 }

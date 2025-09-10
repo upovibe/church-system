@@ -3,7 +3,6 @@ import api from '@/services/api.js';
 import '@/components/common/PageLoader.js';
 import store from '@/core/store.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
-import { fetchPaymentSettings } from '@/utils/paymentSettings.js';
 import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/GiveSection.js';
@@ -18,12 +17,10 @@ class GivePage extends App {
     async loadAllData() {
         try {
             const colors = await fetchColorSettings();
-            const paymentSettings = await fetchPaymentSettings();
             const givePageData = await this.fetchPageData('give');
 
             const allData = {
                 colors,
-                paymentSettings,
                 page: givePageData
             };
 
@@ -71,13 +68,11 @@ class GivePage extends App {
         }
 
         const colorsData = escapeJsonForAttribute(allData.colors);
-        const paymentData = escapeJsonForAttribute(allData.paymentSettings);
 
         return `
             <div class="mx-auto">
                 <give-section 
                     colors='${colorsData}'
-                    payment-settings='${paymentData}'
                     page-data='${escapeJsonForAttribute(allData.page)}'>
                 </give-section>
             </div>

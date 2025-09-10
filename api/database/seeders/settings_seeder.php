@@ -74,12 +74,6 @@ class SettingsSeeder
             ['setting_key' => 'google_analytics', 'setting_value' => '', 'setting_type' => 'text', 'category' => 'general', 'description' => 'Google Analytics tracking code'],
             ['setting_key' => 'maintenance_mode', 'setting_value' => '0', 'setting_type' => 'boolean', 'category' => 'general', 'description' => 'Enable maintenance mode'],
             
-            // Payment Settings
-            ['setting_key' => 'payment_banner_image', 'setting_value' => 'uploads/settings/payment_banner_1753224113_688013b195189.png', 'setting_type' => 'file', 'category' => 'payment', 'description' => 'Payment page banner image'],
-            ['setting_key' => 'payment_title', 'setting_value' => 'Support Our Ministry', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Payment page title'],
-            ['setting_key' => 'payment_description', 'setting_value' => 'Your generous donations help us continue our mission and serve our community. Every contribution makes a difference.', 'setting_type' => 'textarea', 'category' => 'payment', 'description' => 'Payment page description'],
-            ['setting_key' => 'paystack_payment_link', 'setting_value' => 'https://paystack.com/pay/your-church-donations', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Paystack direct payment link'],
-            ['setting_key' => 'stripe_payment_link', 'setting_value' => 'https://buy.stripe.com/your-church-donations', 'setting_type' => 'text', 'category' => 'payment', 'description' => 'Stripe direct payment link'],
             
             // Service Times Settings
             ['setting_key' => 'service_times', 'setting_value' => json_encode([
