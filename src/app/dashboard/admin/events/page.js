@@ -30,6 +30,23 @@ class EventsPage extends App {
         this.deleteEventData = null;
     }
 
+    getHeaderCounts() {
+        const events = this.get('events') || [];
+        const total = events.length;
+        let active = 0;
+        let inactive = 0;
+        let upcoming = 0;
+        let past = 0;
+        const now = new Date();
+        events.forEach((event) => {
+            const isActive = Number(event.is_active) === 1;
+            if (isActive) active += 1; else inactive += 1;
+            const eventDate = new Date(event.event_date);
+            if (eventDate > now) upcoming += 1; else past += 1;
+        });
+        return { total, active, inactive, upcoming, past };
+    }
+
     connectedCallback() {
         super.connectedCallback();
         document.title = 'Events Management';
@@ -251,6 +268,93 @@ class EventsPage extends App {
         this.set('deleteEventData', null);
     }
 
+    renderHeader() {
+        const c = this.getHeaderCounts();
+        return `
+            <div class="space-y-8 mb-4">
+                <div class="bg-slate-700 rounded-xl shadow-lg p-5 text-white">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-2xl sm:text-3xl font-bold">Events</h1>
+                                <button 
+                                    onclick="this.closest('app-events-page').loadData()"
+                                    class="size-8 mt-2 flex items-center justify-center text-white/90 hover:text-white transition-colors duration-200 hover:bg-white/10 rounded-lg group"
+                                    title="Refresh data">
+                                    <i class="fas fa-sync-alt text-lg ${this.get('loading') ? 'animate-spin' : ''} group-hover:scale-110 transition-transform duration-200"></i>
+                                </button>
+                            </div>
+                            <p class="text-blue-100 text-base sm:text-lg">Manage church events and activities</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0">
+                            <div class="text-right">
+                                <div class="text-xl sm:text-2xl font-bold">${c.total}</div>
+                                <div class="text-blue-100 text-xs sm:text-sm">Total Events</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-green-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-check text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.active}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Active</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-yellow-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-pause-circle text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.inactive}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Inactive</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-blue-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-calendar-plus text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.upcoming}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Upcoming</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-purple-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-history text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.past}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Past</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-orange-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-calendar-alt text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.total}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Total</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     render() {
         const events = this.get('events');
         const loading = this.get('loading');
@@ -288,6 +392,8 @@ class EventsPage extends App {
         const safeTableColumns = JSON.stringify(tableColumns).replace(/"/g, '&quot;');
         
         return `
+            ${this.renderHeader()}
+            
             <div class="bg-white rounded-lg shadow-lg p-4">
                 ${loading ? `
                     <!-- Gallery Skeleton Loading -->

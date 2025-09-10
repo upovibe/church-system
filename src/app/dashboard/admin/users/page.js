@@ -255,7 +255,7 @@ class UsersPage extends App {
         const c = this.getHeaderCounts();
         return `
             <div class="space-y-8 mb-4">
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-5 text-white">
+                <div class="bg-slate-700 rounded-xl shadow-lg p-5 text-white">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
                         <div>
                             <div class="flex items-center gap-2">
