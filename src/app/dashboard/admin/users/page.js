@@ -38,6 +38,20 @@ class UsersPage extends App {
         this.deleteUserData = null;
     }
 
+    getHeaderCounts() {
+        const users = this.get('users') || [];
+        const total = users.length;
+        let active = 0;
+        let inactive = 0;
+        const roleSet = new Set();
+        users.forEach((user) => {
+            const isActive = String(user.status || '').toLowerCase() === 'active' || Number(user.is_active) === 1;
+            if (isActive) active += 1; else inactive += 1;
+            if (user.role) roleSet.add(String(user.role));
+        });
+        return { total, active, inactive, roles: roleSet.size };
+    }
+
     connectedCallback() {
         super.connectedCallback();
         document.title = 'Users Management';
@@ -237,6 +251,82 @@ class UsersPage extends App {
         this.set('deleteUserData', null);
     }
 
+    renderHeader() {
+        const c = this.getHeaderCounts();
+        return `
+            <div class="space-y-8 mb-4">
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-5 text-white">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-2xl sm:text-3xl font-bold">Users</h1>
+                                <button 
+                                    onclick="this.closest('app-users-page').loadData()"
+                                    class="size-8 mt-2 flex items-center justify-center text-white/90 hover:text-white transition-colors duration-200 hover:bg-white/10 rounded-lg group"
+                                    title="Refresh data">
+                                    <i class="fas fa-sync-alt text-lg ${this.get('loading') ? 'animate-spin' : ''} group-hover:scale-110 transition-transform duration-200"></i>
+                                </button>
+                            </div>
+                            <p class="text-blue-100 text-base sm:text-lg">Manage user accounts and permissions</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0">
+                            <div class="text-right">
+                                <div class="text-xl sm:text-2xl font-bold">${c.total}</div>
+                                <div class="text-blue-100 text-xs sm:text-sm">Total Users</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-green-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-check text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.active}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Active</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-yellow-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-pause-circle text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.inactive}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Inactive</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-blue-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-user-tag text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.roles}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Roles</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
+                            <div class="flex items-center">
+                                <div class="size-10 flex items-center justify-center bg-purple-500 rounded-lg mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-users text-white text-lg sm:text-xl"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-xl sm:text-2xl font-bold">${c.total}</div>
+                                    <div class="text-blue-100 text-xs sm:text-sm">Total</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     render() {
         const users = this.get('users');
         const loading = this.get('loading');
@@ -267,6 +357,8 @@ class UsersPage extends App {
         ];
         
         return `
+            ${this.renderHeader()}
+            
             <div class="bg-white rounded-lg shadow-lg p-4">
                 ${loading ? `
                     <!-- Simple Skeleton Loading -->
