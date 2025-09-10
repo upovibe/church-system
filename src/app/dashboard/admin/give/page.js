@@ -6,6 +6,7 @@ import '@/components/ui/Skeleton.js';
 import '@/components/layout/adminLayout/GiveSettingsModal.js';
 import '@/components/layout/adminLayout/GiveUpdateModal.js';
 import '@/components/layout/adminLayout/GiveViewModal.js';
+import '@/components/layout/adminLayout/GiveDeleteDialog.js';
 import api from '@/services/api.js';
 
 /**
@@ -21,8 +22,10 @@ class GivePage extends App {
         this.showAddModal = false;
         this.showUpdateModal = false;
         this.showViewModal = false;
+        this.showDeleteDialog = false;
         this.updateGiveData = null;
         this.viewGiveData = null;
+        this.deleteGiveData = null;
         
         // Initialize state properly
         this.set('giveEntries', null);
@@ -30,8 +33,10 @@ class GivePage extends App {
         this.set('showAddModal', false);
         this.set('showUpdateModal', false);
         this.set('showViewModal', false);
+        this.set('showDeleteDialog', false);
         this.set('updateGiveData', null);
         this.set('viewGiveData', null);
+        this.set('deleteGiveData', null);
     }
 
     connectedCallback() {
@@ -75,6 +80,18 @@ class GivePage extends App {
             } else {
                 this.loadData();
             }
+        });
+        
+        this.addEventListener('give-deleted', (event) => {
+            // Remove the deleted give entry from the current data
+            const deletedGiveId = event.detail.giveId;
+            const currentGiveEntries = this.get('giveEntries') || [];
+            const updatedGiveEntries = currentGiveEntries.filter(giveEntry => giveEntry.id !== deletedGiveId);
+            this.set('giveEntries', updatedGiveEntries);
+            this.updateTableData();
+            
+            // Close the delete dialog
+            this.set('showDeleteDialog', false);
         });
     }
 
@@ -147,10 +164,15 @@ class GivePage extends App {
         const { detail } = event;
         const deleteGiveEntry = this.get('giveEntries').find(giveEntry => giveEntry.id === detail.row.id);
         if (deleteGiveEntry) {
-            // For now, just show an alert - dialogs will be added later
-            if (confirm(`Are you sure you want to delete "${deleteGiveEntry.title}"?`)) {
-                this.deleteGiveEntry(deleteGiveEntry.id);
-            }
+            this.closeAllModals();
+            this.set('deleteGiveData', deleteGiveEntry);
+            this.set('showDeleteDialog', true);
+            setTimeout(() => {
+                const deleteDialog = this.querySelector('give-delete-dialog');
+                if (deleteDialog) {
+                    deleteDialog.setGiveData(deleteGiveEntry);
+                }
+            }, 0);
         }
     }
 
@@ -163,40 +185,16 @@ class GivePage extends App {
         this.loadData();
     }
 
-    async deleteGiveEntry(giveId) {
-        try {
-            const token = localStorage.getItem('token');
-            await api.withToken(token).delete(`/give/${giveId}`);
-            
-            Toast.show({
-                title: 'Success',
-                message: 'Give entry deleted successfully',
-                variant: 'success',
-                duration: 3000
-            });
-            
-            // Refresh data
-            this.loadData();
-            
-        } catch (error) {
-            console.error('❌ Error deleting give entry:', error);
-            
-            Toast.show({
-                title: 'Error',
-                message: error.response?.data?.message || 'Failed to delete give entry',
-                variant: 'error',
-                duration: 3000
-            });
-        }
-    }
 
     // Close all modals and dialogs
     closeAllModals() {
         this.set('showAddModal', false);
         this.set('showUpdateModal', false);
         this.set('showViewModal', false);
+        this.set('showDeleteDialog', false);
         this.set('updateGiveData', null);
         this.set('viewGiveData', null);
+        this.set('deleteGiveData', null);
     }
 
     // Update table data without full page reload
@@ -231,6 +229,7 @@ class GivePage extends App {
         const showAddModal = this.get('showAddModal');
         const showUpdateModal = this.get('showUpdateModal');
         const showViewModal = this.get('showViewModal');
+        const showDeleteDialog = this.get('showDeleteDialog');
         
         const giveTableData = giveEntries ? giveEntries.map((giveEntry, index) => ({
             id: giveEntry.id,
@@ -287,10 +286,11 @@ class GivePage extends App {
                 `}
             </div>
             
-            <!-- Give Modals -->
+            <!-- Give Modals and Dialogs -->
             <give-settings-modal ${showAddModal ? 'open' : ''}></give-settings-modal>
             <give-update-modal ${showUpdateModal ? 'open' : ''}></give-update-modal>
             <give-view-modal ${showViewModal ? 'open' : ''}></give-view-modal>
+            <give-delete-dialog ${showDeleteDialog ? 'open' : ''}></give-delete-dialog>
         `;
     }
 }
