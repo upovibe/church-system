@@ -222,7 +222,7 @@ class HighlightsSection extends App {
                                 </div>
                             </div>
                         </div>`
-                            : ''
+                            : testimonialBanner
                             ? `<img src="/api/${testimonialBanner}" alt="Testimonial Banner" class="w-full h-full object-cover rounded-xl max-h-72">`
                             : `
                         <div class='flex items-center justify-center w-full h-full bg-[${accentColor}] rounded-xl min-h-[18rem]'>
