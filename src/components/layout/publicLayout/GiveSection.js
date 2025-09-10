@@ -1,5 +1,6 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
+import GiveList from './GiveList.js';
 
 /**
  * Give Section Component
@@ -118,9 +119,6 @@ class GiveSection extends App {
         const hoverSecondary = this.get('hover_secondary');
         const hoverAccent = this.get('hover_accent');
 
-        // Get content from page data
-        const content = pageData.content || '';
-
         return `
         <!-- Give Banner Section with Background -->
         <div class="">
@@ -145,6 +143,12 @@ class GiveSection extends App {
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Give Content Section -->
+        <div class="container mx-auto px-4 py-12">
+            <!-- Give List Component -->
+            <give-list></give-list>
         </div>
         `;
     }
