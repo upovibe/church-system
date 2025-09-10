@@ -333,6 +333,11 @@ class DashboardLayout extends App {
               icon: 'fas fa-video',
               href: '/dashboard/admin/video-galleries',
             },
+            {
+              label: 'Give',
+              icon: 'fas fa-donate',
+              href: '/dashboard/admin/give',
+            },
           ],
         },
         {
