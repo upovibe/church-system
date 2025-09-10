@@ -137,7 +137,7 @@ class GiveList extends App {
 
         return `
             <!-- Give Items Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-min" id="give-list">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6" style="grid-auto-rows: min-content;" id="give-list">
                 ${loading ? `
                     <!-- Loading Skeleton -->
                     <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-6 animate-pulse">
@@ -204,7 +204,7 @@ class GiveList extends App {
                     }
 
                     return `
-                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 give-card flex flex-col" 
+                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 give-card flex flex-col h-fit" 
                              data-title="${giveItem.title || 'Payment Method'}">
                             
                             <!-- Image Section -->
