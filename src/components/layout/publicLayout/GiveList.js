@@ -137,8 +137,8 @@ class GiveList extends App {
 
         return `
             <!-- Give Items Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" style="grid-auto-rows: min-content;" id="give-list">
-                ${loading ? Array(4).fill(`
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" style="grid-auto-rows: min-content;" id="give-list">
+                ${loading ? Array(5).fill(`
                     <!-- Loading Skeleton -->
                     <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-3 animate-pulse">
                         <div class="flex flex-col">
