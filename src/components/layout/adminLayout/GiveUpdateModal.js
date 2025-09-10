@@ -60,6 +60,14 @@ class GiveUpdateModal extends HTMLElement {
         this.giveData = data;
         this.links = (data && data.links && data.links.length > 0) ? [...data.links] : [''];
         this.render();
+        
+        // Set the image value in the file upload component after render
+        setTimeout(() => {
+            const imageFileUpload = this.querySelector('ui-file-upload[data-field="image"]');
+            if (imageFileUpload && data.image) {
+                imageFileUpload.setValue(data.image);
+            }
+        }, 100);
     }
 
     open() {
@@ -223,19 +231,13 @@ class GiveUpdateModal extends HTMLElement {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">QR Code Image</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Image or QR Code Image</label>
                         <ui-file-upload 
                             data-field="image"
                             accept="image/*"
                             multiple="false"
                             class="w-full">
                         </ui-file-upload>
-                        <p class="text-xs text-gray-500 mt-1">Upload new QR code image to replace existing one</p>
-                        ${this.giveData.image ? `
-                            <div class="mt-2 p-2 bg-gray-50 rounded text-xs text-gray-600">
-                                Current image: ${this.giveData.image}
-                            </div>
-                        ` : ''}
                     </div>
 
                     <div>
