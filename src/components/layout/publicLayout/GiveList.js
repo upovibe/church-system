@@ -137,10 +137,10 @@ class GiveList extends App {
 
         return `
             <!-- Give Items Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6" style="grid-auto-rows: min-content;" id="give-list">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" style="grid-auto-rows: min-content;" id="give-list">
                 ${loading ? `
                     <!-- Loading Skeleton -->
-                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-6 animate-pulse">
+                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-3 animate-pulse">
                         <div class="flex flex-col">
                             <!-- Image Skeleton -->
                             <div class="w-full h-32 bg-gray-600 rounded-xl mb-4"></div>
@@ -157,7 +157,7 @@ class GiveList extends App {
                             </div>
                         </div>
                     </div>
-                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-6 animate-pulse">
+                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-3 animate-pulse">
                         <div class="flex flex-col">
                             <!-- Image Skeleton -->
                             <div class="w-full h-32 bg-gray-600 rounded-xl mb-4"></div>
@@ -174,7 +174,7 @@ class GiveList extends App {
                             </div>
                         </div>
                     </div>
-                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-6 animate-pulse">
+                    <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-3 animate-pulse">
                         <div class="flex flex-col">
                             <!-- Image Skeleton -->
                             <div class="w-full h-32 bg-gray-600 rounded-xl mb-4"></div>
@@ -227,10 +227,10 @@ class GiveList extends App {
                             <!-- Content Section -->
                             <div class="p-4 flex flex-col flex-grow">
                                 <div class="text-white flex-grow">
-                                    <h3 class="text-lg font-bold mb-2 line-clamp-2" title="${giveItem.title || 'Payment Method'}">
+                                    <h3 class="text-lg font-bold mb-2 line-clamp-2 truncate" title="${giveItem.title || 'Payment Method'}">
                                         ${giveItem.title || 'Payment Method'}
                                     </h3>
-                                    <p class="text-sm leading-relaxed mb-4 line-clamp-3 text-gray-300">
+                                    <p class="text-sm leading-relaxed mb-4 line-clamp-3 text-gray-300 truncate">
                                         ${this.truncateText(giveItem.text || 'No description available', 100)}
                                     </p>
                                 </div>
