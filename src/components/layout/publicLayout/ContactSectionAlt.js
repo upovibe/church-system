@@ -92,35 +92,73 @@ class ContactSectionAlt extends App {
             const messageInput = this.querySelector('ui-textarea[name="message"]');
 
             const formData = {
-                name: nameInput ? nameInput.value : '',
-                email: emailInput ? emailInput.value : '',
-                subject: subjectInput ? subjectInput.value : '',
-                message: messageInput ? messageInput.value : ''
+                name: nameInput ? nameInput.value.trim() : '',
+                email: emailInput ? emailInput.value.trim() : '',
+                subject: subjectInput ? subjectInput.value.trim() : '',
+                message: messageInput ? messageInput.value.trim() : ''
             };
+            
+            // Validate required fields
+            if (!formData.name || !formData.email || !formData.message) {
+                Toast.show({
+                    title: 'Validation Error',
+                    message: 'Please fill in all required fields (Name, Email, and Message).',
+                    variant: 'error',
+                    duration: 4000
+                });
+                return;
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                Toast.show({
+                    title: 'Invalid Email',
+                    message: 'Please enter a valid email address.',
+                    variant: 'error',
+                    duration: 4000
+                });
+                return;
+            }
             
             // Log form data
             console.log('Contact form data:', formData);
             
-            Toast.show({
-                title: 'Success',
-                message: 'Thank you for your message! We\'ll get back to you soon.',
-                variant: 'success',
-                duration: 5000
+            // Send to API
+            const response = await fetch('/api/contact/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
             });
 
-            // Reset form inputs
-            if (nameInput) nameInput.value = '';
-            if (emailInput) emailInput.value = '';
-            if (subjectInput) subjectInput.value = '';
-            if (messageInput) messageInput.value = '';
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                Toast.show({
+                    title: 'Success',
+                    message: result.message || 'Thank you for your message! We\'ll get back to you soon.',
+                    variant: 'success',
+                    duration: 5000
+                });
+
+                // Reset form inputs
+                if (nameInput) nameInput.value = '';
+                if (emailInput) emailInput.value = '';
+                if (subjectInput) subjectInput.value = '';
+                if (messageInput) messageInput.value = '';
+            } else {
+                throw new Error(result.message || 'Failed to send message');
+            }
 
         } catch (error) {
             console.error('Error submitting contact form:', error);
             Toast.show({
                 title: 'Error',
-                message: 'Failed to send message. Please try again.',
+                message: error.message || 'Failed to send message. Please try again.',
                 variant: 'error',
-                duration: 3000
+                duration: 4000
             });
         } finally {
             this.set('loading', false);

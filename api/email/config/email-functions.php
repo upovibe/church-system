@@ -24,6 +24,12 @@ return [
         'subject' => 'Your Account Has Been Updated - PIWC Franklin City',
         'template' => 'account-update',
         'variables' => ['userName', 'changes', 'oldEmail']
+    ],
+    
+    'contact-form' => [
+        'subject' => 'New Contact Form Submission - PIWC Franklin City',
+        'template' => 'contact-form',
+        'variables' => ['name', 'email', 'phone', 'message', 'submissionDate']
     ]
 ]; 
 
