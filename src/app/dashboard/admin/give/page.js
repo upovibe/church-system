@@ -5,6 +5,7 @@ import '@/components/ui/Toast.js';
 import '@/components/ui/Skeleton.js';
 import '@/components/layout/adminLayout/GiveSettingsModal.js';
 import '@/components/layout/adminLayout/GiveUpdateModal.js';
+import '@/components/layout/adminLayout/GiveViewModal.js';
 import api from '@/services/api.js';
 
 /**
@@ -19,14 +20,18 @@ class GivePage extends App {
         this.loading = true;
         this.showAddModal = false;
         this.showUpdateModal = false;
+        this.showViewModal = false;
         this.updateGiveData = null;
+        this.viewGiveData = null;
         
         // Initialize state properly
         this.set('giveEntries', null);
         this.set('loading', true);
         this.set('showAddModal', false);
         this.set('showUpdateModal', false);
+        this.set('showViewModal', false);
         this.set('updateGiveData', null);
+        this.set('viewGiveData', null);
     }
 
     connectedCallback() {
@@ -110,8 +115,15 @@ class GivePage extends App {
         const { detail } = event;
         const viewGiveEntry = this.get('giveEntries').find(giveEntry => giveEntry.id === detail.row.id);
         if (viewGiveEntry) {
-            // For now, just show an alert - modals will be added later
-            alert(`View Give Entry: ${viewGiveEntry.title}\n\nDescription: ${viewGiveEntry.text}\n\nStatus: ${viewGiveEntry.is_active ? 'Active' : 'Inactive'}`);
+            this.closeAllModals();
+            this.set('viewGiveData', viewGiveEntry);
+            this.set('showViewModal', true);
+            setTimeout(() => {
+                const viewModal = this.querySelector('give-view-modal');
+                if (viewModal) {
+                    viewModal.setGiveData(viewGiveEntry);
+                }
+            }, 0);
         }
     }
 
@@ -182,7 +194,9 @@ class GivePage extends App {
     closeAllModals() {
         this.set('showAddModal', false);
         this.set('showUpdateModal', false);
+        this.set('showViewModal', false);
         this.set('updateGiveData', null);
+        this.set('viewGiveData', null);
     }
 
     // Update table data without full page reload
@@ -216,6 +230,7 @@ class GivePage extends App {
         const loading = this.get('loading');
         const showAddModal = this.get('showAddModal');
         const showUpdateModal = this.get('showUpdateModal');
+        const showViewModal = this.get('showViewModal');
         
         const giveTableData = giveEntries ? giveEntries.map((giveEntry, index) => ({
             id: giveEntry.id,
@@ -275,6 +290,7 @@ class GivePage extends App {
             <!-- Give Modals -->
             <give-settings-modal ${showAddModal ? 'open' : ''}></give-settings-modal>
             <give-update-modal ${showUpdateModal ? 'open' : ''}></give-update-modal>
+            <give-view-modal ${showViewModal ? 'open' : ''}></give-view-modal>
         `;
     }
 }
