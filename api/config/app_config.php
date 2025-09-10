@@ -31,12 +31,4 @@ return [
 
 // cd church-system; php api/index.php --seed       # Add default data
 
-// 'mail' => [
-//     'host' => 'smtp.gmail.com',
-//     'port' => 465,
-//     'encryption' => 'ssl',
-//     'username' => 'uzorpromise11@gmail.com',
-//     'password' => 'yuwr xfnm bqrg fjof',
-//     'from_address' => 'noreply@churchsystem.com',
-//     'from_name' => 'Church System',
-// ],
+// cd church-system; php api/index.php --email:test@example.com   # Test email
