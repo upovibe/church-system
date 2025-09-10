@@ -350,7 +350,7 @@ class ContactSectionAlt extends App {
                             </div>
                         </div>
                         <!-- Contact Form -->
-                        <div class="bg-white rounded-[2rem] p-6">
+                        <div class="bg-white rounded-[2rem] p-6 h-fit">
                             <h2 class="text-2xl font-bold text-[${primaryColor}] mb-6">Send us a Message</h2>
                             <form class="space-y-6">
                                 <!-- Name -->
