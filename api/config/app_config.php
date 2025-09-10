@@ -8,13 +8,13 @@ return [
         'pass' => '',          // Change to your DB password
     ],
     'mail' => [
-        'host' => 'smtp.gmail.com',
+        'host' => 'mboxhosting.com',
         'port' => 465,
         'encryption' => 'ssl',
-        'username' => 'uzorpromise11@gmail.com',
-        'password' => 'yuwr xfnm bqrg fjof',
-        'from_address' => 'noreply@churchsystem.com',
-        'from_name' => 'Church System',
+        'username' => 'info@piwcfranklincitytn.org',
+        'password' => 'Piwc@FC2025',
+        'from_address' => 'info@piwcfranklincitytn.org',
+        'from_name' => 'PIWC-FC Contact Us',
     ],
     'client_url' => 'http://localhost:8081',
     'api_url' => 'http://localhost:8081/api',
@@ -30,3 +30,13 @@ return [
 // cd church-system; php api/index.php --migrate    # Create tables
 
 // cd church-system; php api/index.php --seed       # Add default data
+
+// 'mail' => [
+//     'host' => 'smtp.gmail.com',
+//     'port' => 465,
+//     'encryption' => 'ssl',
+//     'username' => 'uzorpromise11@gmail.com',
+//     'password' => 'yuwr xfnm bqrg fjof',
+//     'from_address' => 'noreply@churchsystem.com',
+//     'from_name' => 'Church System',
+// ],
