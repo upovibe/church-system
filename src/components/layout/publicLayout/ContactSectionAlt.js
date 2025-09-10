@@ -86,16 +86,8 @@ class ContactSectionAlt extends App {
             this.handleSubmit();
         });
 
-        // Add real-time debugging for input changes and capture values
+        // Capture form values in real-time
         this.addEventListener('input', (e) => {
-            console.log('Input event:', {
-                target: e.target.tagName,
-                id: e.target.id,
-                name: e.target.name,
-                value: e.target.value
-            });
-            
-            // Capture values in real-time
             if (e.target.id === 'name' || e.target.name === 'name') {
                 this.formValues.name = e.target.value;
             } else if (e.target.id === 'email' || e.target.name === 'email') {
@@ -112,9 +104,6 @@ class ContactSectionAlt extends App {
         try {
             this.set('loading', true);
             
-            // Add a small delay to ensure all elements are fully rendered
-            await new Promise(resolve => setTimeout(resolve, 200));
-            
             // Use the captured form values
             const formData = {
                 name: this.formValues.name.trim(),
@@ -122,10 +111,6 @@ class ContactSectionAlt extends App {
                 subject: this.formValues.subject.trim(),
                 message: this.formValues.message.trim()
             };
-            
-            // Debug: Check the captured form values
-            console.log('Captured form values:', this.formValues);
-            console.log('Final form data before validation:', formData);
             
             // Validate required fields
             if (!formData.name || !formData.email || !formData.message) {
@@ -149,9 +134,6 @@ class ContactSectionAlt extends App {
                 });
                 return;
             }
-            
-            // Log form data
-            console.log('Contact form data:', formData);
             
             // Send to API
             const response = await fetch('/api/contact/submit', {
