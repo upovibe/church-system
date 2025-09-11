@@ -141,16 +141,26 @@ class GiveSection extends App {
                         <p class="text-lg md:text-xl lg:text-2xl opacity-95 leading-relaxed drop-shadow-md">
                             ${heroSubtitle}
                         </p>
+                        
+                        <!-- Mouse Scroll Indicator -->
+                        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+                            <div class="flex flex-col items-center text-white cursor-pointer group" onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
+                                <div class="w-6 h-10 border-2 border-white rounded-full flex justify-center transition-all duration-300 group-hover:scale-110 group-hover:border-[${accentColor}]">
+                                    <div class="w-1.5 h-3 bg-white rounded-full mt-2 animate-bounce transition-all duration-300 group-hover:bg-[${accentColor}]"></div>
+                                </div>
+                                <span class="text-sm mt-3 opacity-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105 font-medium">Scroll</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
         <!-- Give Content Section -->
-        <div class="container mx-auto px-4 py-12 mb-20">
+        <div id="give-list-section" class="container mx-auto px-4 py-12 mb-20">
             <!-- Content Display -->
             ${pageData.content ? `
-                <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-8">
+                <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-20">
                     <div class="p-5 lg:p-12">
                         <content-display 
                             content="${pageData.content.replace(/"/g, '&quot;')}"
