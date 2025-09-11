@@ -147,6 +147,18 @@ class GiveSection extends App {
         
         <!-- Give Content Section -->
         <div class="container mx-auto px-4 py-12">
+            <!-- Content Display -->
+            ${pageData.content ? `
+                <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-8">
+                    <div class="p-5 lg:p-12">
+                        <content-display 
+                            content="${pageData.content.replace(/"/g, '&quot;')}"
+                            no-styles>
+                        </content-display>
+                    </div>
+                </div>
+            ` : ''}
+            
             <!-- Give List Component -->
             <give-list></give-list>
         </div>
