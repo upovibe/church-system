@@ -1,6 +1,7 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
-import GiveList from './GiveList.js';
+import '@/components/layout/publicLayout/GiveList.js';
+import '@/components/ui/ContentDisplay.js';
 
 /**
  * Give Section Component
@@ -146,7 +147,7 @@ class GiveSection extends App {
         </div>
         
         <!-- Give Content Section -->
-        <div class="container mx-auto px-4 py-12">
+        <div class="container mx-auto px-4 py-12 mb-20">
             <!-- Content Display -->
             ${pageData.content ? `
                 <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-8">
