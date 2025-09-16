@@ -5,6 +5,7 @@ import '@/components/ui/Textarea.js';
 import '@/components/ui/Dropdown.js';
 import '@/components/ui/Switch.js';
 import '@/components/ui/FileUpload.js';
+import '@/components/ui/Wysiwyg.js';
 import api from '@/services/api.js';
 
 /**
@@ -59,6 +60,7 @@ class EventSettingsModal extends HTMLElement {
             // Get form data using the data-field attributes for reliable selection
             const titleInput = this.querySelector('ui-input[data-field="title"]');
             const descriptionTextarea = this.querySelector('ui-textarea[data-field="description"]');
+            const contentWysiwyg = this.querySelector('ui-wysiwyg[data-field="content"]');
             const locationInput = this.querySelector('ui-input[data-field="location"]');
             const startDateInput = this.querySelector('ui-input[data-field="start_date"]');
             const endDateInput = this.querySelector('ui-input[data-field="end_date"]');
@@ -71,6 +73,7 @@ class EventSettingsModal extends HTMLElement {
             const eventData = {
                 title: titleInput ? titleInput.value : '',
                 description: descriptionTextarea ? descriptionTextarea.value : '',
+                content: contentWysiwyg ? contentWysiwyg.value : '',
                 category: categoryDropdown ? categoryDropdown.value : '',
                 status: statusDropdown ? statusDropdown.value : '',
                 start_date: startDateInput ? startDateInput.value : '',
@@ -226,6 +229,15 @@ class EventSettingsModal extends HTMLElement {
                                 rows="4"
                                 class="w-full">
                             </ui-textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                            <ui-wysiwyg 
+                                data-field="content"
+                                placeholder="Enter detailed event content"
+                                class="w-full">
+                            </ui-wysiwyg>
                         </div>
 
                         <div>

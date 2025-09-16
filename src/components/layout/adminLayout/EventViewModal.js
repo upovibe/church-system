@@ -217,6 +217,22 @@ class EventViewModal extends HTMLElement {
                             </div>
                         </div>
 
+                        <!-- Content -->
+                        <div class="border-b pb-4">
+                            <h4 class="text-md font-semibold text-gray-800 mb-3">Content</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                ${this.eventData.content ? `
+                                    <content-display 
+                                        content="${this.eventData.content.replace(/"/g, '&quot;')}"
+                                        max-height="300px"
+                                        allow-html>
+                                    </content-display>
+                                ` : `
+                                    <p class="text-gray-500 italic">No content available</p>
+                                `}
+                            </div>
+                        </div>
+
                         <!-- Timestamps -->
                         <div>
                             <div class="flex items-center gap-2 mb-3">
