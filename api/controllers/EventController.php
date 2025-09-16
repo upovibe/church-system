@@ -289,17 +289,8 @@ class EventController {
                 return;
             }
             
-            // Handle multipart form data or JSON data for PUT/PATCH requests
-            $data = [];
-            $content_type = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-
-            if (strpos($content_type, 'multipart/form-data') !== false) {
-                $data = $_POST;
-            } else {
-                // Fall back to JSON
-                $rawData = file_get_contents('php://input');
-                $data = json_decode($rawData, true) ?? [];
-            }
+            // Handle JSON data for PUT/PATCH requests (like testimonials)
+            $data = $_POST ?: json_decode(file_get_contents('php://input'), true) ?: [];
             
             // Convert date formats (handle multiple formats) - only if dates are provided
             if (isset($data['start_date']) && !empty($data['start_date'])) {
@@ -348,11 +339,8 @@ class EventController {
                 $data['slug'] = ensureUniqueSlug($this->pdo, $generatedSlug, 'events', 'slug', $id);
             }
             
-            // Handle banner upload if present
-            if (!empty($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
-                $bannerData = uploadEventBanner($_FILES['banner']);
-                $data['banner_image'] = $bannerData['original'];
-            }
+            // Note: Banner upload handling removed for JSON-based updates
+            // File uploads would need to be handled separately if needed
             
             // Ensure all fields are included in the update (even null values)
             // Convert null strings to actual null for database
@@ -362,7 +350,7 @@ class EventController {
                 }
             }
             
-            $result = $this->eventModel->updateEvent($id, $data);
+            $result = $this->eventModel->update($id, $data);
             
             if ($result) {
                 // Get the updated event data
