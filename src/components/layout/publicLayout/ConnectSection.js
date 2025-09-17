@@ -75,14 +75,26 @@ class ConnectSection extends App {
             <div class="container mx-auto bg-slate-400 rounded-2xl shadow-2xl p-8 py-20 backdrop-blur-sm bg-opacity-95">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
                     <!-- Left: Title and Subtitle -->
-                    <div class="flex flex-col justify-center mb-auto space-y-1">
-                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold  text-[${textColor}] ">${
+                    <div class="flex flex-col justify-center mb-auto space-y-6">
+                        <div class="space-y-4">
+                            <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold  text-[${textColor}] ">${
       pageData.title || 'Connect With Us'
     }</h2>
-                        <p class="text-2xl text-[${textColor}]/80 leading-relaxed px-2">${
+                            <p class="text-2xl text-[${textColor}]/80 leading-relaxed px-2">${
       pageData.subtitle ||
       'Join our community and be part of something meaningful. Connect with us through various channels and get involved in our ministries.'
     }</p>
+                        </div>
+                        
+                        <!-- Simple Glowing Contact Button -->
+                        <div class="flex justify-center lg:justify-start">
+                            <a href="/public/contact" 
+                               class="inline-flex items-center px-6 py-3 text-white font-semibold rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105"
+                               style="background: linear-gradient(135deg, ${primaryColor}, ${accentColor}); box-shadow: 0 0 20px ${primaryColor}60;">
+                                <i class="fas fa-envelope mr-2"></i>
+                                Contact Us
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Right: Banner Images in Cards -->
