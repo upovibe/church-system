@@ -271,9 +271,8 @@ class LifeGroupList extends App {
                     const truncatedContent = this.truncateText(contentPreview, 120);
 
                     return `
-                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer life-group-card overflow-hidden p-5" 
-                             data-title="${lifeGroup.title || 'Untitled Life Group'}"
-                             onclick="this.closest('life-group-list').openLifeGroupPage('${lifeGroup.slug || lifeGroup.id}')">
+                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 life-group-card overflow-hidden p-5" 
+                             data-title="${lifeGroup.title || 'Untitled Life Group'}">
                             
                             <!-- Image Section -->
                             <div class="h-48 relative overflow-hidden">
