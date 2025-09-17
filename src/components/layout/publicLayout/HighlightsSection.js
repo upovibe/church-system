@@ -194,7 +194,7 @@ class HighlightsSection extends App {
                             <p class="text-base sm:text-lg md:text-xl lg:text-2xl italic text-[${textColor}]/90" id="testimonial-description" style="display: ${
       this.isNavigating ? 'none' : 'block'
     }">"${
-      testimonial.meta_description || 'No testimonial available.'
+      testimonial.subtitle || 'No testimonial available.'
     }"</p>                        
                         </div>
                             <div class="flex gap-4 mt-8">
