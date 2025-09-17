@@ -104,39 +104,16 @@ class MinistryDeleteDialog extends HTMLElement {
         this.innerHTML = `
             <ui-dialog 
                 ${this.hasAttribute('open') ? 'open' : ''} 
-                title="Delete Ministry" 
+                title="Confirm Delete" 
                 position="center"
                 variant="danger">
                 <div slot="content">
-                    <div class="space-y-4">
-                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-exclamation-triangle text-red-400 text-xl"></i>
-                                </div>
-                                <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-red-800">
-                                        Are you sure you want to delete this ministry?
-                                    </h3>
-                                    <div class="mt-2 text-sm text-red-700">
-                                        <p>This action cannot be undone. The ministry will be permanently removed from the system.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-church text-gray-400 text-lg"></i>
-                                </div>
-                                <div class="ml-3">
-                                    <h4 class="text-sm font-medium text-gray-900">Ministry to be deleted:</h4>
-                                    <p class="text-sm text-gray-600 font-semibold">${ministryName}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-gray-700 mb-4">
+                        Are you sure you want to delete the ministry "<strong>${ministryName}</strong>"?
+                    </p>
+                    <p class="text-sm text-gray-500">
+                        This action cannot be undone. The ministry will be permanently deleted from the system.
+                    </p>
                 </div>
             </ui-dialog>
         `;
