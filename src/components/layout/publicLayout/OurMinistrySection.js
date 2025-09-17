@@ -1,5 +1,6 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
+import '@/components/layout/publicLayout/OurMinistryList.js';
 
 /**
  * Our Ministry Section Component
@@ -95,13 +96,9 @@ class OurMinistrySection extends App {
                         <p class="text-xl text-[${textColor}]/90 drop-shadow-lg mb-4">${
       pageData.subtitle || 'Discover our various ministries and get involved'
     }</p>
-                        <div class="flex flex-wrap gap-3 max-w-lg gap-y-3">
-                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Youth & Kids</span>
-                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Outreach & Mission</span>
-                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Women's Group</span>
-                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Men's Group</span>
-                            <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Prayer Group</span>
-                        </div>
+                        <our-ministry-list colors='${JSON.stringify({
+                            text_color: textColor
+                        })}'></our-ministry-list>
                     </div>
                 </div>
             </div>
