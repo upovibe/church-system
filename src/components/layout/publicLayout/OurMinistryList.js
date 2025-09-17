@@ -90,13 +90,7 @@ class OurMinistryList extends App {
                           title="Click to view ${ministry.title}">
                         ${ministry.title || 'Untitled Ministry'}
                     </span>
-                `).join('') : `
-                    <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Youth & Kids</span>
-                    <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Outreach & Mission</span>
-                    <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Women's Group</span>
-                    <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Men's Group</span>
-                    <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Prayer Group</span>
-                `}
+                `).join('') : ''}
             </div>
         `;
     }
