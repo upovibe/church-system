@@ -8,6 +8,7 @@ import '@/components/layout/publicLayout/HeroSection.js';
 import '@/components/layout/publicLayout/AboutSection.js';
 import '@/components/layout/publicLayout/HighlightsSection.js';
 import '@/components/layout/publicLayout/OurMinistrySection.js';
+import '@/components/layout/publicLayout/HomeSection.js';
 import '@/components/layout/publicLayout/ConnectSection.js';
 import '@/components/layout/DbSetupDialog.js';
 
@@ -181,6 +182,12 @@ class RootPage extends App {
                     colors='${colorsData}'
                     page-data='${escapeJsonForAttribute(allData.pages.home)}'>
                 </hero-section>
+                
+                <!-- Home Section Component -->
+                <home-section 
+                    colors='${colorsData}'
+                    page-data='${escapeJsonForAttribute(allData.pages.home)}'>
+                </home-section>
                 
                 <!-- About Section Component -->
                 <about-section 
