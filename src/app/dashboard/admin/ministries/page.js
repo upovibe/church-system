@@ -3,6 +3,7 @@ import '@/components/ui/Table.js';
 import '@/components/ui/Button.js';
 import '@/components/ui/Toast.js';
 import '@/components/ui/Skeleton.js';
+import '@/components/layout/adminLayout/MinistryAddModal.js';
 import api from '@/services/api.js';
 
 /**
@@ -15,10 +16,12 @@ class MinistriesPage extends App {
         super();
         this.ministries = null;
         this.loading = true;
+        this.showAddModal = false;
         
         // Initialize state properly
         this.set('ministries', null);
         this.set('loading', true);
+        this.set('showAddModal', false);
     }
 
     getHeaderCounts() {
@@ -31,6 +34,25 @@ class MinistriesPage extends App {
         super.connectedCallback();
         document.title = 'Ministries Management | Church System';
         this.loadData();
+        
+        // Add event listeners for table events
+        this.addEventListener('table-add', this.onAdd.bind(this));
+        this.addEventListener('table-refresh', this.onRefresh.bind(this));
+        
+        // Listen for success events to refresh data
+        this.addEventListener('ministry-saved', (event) => {
+            // Add the new ministry to the existing data
+            const newMinistry = event.detail.ministry;
+            if (newMinistry) {
+                const currentMinistries = this.get('ministries') || [];
+                this.set('ministries', [...currentMinistries, newMinistry]);
+                this.updateTableData();
+                // Close the add modal
+                this.set('showAddModal', false);
+            } else {
+                this.loadData();
+            }
+        });
     }
 
     async loadData() {
@@ -63,6 +85,42 @@ class MinistriesPage extends App {
             });
         } finally {
             this.set('loading', false);
+        }
+    }
+
+    onAdd(event) {
+        this.closeAllModals();
+        this.set('showAddModal', true);
+    }
+
+    onRefresh(event) {
+        this.loadData();
+    }
+
+    // Close all modals and dialogs
+    closeAllModals() {
+        this.set('showAddModal', false);
+    }
+
+    // Update table data without full page reload
+    updateTableData() {
+        const ministries = this.get('ministries');
+        
+        if (ministries) {
+            // Prepare ministries table data
+            const ministriesTableData = ministries.map((ministry, index) => ({
+                id: ministry.id,
+                index: index + 1,
+                name: ministry.name,
+                created: new Date(ministry.created_at).toLocaleString(),
+                updated: new Date(ministry.updated_at).toLocaleString(),
+            }));
+
+            // Find the ministries table component and update its data
+            const ministriesTableComponent = this.querySelector('ui-table');
+            if (ministriesTableComponent) {
+                ministriesTableComponent.setAttribute('data', JSON.stringify(ministriesTableData));
+            }
         }
     }
 
@@ -112,6 +170,7 @@ class MinistriesPage extends App {
     render() {
         const ministries = this.get('ministries');
         const loading = this.get('loading');
+        const showAddModal = this.get('showAddModal');
         
         const ministriesTableData = ministries ? ministries.map((ministry, index) => ({
             id: ministry.id,
@@ -151,6 +210,8 @@ class MinistriesPage extends App {
                             search-placeholder="Search ministries..."
                             pagination
                             page-size="50"
+                            action
+                            addable
                             refresh
                             print
                             bordered
@@ -160,6 +221,9 @@ class MinistriesPage extends App {
                     </div>
                 `}
             </div>
+            
+            <!-- Ministry Add Modal -->
+            <ministry-add-modal ${showAddModal ? 'open' : ''}></ministry-add-modal>
         `;
     }
 }
