@@ -5,6 +5,7 @@ import '@/components/ui/Toast.js';
 import '@/components/ui/Skeleton.js';
 import '@/components/layout/adminLayout/MinistryAddModal.js';
 import '@/components/layout/adminLayout/MinistryUpdateModal.js';
+import '@/components/layout/adminLayout/MinistryDeleteDialog.js';
 import api from '@/services/api.js';
 
 /**
@@ -19,14 +20,18 @@ class MinistriesPage extends App {
         this.loading = true;
         this.showAddModal = false;
         this.showUpdateModal = false;
+        this.showDeleteDialog = false;
         this.updateMinistryData = null;
+        this.deleteMinistryData = null;
         
         // Initialize state properly
         this.set('ministries', null);
         this.set('loading', true);
         this.set('showAddModal', false);
         this.set('showUpdateModal', false);
+        this.set('showDeleteDialog', false);
         this.set('updateMinistryData', null);
+        this.set('deleteMinistryData', null);
     }
 
     getHeaderCounts() {
@@ -43,6 +48,7 @@ class MinistriesPage extends App {
         // Add event listeners for table events
         this.addEventListener('table-add', this.onAdd.bind(this));
         this.addEventListener('table-edit', this.onEdit.bind(this));
+        this.addEventListener('table-delete', this.onDelete.bind(this));
         this.addEventListener('table-refresh', this.onRefresh.bind(this));
         
         // Listen for success events to refresh data
@@ -75,6 +81,18 @@ class MinistriesPage extends App {
             } else {
                 this.loadData();
             }
+        });
+        
+        this.addEventListener('ministry-deleted', (event) => {
+            // Remove the deleted ministry from the current data
+            const deletedMinistryId = event.detail.ministryId;
+            const currentMinistries = this.get('ministries') || [];
+            const updatedMinistries = currentMinistries.filter(ministry => ministry.id !== deletedMinistryId);
+            this.set('ministries', updatedMinistries);
+            this.updateTableData();
+            
+            // Close the delete dialog
+            this.set('showDeleteDialog', false);
         });
     }
 
@@ -132,6 +150,22 @@ class MinistriesPage extends App {
         }
     }
 
+    onDelete(event) {
+        const { detail } = event;
+        const deleteMinistry = this.get('ministries').find(ministry => ministry.id === detail.row.id);
+        if (deleteMinistry) {
+            this.closeAllModals();
+            this.set('deleteMinistryData', deleteMinistry);
+            this.set('showDeleteDialog', true);
+            setTimeout(() => {
+                const deleteDialog = this.querySelector('ministry-delete-dialog');
+                if (deleteDialog) {
+                    deleteDialog.setMinistryData(deleteMinistry);
+                }
+            }, 0);
+        }
+    }
+
     onRefresh(event) {
         this.loadData();
     }
@@ -140,7 +174,9 @@ class MinistriesPage extends App {
     closeAllModals() {
         this.set('showAddModal', false);
         this.set('showUpdateModal', false);
+        this.set('showDeleteDialog', false);
         this.set('updateMinistryData', null);
+        this.set('deleteMinistryData', null);
     }
 
     // Update table data without full page reload
@@ -216,6 +252,7 @@ class MinistriesPage extends App {
         const loading = this.get('loading');
         const showAddModal = this.get('showAddModal');
         const showUpdateModal = this.get('showUpdateModal');
+        const showDeleteDialog = this.get('showDeleteDialog');
         
         const ministriesTableData = ministries ? ministries.map((ministry, index) => ({
             id: ministry.id,
@@ -260,6 +297,7 @@ class MinistriesPage extends App {
                             pagination
                             page-size="50"
                             action
+                            actions="edit, delete"
                             addable
                             refresh
                             print
@@ -271,9 +309,10 @@ class MinistriesPage extends App {
                 `}
             </div>
             
-            <!-- Ministry Modals -->
+            <!-- Ministry Modals and Dialogs -->
             <ministry-add-modal ${showAddModal ? 'open' : ''}></ministry-add-modal>
             <ministry-update-modal ${showUpdateModal ? 'open' : ''}></ministry-update-modal>
+            <ministry-delete-dialog ${showDeleteDialog ? 'open' : ''}></ministry-delete-dialog>
         `;
     }
 }
