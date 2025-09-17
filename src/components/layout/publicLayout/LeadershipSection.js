@@ -162,25 +162,41 @@ class LeadershipSection extends App {
                         <div class="text-center mb-12">
                             <h3 class="text-2xl lg:text-3xl font-bold text-[${secondaryColor}] mb-4">Leadership</h3>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                             ${teamMembers
                               .map(
                                 (member) => `
-                                <div class="flex flex-col items-center justify-start py-8">
-                                    <ui-avatar 
-                                        name="${member.name}"
-                                        size="6xl"
-                                        color="${primaryColor}"
-                                        alt="${member.name}"
-                                        ${
-                                          member.profile_image
-                                            ? `src="${this.getImageUrl(
-                                                member.profile_image,
-                                              )}"`
-                                            : ''
-                                        }
-                                    ></ui-avatar>
-                                    <div class="mt-4 h-24 flex flex-col justify-center items-center px-4 py-2 rounded-md bg-[#353535] shadow text-center z-10 w-full">
+                                <div class="flex flex-col items-center justify-start py-8 group">
+                                    <!-- Custom Square Avatar with Hover Effect -->
+                                    <div class="relative w-full aspect-square mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:shadow-[${accentColor}]/30">
+                                        <div class="absolute inset-0 bg-gradient-to-br from-[${primaryColor}] to-[${accentColor}] rounded-2xl shadow-lg"></div>
+                                        <div class="absolute inset-2 rounded-xl overflow-hidden">
+                                            ${
+                                              member.profile_image
+                                                ? `
+                                                <img 
+                                                    src="${this.getImageUrl(member.profile_image)}" 
+                                                    alt="${member.name}"
+                                                    class="w-full h-full object-cover"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                                >
+                                                `
+                                                : ''
+                                            }
+                                            <!-- Fallback for no image -->
+                                            <div class="w-full h-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center ${member.profile_image ? 'hidden' : ''}">
+                                                <div class="text-center text-white">
+                                                    <i class="fas fa-user text-6xl mb-2 opacity-70"></i>
+                                                    <p class="text-sm font-medium">${member.name.split(' ').map(n => n[0]).join('')}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Hover overlay effect -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </div>
+                                    
+                                    <!-- Name and Position Card -->
+                                    <div class="mt-2 h-24 flex flex-col justify-center items-center px-4 py-2 rounded-xl bg-[#353535] shadow-lg text-center z-10 w-full transform transition-all duration-300 group-hover:bg-[#2a2a2a] group-hover:shadow-xl">
                                         <h4 class="text-xl font-bold text-white">${
                                           member.name
                                         }</h4>
