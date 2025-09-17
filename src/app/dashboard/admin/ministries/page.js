@@ -58,11 +58,9 @@ class MinistriesPage extends App {
     async loadData() {
         try {
             this.set('loading', true);
-            console.log('🔄 Loading ministries data...');
             
             const token = localStorage.getItem('token');
             if (!token) {
-                console.log('❌ No token found');
                 Toast.show({
                     title: 'Authentication Error',
                     message: 'Please log in to view data',
@@ -72,19 +70,12 @@ class MinistriesPage extends App {
                 return;
             }
 
-            console.log('🔑 Token found, making API call...');
             // Load ministries data
             const ministriesResponse = await api.withToken(token).get('/ministries');
-            console.log('📡 API Response:', ministriesResponse);
-            console.log('📊 Response data:', ministriesResponse.data);
-            console.log('📋 Ministries data:', ministriesResponse.data.data);
-            
             this.set('ministries', ministriesResponse.data.data);
-            console.log('✅ Ministries set in state:', this.get('ministries'));
             
         } catch (error) {
             console.error('❌ Error loading ministries:', error);
-            console.error('❌ Error details:', error.response);
             
             Toast.show({
                 title: 'Error',
@@ -94,7 +85,6 @@ class MinistriesPage extends App {
             });
         } finally {
             this.set('loading', false);
-            console.log('🏁 Loading complete');
         }
     }
 
