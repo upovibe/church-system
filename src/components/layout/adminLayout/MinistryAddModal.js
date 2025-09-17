@@ -92,12 +92,14 @@ class MinistryAddModal extends HTMLElement {
             });
 
             const newMinistry = response.data.data;
+            console.log('Ministry created successfully:', newMinistry);
 
             this.dispatchEvent(new CustomEvent('ministry-saved', {
                 detail: { ministry: newMinistry },
                 bubbles: true,
                 composed: true
             }));
+            console.log('Ministry saved event dispatched');
             this.close();
 
         } catch (error) {

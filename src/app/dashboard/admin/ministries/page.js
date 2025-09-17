@@ -58,9 +58,11 @@ class MinistriesPage extends App {
     async loadData() {
         try {
             this.set('loading', true);
+            console.log('🔄 Loading ministries data...');
             
             const token = localStorage.getItem('token');
             if (!token) {
+                console.log('❌ No token found');
                 Toast.show({
                     title: 'Authentication Error',
                     message: 'Please log in to view data',
@@ -70,12 +72,19 @@ class MinistriesPage extends App {
                 return;
             }
 
+            console.log('🔑 Token found, making API call...');
             // Load ministries data
             const ministriesResponse = await api.withToken(token).get('/ministries');
+            console.log('📡 API Response:', ministriesResponse);
+            console.log('📊 Response data:', ministriesResponse.data);
+            console.log('📋 Ministries data:', ministriesResponse.data.data);
+            
             this.set('ministries', ministriesResponse.data.data);
+            console.log('✅ Ministries set in state:', this.get('ministries'));
             
         } catch (error) {
             console.error('❌ Error loading ministries:', error);
+            console.error('❌ Error details:', error.response);
             
             Toast.show({
                 title: 'Error',
@@ -85,6 +94,7 @@ class MinistriesPage extends App {
             });
         } finally {
             this.set('loading', false);
+            console.log('🏁 Loading complete');
         }
     }
 
@@ -105,24 +115,35 @@ class MinistriesPage extends App {
     // Update table data without full page reload
     updateTableData() {
         const ministries = this.get('ministries');
+        console.log('🔄 Updating table data with ministries:', ministries);
         
         if (ministries) {
             // Prepare ministries table data
             const ministriesTableData = ministries.map((ministry, index) => ({
                 id: ministry.id,
                 index: index + 1,
-                name: ministry.name,
-                created: new Date(ministry.created_at).toLocaleString(),
-                updated: new Date(ministry.updated_at).toLocaleString(),
+                name: ministry.name || '',
+                created: ministry.created_at ? new Date(ministry.created_at).toLocaleString() : '',
+                updated: ministry.updated_at ? new Date(ministry.updated_at).toLocaleString() : '',
             }));
+
+            console.log('📊 Prepared table data for update:', ministriesTableData);
 
             // Find the ministries table component and update its data
             const ministriesTableComponent = this.querySelector('ui-table');
             if (ministriesTableComponent) {
-                ministriesTableComponent.setAttribute('data', JSON.stringify(ministriesTableData));
+                console.log('✅ Found table component, updating data...');
+                // Safely stringify the data to avoid JSON parsing errors
+                const safeDataString = JSON.stringify(ministriesTableData).replace(/'/g, "&#39;");
+                ministriesTableComponent.setAttribute('data', safeDataString);
+            } else {
+                console.log('❌ Table component not found!');
             }
+        } else {
+            console.log('❌ No ministries data to update table with');
         }
     }
+
 
     renderHeader() {
         const c = this.getHeaderCounts();
@@ -172,13 +193,18 @@ class MinistriesPage extends App {
         const loading = this.get('loading');
         const showAddModal = this.get('showAddModal');
         
+        console.log('🎨 Rendering with ministries:', ministries);
+        console.log('🎨 Loading state:', loading);
+        
         const ministriesTableData = ministries ? ministries.map((ministry, index) => ({
             id: ministry.id,
             index: index + 1,
-            name: ministry.name,
-            created: new Date(ministry.created_at).toLocaleString(),
-            updated: new Date(ministry.updated_at).toLocaleString(),
+            name: ministry.name || '',
+            created: ministry.created_at ? new Date(ministry.created_at).toLocaleString() : '',
+            updated: ministry.updated_at ? new Date(ministry.updated_at).toLocaleString() : '',
         })) : [];
+
+        console.log('📊 Table data prepared:', ministriesTableData);
 
         const ministriesTableColumns = [
             { key: 'index', label: 'No.' },
@@ -186,6 +212,10 @@ class MinistriesPage extends App {
             { key: 'created', label: 'Created' },
             { key: 'updated', label: 'Updated' }
         ];
+        
+        // Safely stringify the data to avoid JSON parsing errors
+        const safeDataString = JSON.stringify(ministriesTableData).replace(/'/g, "&#39;");
+        const safeColumnsString = JSON.stringify(ministriesTableColumns).replace(/'/g, "&#39;");
         
         return `
             ${this.renderHeader()}
@@ -203,8 +233,8 @@ class MinistriesPage extends App {
                     <div class="mb-8">
                         <ui-table 
                             title="Ministries Management"
-                            data='${JSON.stringify(ministriesTableData)}'
-                            columns='${JSON.stringify(ministriesTableColumns)}'
+                            data='${safeDataString}'
+                            columns='${safeColumnsString}'
                             sortable
                             searchable
                             search-placeholder="Search ministries..."
