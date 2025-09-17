@@ -130,7 +130,7 @@ class LeadershipSection extends App {
 
     return `
             <!-- Our Team Section -->
-            <section class="container mx-auto px-4 py-16">
+            <section class="container mx-auto px-4">
                 <!-- Title and Subtitle Section -->
                 <div class="text-center mb-12 mt-8">
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-wide text-[${secondaryColor}] mb-4 drop-shadow-lg border-b-4 border-[${accentColor}] pb-4 inline-block">
