@@ -4,6 +4,7 @@ import '@/components/ui/Button.js';
 import '@/components/ui/Toast.js';
 import '@/components/ui/Skeleton.js';
 import '@/components/layout/adminLayout/MinistryAddModal.js';
+import '@/components/layout/adminLayout/MinistryUpdateModal.js';
 import api from '@/services/api.js';
 
 /**
@@ -17,11 +18,15 @@ class MinistriesPage extends App {
         this.ministries = null;
         this.loading = true;
         this.showAddModal = false;
+        this.showUpdateModal = false;
+        this.updateMinistryData = null;
         
         // Initialize state properly
         this.set('ministries', null);
         this.set('loading', true);
         this.set('showAddModal', false);
+        this.set('showUpdateModal', false);
+        this.set('updateMinistryData', null);
     }
 
     getHeaderCounts() {
@@ -37,6 +42,7 @@ class MinistriesPage extends App {
         
         // Add event listeners for table events
         this.addEventListener('table-add', this.onAdd.bind(this));
+        this.addEventListener('table-edit', this.onEdit.bind(this));
         this.addEventListener('table-refresh', this.onRefresh.bind(this));
         
         // Listen for success events to refresh data
@@ -49,6 +55,23 @@ class MinistriesPage extends App {
                 this.updateTableData();
                 // Close the add modal
                 this.set('showAddModal', false);
+            } else {
+                this.loadData();
+            }
+        });
+        
+        this.addEventListener('ministry-updated', (event) => {
+            // Update the existing ministry in the data
+            const updatedMinistry = event.detail.ministry;
+            if (updatedMinistry) {
+                const currentMinistries = this.get('ministries') || [];
+                const updatedMinistriesList = currentMinistries.map(ministry => 
+                    ministry.id === updatedMinistry.id ? updatedMinistry : ministry
+                );
+                this.set('ministries', updatedMinistriesList);
+                this.updateTableData();
+                // Close the update modal
+                this.set('showUpdateModal', false);
             } else {
                 this.loadData();
             }
@@ -93,6 +116,22 @@ class MinistriesPage extends App {
         this.set('showAddModal', true);
     }
 
+    onEdit(event) {
+        const { detail } = event;
+        const editMinistry = this.get('ministries').find(ministry => ministry.id === detail.row.id);
+        if (editMinistry) {
+            this.closeAllModals();
+            this.set('updateMinistryData', editMinistry);
+            this.set('showUpdateModal', true);
+            setTimeout(() => {
+                const updateModal = this.querySelector('ministry-update-modal');
+                if (updateModal) {
+                    updateModal.setMinistryData(editMinistry);
+                }
+            }, 0);
+        }
+    }
+
     onRefresh(event) {
         this.loadData();
     }
@@ -100,6 +139,8 @@ class MinistriesPage extends App {
     // Close all modals and dialogs
     closeAllModals() {
         this.set('showAddModal', false);
+        this.set('showUpdateModal', false);
+        this.set('updateMinistryData', null);
     }
 
     // Update table data without full page reload
@@ -174,6 +215,7 @@ class MinistriesPage extends App {
         const ministries = this.get('ministries');
         const loading = this.get('loading');
         const showAddModal = this.get('showAddModal');
+        const showUpdateModal = this.get('showUpdateModal');
         
         const ministriesTableData = ministries ? ministries.map((ministry, index) => ({
             id: ministry.id,
@@ -229,8 +271,9 @@ class MinistriesPage extends App {
                 `}
             </div>
             
-            <!-- Ministry Add Modal -->
+            <!-- Ministry Modals -->
             <ministry-add-modal ${showAddModal ? 'open' : ''}></ministry-add-modal>
+            <ministry-update-modal ${showUpdateModal ? 'open' : ''}></ministry-update-modal>
         `;
     }
 }
