@@ -321,6 +321,11 @@ class DashboardLayout extends App {
             {
               label: 'Ministries',
               icon: 'fas fa-church',
+              href: '/dashboard/admin/news',
+            },
+            {
+              label: 'Ministry List',
+              icon: 'fas fa-list',
               href: '/dashboard/admin/ministries',
             },
             {
