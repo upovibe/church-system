@@ -3,6 +3,7 @@
 
 require_once __DIR__ . '/../middlewares/AuthMiddleware.php';
 require_once __DIR__ . '/../middlewares/RoleMiddleware.php';
+require_once __DIR__ . '/../core/MultipartFormParser.php';
 require_once __DIR__ . '/../models/GiveModel.php';
 require_once __DIR__ . '/../models/UserLogModel.php';
 require_once __DIR__ . '/../utils/give_uploads.php';
@@ -38,40 +39,33 @@ class GiveController {
      */
     public function store() {
         try {
+            // Require admin authentication
             RoleMiddleware::requireAdmin($this->pdo);
             
-            // Handle both JSON and multipart form data
+            // Handle multipart form data or JSON data for PUT/PATCH requests
             $data = [];
-            if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
-                // Handle multipart form data
+            $content_type = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+            $rawData = file_get_contents('php://input');
+
+            if (strpos($content_type, 'multipart/form-data') !== false) {
+                // Use standard PHP $_POST and $_FILES for multipart data
                 $data = $_POST;
-                
-                // Handle file upload if present
-                if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
-                    $uploadResult = $this->handleFileUpload($_FILES['image']);
-                    if ($uploadResult['success']) {
-                        $data['image'] = $uploadResult['filepath'];
-                    } else {
-                        http_response_code(400);
-                        echo json_encode(['success' => false, 'message' => $uploadResult['message']]);
-                        return;
-                    }
-                }
+                // $_FILES is already available globally
             } else {
-                // Handle JSON data
-                $data = json_decode(file_get_contents('php://input'), true);
+                // Fall back to JSON
+                $data = json_decode($rawData, true) ?? [];
             }
             
-            if (empty($data['title'])) {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'message' => 'Title is required']);
-                return;
+            // Set default values (only for fields that exist in the table)
+            if (!isset($data['is_active'])) {
+                $data['is_active'] = 1;
             }
             
-            if (empty($data['text'])) {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'message' => 'Text is required']);
-                return;
+            // Handle banner upload if present
+            $bannerData = null;
+            if (!empty($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+                $bannerData = uploadGiveBanner($_FILES['banner']);
+                $data['image'] = $bannerData['original'];
             }
             
             // Handle links JSON encoding
@@ -79,22 +73,39 @@ class GiveController {
                 $data['links'] = json_encode($data['links']);
             }
             
+            // Create give entry
             $giveId = $this->giveModel->create($data);
+            
             if ($giveId) {
+                // Get the created give data
                 $createdGive = $this->giveModel->findById($giveId);
+                
+                // Log the action
                 $this->logAction('give_created', "Created give entry: {$data['title']}", [
                     'give_id' => $giveId,
-                    'title' => $data['title']
+                    'title' => $data['title'],
+                    'banner_uploaded' => $bannerData ? true : false
                 ]);
+                
                 http_response_code(201);
-                echo json_encode(['success' => true, 'data' => $createdGive, 'message' => 'Give entry created successfully']);
+                echo json_encode([
+                    'success' => true,
+                    'data' => $createdGive,
+                    'message' => 'Give entry created successfully'
+                ]);
             } else {
                 http_response_code(500);
-                echo json_encode(['success' => false, 'message' => 'Failed to create give entry']);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to create give entry'
+                ]);
             }
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error creating give entry: ' . $e->getMessage()]);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error creating give entry: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -122,38 +133,86 @@ class GiveController {
      */
     public function update($id) {
         try {
+            // Require admin authentication
             RoleMiddleware::requireAdmin($this->pdo);
+            
+            // Check if give entry exists
             $existingGive = $this->giveModel->findById($id);
             if (!$existingGive) {
                 http_response_code(404);
-                echo json_encode(['success' => false, 'message' => 'Give entry not found']);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Give entry not found'
+                ]);
                 return;
             }
             
-            // Handle JSON data for updates
-            $data = json_decode(file_get_contents('php://input'), true) ?: [];
+            // Handle multipart form data or JSON data
+            $data = [];
+            $content_type = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+            $rawData = file_get_contents('php://input');
+
+            if (strpos($content_type, 'multipart/form-data') !== false) {
+                $parsed = MultipartFormParser::parse($rawData, $content_type);
+                $data = $parsed['data'] ?? [];
+                $_FILES = $parsed['files'] ?? [];
+            } else {
+                // Fall back to JSON
+                $data = json_decode($rawData, true) ?? [];
+            }
+            
+            // Handle banner upload if present
+            $bannerData = null;
+            if (!empty($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+                try {
+                    $bannerData = uploadGiveBanner($_FILES['banner']);
+                    $data['image'] = $bannerData['original'];
+                } catch (Exception $e) {
+                    // Log the error and continue without banner update
+                    error_log('Error uploading give banner: ' . $e->getMessage());
+                    // Don't fail the entire update if banner upload fails
+                }
+            }
             
             // Handle links JSON encoding
             if (isset($data['links']) && is_array($data['links'])) {
                 $data['links'] = json_encode($data['links']);
             }
             
+            // Update give entry
             $success = $this->giveModel->update($id, $data);
+            
             if ($success) {
+                // Get the updated give data
                 $updatedGive = $this->giveModel->findById($id);
-                $this->logAction('give_updated', "Updated give entry: {$updatedGive['title']}", [
+                
+                // Log the action
+                $this->logAction('give_updated', "Updated give entry: {$existingGive['title']}", [
                     'give_id' => $id,
-                    'updated_fields' => array_keys($data)
+                    'old_title' => $existingGive['title'],
+                    'new_title' => $data['title'] ?? $existingGive['title'],
+                    'banner_updated' => $bannerData ? true : false
                 ]);
+                
                 http_response_code(200);
-                echo json_encode(['success' => true, 'data' => $updatedGive, 'message' => 'Give entry updated successfully']);
+                echo json_encode([
+                    'success' => true,
+                    'data' => $updatedGive,
+                    'message' => 'Give entry updated successfully'
+                ]);
             } else {
                 http_response_code(500);
-                echo json_encode(['success' => false, 'message' => 'Failed to update give entry']);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to update give entry'
+                ]);
             }
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error updating give entry: ' . $e->getMessage()]);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error updating give entry: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -162,34 +221,53 @@ class GiveController {
      */
     public function destroy($id) {
         try {
+            // Require admin authentication
             RoleMiddleware::requireAdmin($this->pdo);
+            
+            // Check if give entry exists
             $existingGive = $this->giveModel->findById($id);
             if (!$existingGive) {
                 http_response_code(404);
-                echo json_encode(['success' => false, 'message' => 'Give entry not found']);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Give entry not found'
+                ]);
                 return;
             }
             
-            // Delete associated image file
-            if ($existingGive['image']) {
-                deleteGiveFile($existingGive['image']);
+            // Delete banner image if it exists
+            if (!empty($existingGive['image'])) {
+                deleteGiveBanner($existingGive['image']);
             }
             
+            // Delete give entry
             $success = $this->giveModel->delete($id);
+            
             if ($success) {
+                // Log the action
                 $this->logAction('give_deleted', "Deleted give entry: {$existingGive['title']}", [
                     'give_id' => $id,
                     'title' => $existingGive['title']
                 ]);
+                
                 http_response_code(200);
-                echo json_encode(['success' => true, 'message' => 'Give entry deleted successfully']);
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Give entry deleted successfully'
+                ]);
             } else {
                 http_response_code(500);
-                echo json_encode(['success' => false, 'message' => 'Failed to delete give entry']);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to delete give entry'
+                ]);
             }
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error deleting give entry: ' . $e->getMessage()]);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error deleting give entry: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -208,33 +286,6 @@ class GiveController {
     }
 
 
-    /**
-     * Handle file upload for give entries
-     */
-    private function handleFileUpload($file) {
-        try {
-            $uploadResult = uploadGiveFile($file);
-            
-            if ($uploadResult['success']) {
-                return [
-                    'success' => true,
-                    'filepath' => $uploadResult['filepath'],
-                    'url' => $uploadResult['url'],
-                    'thumbnails' => $uploadResult['thumbnails'] ?? null
-                ];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => $uploadResult['message']
-                ];
-            }
-        } catch (Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Error uploading file: ' . $e->getMessage()
-            ];
-        }
-    }
 
     /**
      * Log user action
@@ -255,10 +306,25 @@ class GiveController {
      */
     private function getAuthToken() {
         $headers = getallheaders();
-        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
-        if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
-            return $matches[1];
+        
+        // Check Authorization header
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+            if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+                return $matches[1];
+            }
         }
+        
+        // Check for token in query parameters
+        if (isset($_GET['token'])) {
+            return $_GET['token'];
+        }
+        
+        // Check for token in POST data
+        if (isset($_POST['token'])) {
+            return $_POST['token'];
+        }
+        
         return null;
     }
 }
