@@ -324,11 +324,6 @@ class DashboardLayout extends App {
               href: '/dashboard/admin/news',
             },
             {
-              label: 'Ministry List',
-              icon: 'fas fa-list',
-              href: '/dashboard/admin/ministries',
-            },
-            {
               label: 'Photo Gallery',
               icon: 'fas fa-images',
               href: '/dashboard/admin/galleries',
@@ -539,7 +534,6 @@ class DashboardLayout extends App {
       'user-role': 'User Roles',
       galleries: 'Gallery Management',
       'life-groups': 'Life Groups Management',
-      ministries: 'Ministries Management',
     };
     return titles[lastSegment] || 'Dashboard';
   }
