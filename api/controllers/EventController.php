@@ -289,8 +289,19 @@ class EventController {
                 return;
             }
             
-            // Handle JSON data for PUT/PATCH requests (like testimonials)
-            $data = $_POST ?: json_decode(file_get_contents('php://input'), true) ?: [];
+            // Handle multipart form data or JSON data
+            $data = [];
+            $content_type = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+            $rawData = file_get_contents('php://input');
+
+            if (strpos($content_type, 'multipart/form-data') !== false) {
+                $parsed = MultipartFormParser::parse($rawData, $content_type);
+                $data = $parsed['data'] ?? [];
+                $_FILES = $parsed['files'] ?? [];
+            } else {
+                // Fall back to JSON
+                $data = json_decode($rawData, true) ?? [];
+            }
             
             // Convert date formats (handle multiple formats) - only if dates are provided
             if (isset($data['start_date']) && !empty($data['start_date'])) {
@@ -339,16 +350,19 @@ class EventController {
                 $data['slug'] = ensureUniqueSlug($this->pdo, $generatedSlug, 'events', 'slug', $id);
             }
             
-            // Note: Banner upload handling removed for JSON-based updates
-            // File uploads would need to be handled separately if needed
-            
-            // Ensure all fields are included in the update (even null values)
-            // Convert null strings to actual null for database
-            foreach ($data as $key => $value) {
-                if ($value === 'null' || $value === '') {
-                    $data[$key] = null;
+            // Handle banner upload if present
+            $bannerData = null;
+            if (!empty($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+                try {
+                    $bannerData = uploadEventBanner($_FILES['banner']);
+                    $data['banner_image'] = $bannerData['original'];
+                } catch (Exception $e) {
+                    // Log the error and continue without banner update
+                    error_log('Error uploading event banner: ' . $e->getMessage());
+                    // Don't fail the entire update if banner upload fails
                 }
             }
+            
             
             $result = $this->eventModel->update($id, $data);
             
@@ -359,7 +373,9 @@ class EventController {
                 // Log the action
                 $this->logAction('event_updated', "Updated event: {$existingEvent['title']}", [
                     'event_id' => $id,
-                    'title' => $data['title'] ?? $existingEvent['title']
+                    'old_title' => $existingEvent['title'],
+                    'new_title' => $data['title'] ?? $existingEvent['title'],
+                    'banner_updated' => $bannerData ? true : false
                 ]);
                 
                 http_response_code(200);
@@ -393,8 +409,8 @@ class EventController {
             RoleMiddleware::requireAdmin($this->pdo);
             
             // Check if event exists
-            $event = $this->eventModel->findById($id);
-            if (!$event) {
+            $existingEvent = $this->eventModel->findById($id);
+            if (!$existingEvent) {
                 http_response_code(404);
                 echo json_encode([
                     'success' => false,
@@ -403,20 +419,34 @@ class EventController {
                 return;
             }
             
+            // Delete banner image if it exists
+            if (!empty($existingEvent['banner_image'])) {
+                deleteEventBanner($existingEvent['banner_image']);
+            }
+            
             // Delete event
-            $this->eventModel->delete($id);
+            $success = $this->eventModel->delete($id);
             
-            // Log the action
-            $this->logAction('event_deleted', "Deleted event: {$event['title']}", [
-                'event_id' => $id,
-                'title' => $event['title']
-            ]);
-            
-            http_response_code(200);
-            echo json_encode([
-                'success' => true,
-                'message' => 'Event deleted successfully'
-            ]);
+            if ($success) {
+                // Log the action
+                $this->logAction('event_deleted', "Deleted event: {$existingEvent['title']}", [
+                    'event_id' => $id,
+                    'title' => $existingEvent['title'],
+                    'slug' => $existingEvent['slug']
+                ]);
+                
+                http_response_code(200);
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Event deleted successfully'
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to delete event'
+                ]);
+            }
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
@@ -654,10 +684,23 @@ class EventController {
      */
     private function getAuthToken() {
         $headers = getallheaders();
-        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
         
-        if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
-            return $matches[1];
+        // Check Authorization header
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+            if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+                return $matches[1];
+            }
+        }
+        
+        // Check for token in query parameters
+        if (isset($_GET['token'])) {
+            return $_GET['token'];
+        }
+        
+        // Check for token in POST data
+        if (isset($_POST['token'])) {
+            return $_POST['token'];
         }
         
         return null;

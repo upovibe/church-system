@@ -156,9 +156,24 @@ class EventUpdateModal extends HTMLElement {
                 duration: 2000
             });
 
-            // Update the event with JSON data (like testimonials)
-            const response = await api.withToken(token).put(`/events/${this.eventData.id}`, eventData);
+            // Prepare form data for multipart request
+            const formData = new FormData();
             
+            // Add all form fields
+            Object.keys(eventData).forEach(key => {
+                formData.append(key, eventData[key]);
+            });
+            
+            // Add banner files if selected
+            if (bannerFileUpload && bannerFileUpload.getFiles().length > 0) {
+                const files = bannerFileUpload.getFiles();
+                // Filter out existing files (which are strings/paths) and only include new File objects
+                const newFiles = files.filter(file => file instanceof File);
+                newFiles.forEach(file => {
+                    formData.append('banner', file, file.name);
+                });
+            }
+
             Toast.show({
                 title: 'Success',
                 message: 'Event updated successfully',
@@ -166,6 +181,9 @@ class EventUpdateModal extends HTMLElement {
                 duration: 3000
             });
 
+            // Update the event with multipart data
+            const response = await api.withToken(token).put(`/events/${this.eventData.id}`, formData);
+            
             // Close modal and dispatch event with the updated data from the server
             this.close();
             this.dispatchEvent(new CustomEvent('event-updated', {
