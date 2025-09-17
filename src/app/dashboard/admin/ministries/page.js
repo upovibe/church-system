@@ -105,7 +105,6 @@ class MinistriesPage extends App {
     // Update table data without full page reload
     updateTableData() {
         const ministries = this.get('ministries');
-        console.log('🔄 Updating table data with ministries:', ministries);
         
         if (ministries) {
             // Prepare ministries table data
@@ -117,20 +116,13 @@ class MinistriesPage extends App {
                 updated: ministry.updated_at ? new Date(ministry.updated_at).toLocaleString() : '',
             }));
 
-            console.log('📊 Prepared table data for update:', ministriesTableData);
-
             // Find the ministries table component and update its data
             const ministriesTableComponent = this.querySelector('ui-table');
             if (ministriesTableComponent) {
-                console.log('✅ Found table component, updating data...');
                 // Safely stringify the data to avoid JSON parsing errors
                 const safeDataString = JSON.stringify(ministriesTableData).replace(/'/g, "&#39;");
                 ministriesTableComponent.setAttribute('data', safeDataString);
-            } else {
-                console.log('❌ Table component not found!');
             }
-        } else {
-            console.log('❌ No ministries data to update table with');
         }
     }
 
@@ -183,9 +175,6 @@ class MinistriesPage extends App {
         const loading = this.get('loading');
         const showAddModal = this.get('showAddModal');
         
-        console.log('🎨 Rendering with ministries:', ministries);
-        console.log('🎨 Loading state:', loading);
-        
         const ministriesTableData = ministries ? ministries.map((ministry, index) => ({
             id: ministry.id,
             index: index + 1,
@@ -193,8 +182,6 @@ class MinistriesPage extends App {
             created: ministry.created_at ? new Date(ministry.created_at).toLocaleString() : '',
             updated: ministry.updated_at ? new Date(ministry.updated_at).toLocaleString() : '',
         })) : [];
-
-        console.log('📊 Table data prepared:', ministriesTableData);
 
         const ministriesTableColumns = [
             { key: 'index', label: 'No.' },
