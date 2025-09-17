@@ -7,7 +7,7 @@ import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/HeroSection.js';
 import '@/components/layout/publicLayout/AboutSection.js';
 import '@/components/layout/publicLayout/HighlightsSection.js';
-import '@/components/layout/publicLayout/MissionVisionSection.js';
+import '@/components/layout/publicLayout/OurMinistrySection.js';
 import '@/components/layout/publicLayout/ConnectSection.js';
 import '@/components/layout/DbSetupDialog.js';
 
@@ -54,7 +54,7 @@ class RootPage extends App {
                 this.fetchPageData('testimonials'),
                 this.fetchPageData('sermons'),
                 this.fetchPageData('events'),
-                this.fetchPageData('mission-vision'),
+                this.fetchPageData('our-ministry'),
                 this.fetchPageData('connect'),
                 this.fetchTestimonials()
             ]);
@@ -71,7 +71,7 @@ class RootPage extends App {
                     testimonials: testimonialsPageData,
                     sermons: sermonsPageData,
                     events: eventsPageData,
-                    missionVision: missionVisionPageData,
+                    ourMinistry: missionVisionPageData,
                     connect: connectPageData
                 },
                 testimonials: testimonialsData,
@@ -196,11 +196,11 @@ class RootPage extends App {
                     testimonials-data='${escapeJsonForAttribute(allData.testimonials)}'>
                 </highlights-section>
 
-                <!-- Mission Vision Section Component -->
-                <mission-vision-section 
+                <!-- Our Ministry Section Component -->
+                <our-ministry-section 
                     colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.missionVision)}'>
-                </mission-vision-section>
+                    page-data='${escapeJsonForAttribute(allData.pages.ourMinistry)}'>
+                </our-ministry-section>
 
                 <!-- Connect Section Component -->
                 <connect-section 

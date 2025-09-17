@@ -2,12 +2,12 @@ import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
 
 /**
- * Mission Vision Section Component
+ * Our Ministry Section Component
  *
- * Displays mission and vision content with modern design.
+ * Displays ministry content with modern design.
  * Accepts color theming via 'colors' attribute and page data.
  */
-class MissionVisionSection extends App {
+class OurMinistrySection extends App {
   constructor() {
     super();
   }
@@ -76,7 +76,7 @@ class MissionVisionSection extends App {
                     ${
                       bannerImage
                         ? `
-                    <img src="/api/${bannerImage}" alt="Mission Vision Banner" class="w-full h-full object-cover object-center">
+                    <img src="/api/${bannerImage}" alt="Our Ministry Banner" class="w-full h-full object-cover object-center">
                     `
                         : `
                     <div class="w-full h-full bg-gradient-to-br from-slate-400 to-slate-600s flex items-center justify-center">
@@ -90,10 +90,10 @@ class MissionVisionSection extends App {
                     <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent rounded-2xl"></div>
                     <div class="absolute inset-0 w-full p-8 flex flex-col justify-end">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-wide text-[${textColor}] mb-3 drop-shadow-lg">${
-      pageData.title || 'Mission & Vision'
+      pageData.title || 'Our Ministries'
     }</h1>
                         <p class="text-xl text-[${textColor}]/90 drop-shadow-lg mb-4">${
-      pageData.subtitle || 'Our guiding principles and future aspirations'
+      pageData.subtitle || 'Discover our various ministries and get involved'
     }</p>
                         <div class="flex flex-wrap gap-3 max-w-lg gap-y-3">
                             <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30">Youth & Kids</span>
@@ -110,5 +110,5 @@ class MissionVisionSection extends App {
   }
 }
 
-customElements.define('mission-vision-section', MissionVisionSection);
-export default MissionVisionSection;
+customElements.define('our-ministry-section', OurMinistrySection);
+export default OurMinistrySection;

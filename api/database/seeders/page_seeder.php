@@ -75,13 +75,13 @@ class PageSeeder
                 'banner_image' => json_encode(['uploads/pages/1c1dad70d491dc7f004638d8bb190765d313cd68_1753223192_68801018c39f1.jpg'])
             ],
             [
-                'slug' => 'mission-vision',
-                'name' => 'Mission & Vision',
-                'subtitle' => 'Our mission and vision',
-                'title' => 'Mission & Vision',
-                'content' => '<h2>Our Mission</h2><p>To share the love of Christ, make disciples, and serve our community with compassion and grace. We strive to create an environment where people can encounter God, grow in their faith, and be equipped to live out their calling.</p><h2>Our Vision</h2><p>To be a beacon of hope and transformation in our community, leading people to Christ and helping them become fully devoted followers who impact the world for God\'s glory.</p><h3>Core Values</h3><ul><li>Biblical teaching and spiritual growth</li><li>Authentic worship and prayer</li><li>Community and fellowship</li><li>Service and outreach</li><li>Generosity and stewardship</li></ul>',
-                'meta_description' => 'Discover our church\'s mission, vision, and core values that guide our ministry and commitment to serving God and our community.',
-                'category' => 'about',
+                'slug' => 'our-ministry',
+                'name' => 'Our Ministry',
+                'subtitle' => 'Discover our various ministries',
+                'title' => 'Our Ministries',
+                'content' => '<h2>Ministry Opportunities</h2><p>Discover the various ways you can get involved and serve in our church community. We believe everyone has gifts and talents to contribute to God\'s work.</p><h3>Children\'s Ministry</h3><p>Nurturing the faith of our youngest members through age-appropriate teaching, activities, and care.</p><h3>Youth Ministry</h3><p>Engaging teenagers in faith development, fellowship, and service opportunities.</p><h3>Adult Ministries</h3><p>Bible studies, small groups, and fellowship opportunities for adults at every stage of life.</p><h3>Outreach & Missions</h3><p>Local and global mission opportunities to share God\'s love and serve those in need.</p><h3>Worship Ministry</h3><p>Music, technical support, and creative arts that enhance our worship experience.</p><h3>Women\'s Ministry</h3><p>Fellowship, Bible study, and service opportunities specifically for women in our community.</p><h3>Men\'s Ministry</h3><p>Building strong Christian men through fellowship, accountability, and service.</p><h3>Prayer Ministry</h3><p>Intercessory prayer, prayer meetings, and spiritual support for our church family.</p>',
+                'meta_description' => 'Explore our various ministries and find opportunities to serve, grow, and connect within our church community.',
+                'category' => 'community',
                 'is_active' => 1,
                 'sort_order' => 5,
                 'banner_image' => json_encode(['uploads/pages/Values_1752713298_6878485214266g'])

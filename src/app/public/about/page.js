@@ -7,7 +7,7 @@ import { escapeJsonForAttribute } from '@/utils/jsonUtils.js';
 import { setDocumentTitle } from '@/utils/appSettings.js';
 import '@/components/layout/publicLayout/AboutUsSection.js';
 import '@/components/layout/publicLayout/LeadershipSection.js';
-import '@/components/layout/publicLayout/MissionVisionSection.js';
+import '@/components/layout/publicLayout/OurMinistrySection.js';
 import '@/components/layout/publicLayout/TenantsBeliefsSection.js';
 
 /**
@@ -32,8 +32,8 @@ class AboutPage extends App {
             const aboutPageData = await this.fetchPageData('about-us');
             // Load our team page data
             const teamPageData = await this.fetchPageData('our-leaders');
-            // Load mission vision page data
-            const missionVisionPageData = await this.fetchPageData('mission-vision');
+            // Load our ministry page data
+            const ourMinistryPageData = await this.fetchPageData('our-ministry');
             // Load tenants beliefs page data
             const tenantsBeliefsPageData = await this.fetchPageData('tenants-beliefs');
             // Load team members
@@ -43,7 +43,7 @@ class AboutPage extends App {
                 colors,
                 page: aboutPageData,
                 teamPage: teamPageData,
-                missionVisionPage: missionVisionPageData,
+                ourMinistryPage: ourMinistryPageData,
                 tenantsBeliefsPage: tenantsBeliefsPageData,
                 teamMembers
             };
@@ -115,7 +115,7 @@ class AboutPage extends App {
         const colorsData = escapeJsonForAttribute(allData.colors);
         const pageData = escapeJsonForAttribute(allData.page);
         const teamPageData = escapeJsonForAttribute(allData.teamPage);
-        const missionVisionPageData = escapeJsonForAttribute(allData.missionVisionPage);
+        const ourMinistryPageData = escapeJsonForAttribute(allData.ourMinistryPage);
         const tenantsBeliefsPageData = escapeJsonForAttribute(allData.tenantsBeliefsPage);
         const teamMembersData = escapeJsonForAttribute(allData.teamMembers);
 
@@ -133,11 +133,11 @@ class AboutPage extends App {
                     page-data='${tenantsBeliefsPageData}'>
                 </tenants-beliefs-section>
                                 
-                <!-- Mission Vision Section Component -->
-                <mission-vision-section 
+                <!-- Our Ministry Section Component -->
+                <our-ministry-section 
                     colors='${colorsData}'
-                    page-data='${missionVisionPageData}'>
-                </mission-vision-section>
+                    page-data='${ourMinistryPageData}'>
+                </our-ministry-section>
                 <!-- Leadership Section Component -->
                 <leadership-section 
                     colors='${colorsData}'
