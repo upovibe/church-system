@@ -12,6 +12,8 @@ Router::post('/auth/reset-password', 'AuthController@resetPassword');
 
 // Contact form routes (public - no middleware needed)
 Router::post('/contact/submit', 'ContactController@submit');
+Router::get('/contact/test', 'ContactController@test');
+Router::get('/contact/test-smtp', 'ContactController@testSmtp');
 
 // User management routes (protected - require authentication)
 // Note: Middleware will be called inside controllers using:
