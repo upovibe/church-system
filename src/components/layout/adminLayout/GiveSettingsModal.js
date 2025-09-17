@@ -95,7 +95,7 @@ class GiveSettingsModal extends HTMLElement {
             const titleInput = this.querySelector('ui-input[data-field="title"]');
             const textTextarea = this.querySelector('ui-textarea[data-field="text"]');
             const isActiveSwitch = this.querySelector('ui-switch[name="is_active"]');
-            const imageFileUpload = this.querySelector('ui-file-upload[data-field="image"]');
+            const imageFileUpload = this.querySelector('ui-file-upload[data-field="banner"]');
 
             const filteredLinks = this.links.filter(link => link && link.trim() !== '');
 
@@ -224,7 +224,7 @@ class GiveSettingsModal extends HTMLElement {
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">QR Code Image</label>
                         <ui-file-upload 
-                            data-field="image"
+                            data-field="banner"
                             accept="image/*"
                             multiple="false"
                             class="w-full">

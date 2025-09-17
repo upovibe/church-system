@@ -63,7 +63,7 @@ class GiveUpdateModal extends HTMLElement {
         
         // Set the image value in the file upload component after render
         setTimeout(() => {
-            const imageFileUpload = this.querySelector('ui-file-upload[data-field="image"]');
+            const imageFileUpload = this.querySelector('ui-file-upload[data-field="banner"]');
             if (imageFileUpload && data.image) {
                 imageFileUpload.setValue(data.image);
             }
@@ -109,7 +109,7 @@ class GiveUpdateModal extends HTMLElement {
             const titleInput = this.querySelector('ui-input[data-field="title"]');
             const textTextarea = this.querySelector('ui-textarea[data-field="text"]');
             const isActiveSwitch = this.querySelector('ui-switch[name="is_active"]');
-            const imageFileUpload = this.querySelector('ui-file-upload[data-field="image"]');
+            const imageFileUpload = this.querySelector('ui-file-upload[data-field="banner"]');
 
             const filteredLinks = this.links.filter(link => link && link.trim() !== '');
 
@@ -233,7 +233,7 @@ class GiveUpdateModal extends HTMLElement {
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Payment Image or QR Code Image</label>
                         <ui-file-upload 
-                            data-field="image"
+                            data-field="banner"
                             accept="image/*"
                             multiple="false"
                             class="w-full">
