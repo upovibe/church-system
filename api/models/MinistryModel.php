@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../core/BaseModel.php';
 
 class MinistryModel extends BaseModel {
-    protected $table = 'ministries';
+    protected static $table = 'ministries';
     
     public function __construct($pdo) {
         parent::__construct($pdo);
@@ -14,7 +14,7 @@ class MinistryModel extends BaseModel {
      * Get all ministries ordered by name
      */
     public function getAllMinistries() {
-        $sql = "SELECT * FROM {$this->table} ORDER BY name ASC";
+        $sql = "SELECT * FROM " . static::$table . " ORDER BY name ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -24,7 +24,7 @@ class MinistryModel extends BaseModel {
      * Get ministries as simple array of names
      */
     public function getMinistriesArray() {
-        $sql = "SELECT name FROM {$this->table} ORDER BY name ASC";
+        $sql = "SELECT name FROM " . static::$table . " ORDER BY name ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -35,7 +35,7 @@ class MinistryModel extends BaseModel {
      * Search ministries by name
      */
     public function searchMinistries($query) {
-        $sql = "SELECT * FROM {$this->table} WHERE name LIKE ? ORDER BY name ASC";
+        $sql = "SELECT * FROM " . static::$table . " WHERE name LIKE ? ORDER BY name ASC";
         $stmt = $this->pdo->prepare($sql);
         $searchTerm = "%{$query}%";
         $stmt->execute([$searchTerm]);
@@ -46,7 +46,7 @@ class MinistryModel extends BaseModel {
      * Get ministry count
      */
     public function getCount() {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table}";
+        $sql = "SELECT COUNT(*) as count FROM " . static::$table;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
