@@ -156,13 +156,13 @@ class GiveSettingsModal extends HTMLElement {
                 }
             });
             
-            // Add image file if selected
+            // Add banner file if selected
             if (imageFileUpload && imageFileUpload.getFiles().length > 0) {
                 const files = imageFileUpload.getFiles();
                 // Filter out existing files (which are strings/paths) and only include new File objects
                 const newFiles = files.filter(file => file instanceof File);
                 newFiles.forEach(file => {
-                    formData.append('image', file, file.name);
+                    formData.append('banner', file, file.name);
                 });
             }
 
