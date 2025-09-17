@@ -89,6 +89,13 @@ Router::get('/news/{id}', 'NewsController@show');
 Router::put('/news/{id}', 'NewsController@update');
 Router::delete('/news/{id}', 'NewsController@destroy');
 
+// Ministry Management Routes (admin only for create/update/delete, public for view)
+Router::get('/ministries', 'MinistryController@index');
+Router::post('/ministries', 'MinistryController@store');
+Router::get('/ministries/{id}', 'MinistryController@show');
+Router::put('/ministries/{id}', 'MinistryController@update');
+Router::delete('/ministries/{id}', 'MinistryController@destroy');
+
 // Gallery Management Routes (admin only for create/update/delete, public for view)
 Router::get('/galleries', 'GalleryController@index');
 Router::post('/galleries', 'GalleryController@store');
