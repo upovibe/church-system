@@ -150,8 +150,7 @@ class ContactController {
                 http_response_code(500);
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Failed to send message. Please try again later.',
-                    'debug' => $emailError->getMessage() // Remove this in production
+                    'message' => 'Failed to send message. Please try again later.'
                 ], JSON_PRETTY_PRINT);
             }
 
@@ -161,148 +160,9 @@ class ContactController {
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => 'An error occurred. Please try again later.',
-                'debug' => $e->getMessage() // Remove this in production
+                'message' => 'An error occurred. Please try again later.'
             ], JSON_PRETTY_PRINT);
         }
     }
 
-    /**
-     * Test endpoint to debug production environment
-     */
-    public function test() {
-        try {
-            header('Content-Type: application/json');
-            header('Access-Control-Allow-Origin: *');
-            
-            $testResults = [
-                'php_version' => phpversion(),
-                'extensions' => [
-                    'openssl' => extension_loaded('openssl'),
-                    'sockets' => extension_loaded('sockets'),
-                    'json' => extension_loaded('json'),
-                    'curl' => extension_loaded('curl')
-                ],
-                'config' => [
-                    'mail_host' => $this->config['mail']['host'],
-                    'mail_port' => $this->config['mail']['port'],
-                    'mail_encryption' => $this->config['mail']['encryption'],
-                    'from_address' => $this->config['mail']['from_address']
-                ],
-                'file_permissions' => [
-                    'email_service' => file_exists(__DIR__ . '/../core/EmailService.php'),
-                    'mail_config' => file_exists(__DIR__ . '/../config/mail.php'),
-                    'contact_template' => file_exists(__DIR__ . '/../email/templates/contact-form.php'),
-                    'email_functions' => file_exists(__DIR__ . '/../email/config/email-functions.php')
-                ],
-                'server_info' => [
-                    'request_method' => $_SERVER['REQUEST_METHOD'],
-                    'content_type' => $_SERVER['CONTENT_TYPE'] ?? 'Not set',
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Not set'
-                ]
-            ];
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Test completed',
-                'data' => $testResults
-            ], JSON_PRETTY_PRINT);
-            
-        } catch (Exception $e) {
-            error_log("Test endpoint error: " . $e->getMessage());
-            http_response_code(500);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Test failed',
-                'error' => $e->getMessage()
-            ], JSON_PRETTY_PRINT);
-        }
-    }
-
-    /**
-     * Test SMTP connection directly
-     */
-    public function testSmtp() {
-        try {
-            header('Content-Type: application/json');
-            header('Access-Control-Allow-Origin: *');
-            
-            $config = $this->config['mail'];
-            $testResults = [
-                'config_check' => [
-                    'host' => $config['host'],
-                    'port' => $config['port'],
-                    'encryption' => $config['encryption'],
-                    'username' => $config['username'],
-                    'password_set' => !empty($config['password'])
-                ],
-                'connection_tests' => []
-            ];
-            
-            // Test different connection methods
-            $connectionMethods = [
-                ['method' => 'SSL', 'host' => $config['host'], 'port' => 465],
-                ['method' => 'TLS', 'host' => $config['host'], 'port' => 587],
-                ['method' => 'Plain', 'host' => $config['host'], 'port' => 25]
-            ];
-            
-            foreach ($connectionMethods as $method) {
-                $testResult = [
-                    'method' => $method['method'],
-                    'host' => $method['host'],
-                    'port' => $method['port'],
-                    'success' => false,
-                    'error' => null
-                ];
-                
-                try {
-                    if ($method['method'] === 'SSL') {
-                        $context = stream_context_create([
-                            'ssl' => [
-                                'verify_peer' => false,
-                                'verify_peer_name' => false,
-                                'allow_self_signed' => true
-                            ]
-                        ]);
-                        $connection = @stream_socket_client(
-                            "ssl://{$method['host']}:{$method['port']}", 
-                            $errno, 
-                            $errstr, 
-                            10,
-                            STREAM_CLIENT_CONNECT,
-                            $context
-                        );
-                    } else {
-                        $connection = @fsockopen($method['host'], $method['port'], $errno, $errstr, 10);
-                    }
-                    
-                    if ($connection) {
-                        $testResult['success'] = true;
-                        fclose($connection);
-                    } else {
-                        $testResult['error'] = "$errstr ($errno)";
-                    }
-                } catch (Exception $e) {
-                    $testResult['error'] = $e->getMessage();
-                }
-                
-                $testResults['connection_tests'][] = $testResult;
-            }
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'SMTP test completed',
-                'data' => $testResults
-            ], JSON_PRETTY_PRINT);
-            
-        } catch (Exception $e) {
-            error_log("SMTP test error: " . $e->getMessage());
-            http_response_code(500);
-            echo json_encode([
-                'success' => false,
-                'message' => 'SMTP test failed',
-                'error' => $e->getMessage()
-            ], JSON_PRETTY_PRINT);
-        }
-    }
 }
