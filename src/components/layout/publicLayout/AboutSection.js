@@ -97,27 +97,26 @@ class AboutSection extends App {
         
         
         <style>
-            .octagon-container {
-                position: relative;
+            .floating-card {
+                animation: float 6s ease-in-out infinite;
             }
             
-            .octagon-mask {
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                position: relative;
-                clip-path: polygon(
-                    30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%
-                );
-                -webkit-clip-path: polygon(
-                    30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%
-                );
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(2deg); }
             }
             
-            .octagon-image {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+            .glow-effect {
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.3), 0 0 60px rgba(59, 130, 246, 0.2);
+            }
+            
+            .hover-lift {
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .hover-lift:hover {
+                transform: translateY(-15px) scale(1.05) rotate(1deg);
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(59, 130, 246, 0.4);
             }
         </style>
 
@@ -135,36 +134,59 @@ class AboutSection extends App {
                     </p>
                     ${renderServiceTimes()}
                 </div>
-                <!-- Right: Octagon Banner Image -->
+                <!-- Right: Modern Square Banner Image with Effects -->
                 <div class="w-full md:w-1/2 flex justify-center items-center">
-                    <div class="octagon-container w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[30rem] lg:h-[30rem] xl:w-[35rem] xl:h-[35rem] flex items-center justify-center">
-                        <div class="octagon-mask">
-                            <img src="/api/${(() => {
-                              let img = pageData.banner_image;
-                              if (typeof img === 'string') {
-                                try {
-                                  const arr = JSON.parse(img);
-                                  if (Array.isArray(arr) && arr.length > 0)
-                                    return arr[0];
-                                } catch (e) {
-                                  if (img.includes(','))
-                                    return img.split(',')[0].trim();
-                                  return img;
-                                }
-                              } else if (Array.isArray(img) && img.length > 0) {
-                                return img[0];
-                              }
-                              return img || '';
-                            })()}"
-                                 alt="About Our Church"
-                                 class="octagon-image"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="absolute inset-0 hidden items-center justify-center bg-gray-100">
-                                <div class="text-center">
-                                    <i class="fas fa-image text-gray-400 text-2xl sm:text-3xl md:text-4xl mb-2"></i>
-                                    <p class="text-gray-500 font-medium text-sm sm:text-base md:text-lg">About banner image</p>
+                    <div class="relative group">
+                        <!-- Floating Square Card with Hover Effects -->
+                        <div class="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] floating-card hover-lift">
+                            <!-- Gradient Border -->
+                            <div class="absolute inset-0 bg-gradient-to-br from-[${accentColor}] via-[${secondaryColor}] to-[${primaryColor}] rounded-3xl p-1 glow-effect">
+                                <!-- Inner Card -->
+                                <div class="relative w-full h-full bg-white rounded-3xl overflow-hidden shadow-2xl">
+                                    <!-- Image Container -->
+                                    <div class="relative w-full h-full">
+                                        <img src="/api/${(() => {
+                                          let img = pageData.banner_image;
+                                          if (typeof img === 'string') {
+                                            try {
+                                              const arr = JSON.parse(img);
+                                              if (Array.isArray(arr) && arr.length > 0)
+                                                return arr[0];
+                                            } catch (e) {
+                                              if (img.includes(','))
+                                                return img.split(',')[0].trim();
+                                              return img;
+                                            }
+                                          } else if (Array.isArray(img) && img.length > 0) {
+                                            return img[0];
+                                          }
+                                          return img || '';
+                                        })()}"
+                                             alt="About Our Church"
+                                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        
+                                        <!-- Fallback for no image -->
+                                        <div class="absolute inset-0 hidden items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                                            <div class="text-center">
+                                                <i class="fas fa-church text-[${primaryColor}] text-6xl mb-4"></i>
+                                                <p class="text-[${primaryColor}] font-semibold text-lg">About Our Church</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Hover Overlay -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        
+                                        <!-- Shine Effect -->
+                                        <div class="absolute inset-0 -top-1 -left-1 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <!-- Floating Elements -->
+                            <div class="absolute -top-4 -right-4 w-8 h-8 bg-[${accentColor}] rounded-full opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="absolute -bottom-2 -left-2 w-6 h-6 bg-[${secondaryColor}] rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="absolute top-1/2 -left-6 w-4 h-4 bg-[${primaryColor}] rounded-full opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
                     </div>
                 </div>
