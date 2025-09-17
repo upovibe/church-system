@@ -39,7 +39,9 @@ class OurMinistryList extends App {
             if (response.ok) {
                 const data = await response.json();
                 if (data.success && data.data) {
-                    this.set('ministries', data.data);
+                    // Shuffle the ministries array
+                    const shuffled = this.shuffleArray([...data.data]);
+                    this.set('ministries', shuffled);
                 } else {
                     this.set('ministries', []);
                 }
@@ -57,6 +59,16 @@ class OurMinistryList extends App {
         
         // Render with the loaded data
         this.render();
+    }
+
+    // Helper function to shuffle array
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
     }
 
     openMinistryPage(slugOrId) {
@@ -77,6 +89,11 @@ class OurMinistryList extends App {
         // Get colors from state
         const textColor = this.get('text_color');
 
+        // Show at least 6 ministries, or all if less than 6
+        const displayCount = Math.min(6, ministries.length);
+        const displayMinistries = ministries.slice(0, displayCount);
+        const remainingCount = ministries.length - displayCount;
+
         return `
             <div class="flex flex-wrap gap-3 max-w-lg gap-y-3">
                 ${loading ? `
@@ -84,13 +101,18 @@ class OurMinistryList extends App {
                     <div class="inline-block bg-gray-300/20 backdrop-blur-sm text-gray-300 text-md font-semibold px-4 py-2 rounded-full border border-gray-300/30 animate-pulse">
                         Loading...
                     </div>
-                ` : ministries.length > 0 ? ministries.map(ministry => `
+                ` : displayMinistries.length > 0 ? displayMinistries.map(ministry => `
                     <span class="inline-block bg-[${textColor}]/20 backdrop-blur-sm text-[${textColor}] text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/30 cursor-pointer hover:bg-[${textColor}]/30 transition-all duration-200" 
                           onclick="this.closest('our-ministry-list').openMinistryPage('${ministry.slug || ministry.id}')"
                           title="Click to view ${ministry.title}">
                         ${ministry.title || 'Untitled Ministry'}
                     </span>
-                `).join('') : ''}
+                `).join('') + (remainingCount > 0 ? `
+                    <span class="inline-block bg-[${textColor}]/10 backdrop-blur-sm text-[${textColor}]/70 text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/20 cursor-pointer hover:bg-[${textColor}]/20 transition-all duration-200" 
+                          title="View all ministries">
+                        +${remainingCount} more
+                    </span>
+                ` : '') : ''}
             </div>
         `;
     }
