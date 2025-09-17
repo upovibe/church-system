@@ -1,6 +1,7 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/MinistryList.js';
+import '@/components/ui/ContentDisplay.js';
 
 /**
  * Ministry Section Component
@@ -156,6 +157,18 @@ class MinistrySection extends App {
         
         <!-- Ministry Content Section -->
         <div class="container mx-auto px-4 py-8">   
+            <!-- Content Display -->
+            ${pageData.content ? `
+                <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-20">
+                    <div class="p-5 lg:p-12">
+                        <content-display 
+                            content="${pageData.content.replace(/"/g, '&quot;')}"
+                            no-styles>
+                        </content-display>
+                    </div>
+                </div>
+            ` : ''}
+            
             <!-- Ministry List -->
             <ministry-list></ministry-list>
         </div>

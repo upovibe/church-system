@@ -26,8 +26,8 @@ class MinistriesPage extends App {
             // Load colors first
             const colors = await fetchColorSettings();
             
-            // Load ministries page data using 'news' slug
-            const ministriesPageData = await this.fetchPageData('news');
+            // Load ministries page data using 'ministries' slug
+            const ministriesPageData = await this.fetchPageData('ministries');
 
             // Combine all data
             const allData = {

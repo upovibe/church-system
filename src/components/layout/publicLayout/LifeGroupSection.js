@@ -1,6 +1,7 @@
 import App from '@/core/App.js';
 import { unescapeJsonFromAttribute } from '@/utils/jsonUtils.js';
 import '@/components/layout/publicLayout/LifeGroupList.js';
+import '@/components/ui/ContentDisplay.js';
 
 /**
  * Life Group Section Component
@@ -147,6 +148,18 @@ class LifeGroupSection extends App {
         
         <!-- Life Group Content Section -->
         <div class="container mx-auto px-4 py-8">   
+            <!-- Content Display -->
+            ${pageData.content ? `
+                <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-20">
+                    <div class="p-5 lg:p-12">
+                        <content-display 
+                            content="${pageData.content.replace(/"/g, '&quot;')}"
+                            no-styles>
+                        </content-display>
+                    </div>
+                </div>
+            ` : ''}
+            
             <!-- Life Group List -->
             <life-group-list></life-group-list>
         </div>
