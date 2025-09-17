@@ -73,7 +73,13 @@ class OurMinistryList extends App {
 
     openMinistryPage(slugOrId) {
         // Navigate to the ministry page using SPA router
-        const ministryUrl = `/public/ministries/${slugOrId}`;
+        let ministryUrl;
+        if (slugOrId === 'all') {
+            ministryUrl = '/public/ministries';
+        } else {
+            ministryUrl = `/public/ministries/${slugOrId}`;
+        }
+        
         if (window.router) {
             window.router.navigate(ministryUrl);
         } else {
@@ -109,6 +115,7 @@ class OurMinistryList extends App {
                     </span>
                 `).join('') + (remainingCount > 0 ? `
                     <span class="inline-block bg-[${textColor}]/10 backdrop-blur-sm text-[${textColor}]/70 text-md font-semibold px-4 py-2 rounded-full border border-[${textColor}]/20 cursor-pointer hover:bg-[${textColor}]/20 transition-all duration-200" 
+                          onclick="this.closest('our-ministry-list').openMinistryPage('all')"
                           title="View all ministries">
                         +${remainingCount} more
                     </span>
