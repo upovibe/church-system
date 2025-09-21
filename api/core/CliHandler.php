@@ -77,6 +77,10 @@ class CliHandler
                 self::freshDatabase();
                 exit();
 
+            case '--fix-permissions':
+                self::fixUploadPermissions();
+                exit();
+
             case (preg_match('/^--email(:\S+)?$/', $argv[1]) ? $argv[1] : false):
                 self::handleEmailCommand($argv[1]);
                 exit();
@@ -161,5 +165,118 @@ class CliHandler
         
         // Test email sending
         Emailer::test($emailAddress);
+    }
+
+    public static function fixUploadPermissions()
+    {
+        require_once __DIR__ . '/../helpers/HelpSystem.php';
+        
+        HelpSystem::showSuccess("Church System - Upload Permission Fixer");
+        echo "==========================================\n\n";
+        
+        $uploadsDir = __DIR__ . '/../uploads';
+        $pagesDir = $uploadsDir . '/pages'; // Reference directory (known to work)
+        
+        echo "🔍 Checking all upload directories...\n";
+        
+        // Get all directories in uploads folder
+        $uploadDirs = [];
+        if (is_dir($uploadsDir)) {
+            $iterator = new DirectoryIterator($uploadsDir);
+            foreach ($iterator as $fileinfo) {
+                if ($fileinfo->isDir() && !$fileinfo->isDot()) {
+                    $uploadDirs[] = $fileinfo->getFilename();
+                }
+            }
+        }
+        
+        echo "📁 Found upload directories: " . implode(', ', $uploadDirs) . "\n\n";
+        
+        // Check if pages directory exists (our reference)
+        if (!is_dir($pagesDir)) {
+            HelpSystem::showError("Reference pages directory not found: $pagesDir");
+            exit(1);
+        }
+        
+        // Get pages directory permissions (our reference)
+        $pagesPerms = fileperms($pagesDir);
+        $pagesOctal = substr(sprintf('%o', $pagesPerms), -4);
+        echo "📋 Using pages directory as reference with permissions: $pagesOctal\n\n";
+        
+        $fixedDirs = 0;
+        $totalFiles = 0;
+        
+        // Fix permissions for each upload directory
+        foreach ($uploadDirs as $dirName) {
+            $currentDir = $uploadsDir . '/' . $dirName;
+            
+            echo "=== Processing: $dirName ===\n";
+            
+            // Get current directory permissions
+            $currentPerms = fileperms($currentDir);
+            $currentOctal = substr(sprintf('%o', $currentPerms), -4);
+            
+            echo "Current permissions: $currentOctal\n";
+            
+            if ($currentOctal !== $pagesOctal) {
+                echo "🔧 Fixing directory permissions...\n";
+                if (chmod($currentDir, $pagesPerms)) {
+                    echo "✅ Updated directory permissions to $pagesOctal\n";
+                    $fixedDirs++;
+                } else {
+                    echo "❌ Failed to update directory permissions\n";
+                }
+            } else {
+                echo "✅ Directory permissions already correct\n";
+            }
+            
+            // Fix file permissions in this directory
+            if (is_dir($currentDir)) {
+                $dirFiles = 0;
+                $dirFixed = 0;
+                
+                $iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($currentDir),
+                    RecursiveIteratorIterator::SELF_FIRST
+                );
+                
+                foreach ($iterator as $file) {
+                    if ($file->isFile()) {
+                        $dirFiles++;
+                        
+                        // Set file permissions to 644 (readable by all, writable by owner)
+                        if (chmod($file->getPathname(), 0644)) {
+                            $dirFixed++;
+                        } else {
+                            echo "❌ Failed to fix: " . $file->getFilename() . "\n";
+                        }
+                    }
+                }
+                
+                echo "📄 Fixed permissions for $dirFixed/$dirFiles files\n";
+                $totalFiles += $dirFixed;
+            }
+            
+            echo "\n";
+        }
+        
+        echo "=== SUMMARY ===\n";
+        echo "🔧 Fixed $fixedDirs directories\n";
+        echo "📄 Fixed $totalFiles files\n";
+        
+        // Final verification
+        echo "\n=== FINAL VERIFICATION ===\n";
+        foreach ($uploadDirs as $dirName) {
+            $currentDir = $uploadsDir . '/' . $dirName;
+            $currentPerms = fileperms($currentDir);
+            $currentOctal = substr(sprintf('%o', $currentPerms), -4);
+            
+            $status = ($currentOctal === $pagesOctal) ? "✅" : "❌";
+            echo "$status $dirName: $currentOctal\n";
+        }
+        
+        echo "\n";
+        HelpSystem::showSuccess("ALL UPLOAD DIRECTORIES PROCESSED!");
+        echo "Permission fixing complete.\n";
     }
 }
