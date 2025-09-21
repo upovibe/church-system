@@ -103,12 +103,10 @@ class SermonsPage extends App {
             if (updatedSermon) {
                 const currentSermons = this.get('sermons') || [];
                 const updatedSermonsList = currentSermons.map(sermon => sermon.id === updatedSermon.id ? updatedSermon : sermon);
-                this.set('sermons', updatedSermonsList);
+                // Update data without triggering re-render
+                this.data.sermons = updatedSermonsList;
                 this.updateTableData();
-                if (this.get('showViewModal')) {
-                    this.set('viewSermonData', updatedSermon);
-                    // Update modal if needed
-                }
+                // Don't update viewSermonData - let the modal handle its own data
             } else {
                 this.loadData();
             }
@@ -118,11 +116,10 @@ class SermonsPage extends App {
             if (updatedSermon) {
                 const currentSermons = this.get('sermons') || [];
                 const updatedSermonsList = currentSermons.map(sermon => sermon.id === updatedSermon.id ? updatedSermon : sermon);
-                this.set('sermons', updatedSermonsList);
+                // Update data without triggering re-render
+                this.data.sermons = updatedSermonsList;
                 this.updateTableData();
-                if (this.get('showViewModal')) {
-                    this.set('viewSermonData', updatedSermon);
-                }
+                // Don't update viewSermonData - let the modal handle its own data
             } else {
                 this.loadData();
             }
@@ -132,11 +129,10 @@ class SermonsPage extends App {
             if (updatedSermon) {
                 const currentSermons = this.get('sermons') || [];
                 const updatedSermonsList = currentSermons.map(sermon => sermon.id === updatedSermon.id ? updatedSermon : sermon);
-                this.set('sermons', updatedSermonsList);
+                // Update data without triggering re-render
+                this.data.sermons = updatedSermonsList;
                 this.updateTableData();
-                if (this.get('showViewModal')) {
-                    this.set('viewSermonData', updatedSermon);
-                }
+                // Don't update viewSermonData - let the modal handle its own data
             } else {
                 this.loadData();
             }
