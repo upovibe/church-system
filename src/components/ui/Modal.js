@@ -526,21 +526,23 @@ class Modal extends HTMLElement {
         const confirmBtn = this.shadowRoot.getElementById('confirm-btn');
 
         // Cancel button
-        if (cancelBtn) {
+        if (cancelBtn && !cancelBtn._handlerAdded) {
             cancelBtn.onclick = (e) => {
                 e.stopPropagation();
                 this.dispatchEvent(new CustomEvent('cancel', { bubbles: true }));
                 this.close();
             };
+            cancelBtn._handlerAdded = true;
         }
 
         // Confirm button
-        if (confirmBtn) {
+        if (confirmBtn && !confirmBtn._handlerAdded) {
             confirmBtn.onclick = (e) => {
                 e.stopPropagation();
                 this.dispatchEvent(new CustomEvent('confirm', { bubbles: true }));
                 this.close();
             };
+            confirmBtn._handlerAdded = true;
         }
 
         // Support custom footer buttons placed in the light DOM with modal-action or dialog-action attributes

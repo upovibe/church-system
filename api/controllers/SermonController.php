@@ -107,6 +107,7 @@ class SermonController {
             }
 
             $sermonId = $this->sermonModel->create($data);
+            
             if ($sermonId) {
                 $createdSermon = $this->sermonModel->findById($sermonId);
                 $this->logAction('sermon_created', "Created sermon: {$data['title']}", [

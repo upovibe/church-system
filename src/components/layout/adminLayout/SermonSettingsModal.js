@@ -23,6 +23,7 @@ class SermonSettingsModal extends HTMLElement {
     constructor() {
         super();
         this.videoLinks = [''];
+        this.isSubmitting = false;
     }
 
     static get observedAttributes() {
@@ -35,7 +36,13 @@ class SermonSettingsModal extends HTMLElement {
     }
 
     setupEventListeners() {
-        this.addEventListener('confirm', () => this.saveSermon());
+        // Remove existing listeners to prevent duplicates
+        this.removeEventListener('confirm', this.saveSermon);
+        this.removeEventListener('cancel', this.close);
+        
+        this.addEventListener('confirm', () => {
+            this.saveSermon();
+        });
         this.addEventListener('cancel', () => this.close());
         this.addEventListener('click', (e) => {
             if (e.target.closest('[data-action="add-video-link"]')) {
@@ -57,6 +64,7 @@ class SermonSettingsModal extends HTMLElement {
     close() {
         this.removeAttribute('open');
         this.videoLinks = [''];
+        this.isSubmitting = false;
         this.render();
     }
 
@@ -80,6 +88,12 @@ class SermonSettingsModal extends HTMLElement {
     }
 
     async saveSermon() {
+        // Prevent duplicate submissions
+        if (this.isSubmitting) {
+            return;
+        }
+        this.isSubmitting = true;
+        
         this._syncVideoLinksFromDOM();
         try {
             const titleInput = this.querySelector('ui-input[data-field="title"]');
@@ -183,6 +197,8 @@ class SermonSettingsModal extends HTMLElement {
         } catch (error) {
             console.error('❌ Error saving sermon:', error);
             Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to create sermon', variant: 'error', duration: 3000 });
+        } finally {
+            this.isSubmitting = false;
         }
     }
 
