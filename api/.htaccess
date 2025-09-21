@@ -23,8 +23,10 @@ Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-R
 Header always set Access-Control-Allow-Credentials "true"
 Header always set Access-Control-Max-Age "3600"
 
-# Route all requests to index.php except for existing files
+# Allow direct access to uploads directory
+RewriteRule ^uploads/ - [L]
 
+# Route all requests to index.php except for existing files
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]

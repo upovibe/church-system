@@ -52,6 +52,9 @@ class EventViewModal extends HTMLElement {
     // Set event data for viewing
     setEventData(eventData) {
         this.eventData = eventData;
+        console.log('EventViewModal - Event Data:', eventData);
+        console.log('EventViewModal - Banner Image Path:', eventData?.banner_image);
+        console.log('EventViewModal - Constructed Image URL:', this.getImageUrl(eventData?.banner_image));
         // Re-render the modal with the new data
         this.render();
     }
@@ -131,7 +134,8 @@ class EventViewModal extends HTMLElement {
                                         <img src="${this.getImageUrl(this.eventData.banner_image)}" 
                                              alt="${this.eventData.title}" 
                                              class="w-full h-full object-cover rounded-lg border border-gray-200"
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                             onload="console.log('EventViewModal - Image loaded successfully:', this.src)"
+                                             onerror="console.log('EventViewModal - Image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                         <div class="absolute inset-0 hidden items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
                                             <div class="text-center">
                                                 <i class="fas fa-image text-gray-400 text-xl mb-1"></i>
