@@ -24,6 +24,7 @@ class SermonUpdateModal extends HTMLElement {
         super();
         this.sermonData = null;
         this.videoLinks = [''];
+        this.isSubmitting = false;
     }
 
     static get observedAttributes() {
@@ -73,6 +74,7 @@ class SermonUpdateModal extends HTMLElement {
 
     close() {
         this.removeAttribute('open');
+        this.isSubmitting = false;
     }
 
     _syncVideoLinksFromDOM() {
@@ -95,9 +97,15 @@ class SermonUpdateModal extends HTMLElement {
     }
 
     async updateSermon() {
+        if (this.isSubmitting) {
+            return;
+        }
+        this.isSubmitting = true;
+        
         this._syncVideoLinksFromDOM();
         if (!this.sermonData || !this.sermonData.id) {
             Toast.show({ title: 'Error', message: 'Sermon data not found', variant: 'error' });
+            this.isSubmitting = false;
             return;
         }
         try {
@@ -199,6 +207,8 @@ class SermonUpdateModal extends HTMLElement {
             }));
         } catch (error) {
             Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to update sermon', variant: 'error', duration: 3000 });
+        } finally {
+            this.isSubmitting = false;
         }
     }
 

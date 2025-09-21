@@ -204,6 +204,10 @@ class SermonController {
             if (!empty($_FILES['images'])) {
                 try {
                     $data['images'] = addSermonImages($_FILES['images'], $existingSermon['images'] ?: []);
+                    // Calculate how many new images were added
+                    $existingCount = count($existingSermon['images'] ?: []);
+                    $newCount = count($data['images']);
+                    $uploadedImages = array_fill(0, $newCount - $existingCount, 'new_image');
                 } catch (Exception $e) {
                     $data['images'] = $existingSermon['images'] ?: [];
                 }
@@ -215,10 +219,12 @@ class SermonController {
             $uploadedAudio = [];
             if (!empty($_FILES['audio'])) {
                 try {
-                    $uploadedAudio = uploadSermonAudio($_FILES['audio']);
                     $data['audio_links'] = addSermonAudio($_FILES['audio'], $existingSermon['audio_links'] ?: []);
+                    // Calculate how many new audio files were added
+                    $existingCount = count($existingSermon['audio_links'] ?: []);
+                    $newCount = count($data['audio_links']);
+                    $uploadedAudio = array_fill(0, $newCount - $existingCount, 'new_audio');
                 } catch (Exception $e) {
-                    error_log('Audio upload error: ' . $e->getMessage());
                     $data['audio_links'] = $existingSermon['audio_links'] ?: [];
                 }
             } else {
