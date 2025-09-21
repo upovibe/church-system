@@ -227,7 +227,7 @@ class MinistryList extends App {
                          <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
                              <div class="flex flex-col md:flex-row">
                                  <!-- Image Skeleton -->
-                                 <div class="md:w-1/3 h-48 md:h-auto bg-gray-600 rounded-xl"></div>
+                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl"></div>
                                  <!-- Content Skeleton -->
                                  <div class="md:w-2/3 p-6 flex flex-col justify-between">
                                      <div>
@@ -247,7 +247,7 @@ class MinistryList extends App {
                          <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
                              <div class="flex flex-col md:flex-row">
                                  <!-- Image Skeleton -->
-                                 <div class="md:w-1/3 h-48 md:h-auto bg-gray-600 rounded-xl"></div>
+                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl"></div>
                                  <!-- Content Skeleton -->
                                  <div class="md:w-2/3 p-6 flex flex-col justify-between">
                                      <div>
@@ -267,7 +267,7 @@ class MinistryList extends App {
                          <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
                              <div class="flex flex-col md:flex-row">
                                  <!-- Image Skeleton -->
-                                 <div class="md:w-1/3 h-48 md:h-auto bg-gray-600 rounded-xl"></div>
+                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl"></div>
                                  <!-- Content Skeleton -->
                                  <div class="md:w-2/3 p-6 flex flex-col justify-between">
                                      <div>
@@ -310,7 +310,7 @@ class MinistryList extends App {
                             
                             <div class="flex flex-col md:flex-row">
                                 <!-- Image Section -->
-                                <div class="md:w-1/3 h-48 md:h-auto relative rounded-xl overflow-hidden">
+                                <div class="md:w-1/3 h-48 md:h-52 relative rounded-xl overflow-hidden">
                                     ${bannerImage ? `
                                         <img src="${this.getImageUrl(bannerImage)}" 
                                              alt="${ministry.title || 'Ministry Image'}" 
