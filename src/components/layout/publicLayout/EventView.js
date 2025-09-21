@@ -99,7 +99,6 @@ class EventView extends App {
                 this.set('error', 'Failed to load event');
             }
         } catch (error) {
-            console.error('Error loading event:', error);
             this.set('error', 'Error loading event');
         }
         

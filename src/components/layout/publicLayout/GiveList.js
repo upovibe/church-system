@@ -29,7 +29,7 @@ class GiveList extends App {
                 this.set(key, value);
             });
         } catch (error) {
-            console.error('Error loading color settings:', error);
+            // Silently handle color loading errors
         }
     }
 
@@ -44,11 +44,9 @@ class GiveList extends App {
                     this.set('giveItems', []);
                 }
             } else {
-                console.error('Failed to fetch give items:', response.statusText);
                 this.set('giveItems', []);
             }
         } catch (error) {
-            console.error('Error fetching give items:', error);
             this.set('giveItems', []);
         }
         
@@ -164,7 +162,6 @@ class GiveList extends App {
                         try {
                             links = typeof giveItem.links === 'string' ? JSON.parse(giveItem.links) : giveItem.links;
                         } catch (error) {
-                            console.error('Error parsing links:', error);
                             links = [];
                         }
                     }
