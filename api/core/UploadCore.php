@@ -454,7 +454,14 @@ class UploadCore {
     private static function handleAudioUpload($file, $filename, $uploadDir, $config) {
         $filepath = $uploadDir . $filename;
         
-        if (!move_uploaded_file($file['tmp_name'], $filepath)) {
+        // Use copy for manually created files, move_uploaded_file for regular uploads
+        if (is_uploaded_file($file['tmp_name'])) {
+            $uploadSuccess = move_uploaded_file($file['tmp_name'], $filepath);
+        } else {
+            $uploadSuccess = copy($file['tmp_name'], $filepath);
+        }
+        
+        if (!$uploadSuccess) {
             return [
                 'success' => false,
                 'message' => 'Failed to move uploaded file'

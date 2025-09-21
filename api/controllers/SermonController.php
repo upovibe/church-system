@@ -214,8 +214,10 @@ class SermonController {
             $uploadedAudio = [];
             if (!empty($_FILES['audio'])) {
                 try {
+                    $uploadedAudio = uploadSermonAudio($_FILES['audio']);
                     $data['audio_links'] = addSermonAudio($_FILES['audio'], $existingSermon['audio_links'] ?: []);
                 } catch (Exception $e) {
+                    error_log('Audio upload error: ' . $e->getMessage());
                     $data['audio_links'] = $existingSermon['audio_links'] ?: [];
                 }
             } else {
