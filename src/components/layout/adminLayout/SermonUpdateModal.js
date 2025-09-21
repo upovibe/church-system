@@ -161,7 +161,7 @@ class SermonUpdateModal extends HTMLElement {
                 const files = imagesFileUpload.getFiles();
                 const newFiles = files.filter(file => file instanceof File);
                 newFiles.forEach(file => {
-                    formData.append('images[]', file, file.name);
+                    formData.append('images', file, file.name);
                 });
             }
 
@@ -170,7 +170,7 @@ class SermonUpdateModal extends HTMLElement {
                 const files = audioFileUpload.getFiles();
                 const newFiles = files.filter(file => file instanceof File);
                 newFiles.forEach(file => {
-                    formData.append('audio[]', file, file.name);
+                    formData.append('audio', file, file.name);
                 });
             }
 
@@ -198,7 +198,6 @@ class SermonUpdateModal extends HTMLElement {
                 composed: true
             }));
         } catch (error) {
-            console.error('❌ Error updating sermon:', error);
             Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to update sermon', variant: 'error', duration: 3000 });
         }
     }

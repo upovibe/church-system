@@ -72,8 +72,9 @@ class SermonViewModal extends HTMLElement {
     getFileUrl(path) {
         if (!path) return null;
         if (path.startsWith('http://') || path.startsWith('https://')) return path;
+        if (path.startsWith('/api/')) return window.location.origin + path;
         if (path.startsWith('/')) return window.location.origin + path;
-        return window.location.origin + '/api/' + path;
+        return '/api/' + path;
     }
 
     // Helper: get status badge color
@@ -120,6 +121,11 @@ class SermonViewModal extends HTMLElement {
             const response = await api.withToken(token).delete(`/sermons/${this.sermonData.id}/images/${imageIndex}`);
             Toast.show({ title: 'Success', message: 'Image deleted', variant: 'success' });
             this.setSermonData(response.data.data);
+            this.dispatchEvent(new CustomEvent('sermon-image-deleted', {
+                detail: { sermon: response.data.data },
+                bubbles: true,
+                composed: true
+            }));
         } catch (error) {
             Toast.show({ title: 'Error', message: error.response?.data?.message || 'Failed to delete image', variant: 'error' });
         }

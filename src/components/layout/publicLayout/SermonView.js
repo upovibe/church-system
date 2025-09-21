@@ -32,7 +32,7 @@ class SermonView extends App {
                 this.set(key, value);
             });
         } catch (error) {
-            console.error('Error loading color settings:', error);
+            // Silently handle color loading errors
         }
     }
 
@@ -57,7 +57,6 @@ class SermonView extends App {
                 this.set('error', 'Failed to load sermon');
             }
         } catch (error) {
-            console.error('Error fetching sermon:', error);
             this.set('error', 'Error loading sermon');
         }
 
@@ -71,21 +70,23 @@ class SermonView extends App {
             return imagePath;
         }
         
-        if (imagePath.startsWith('/')) {
-            const baseUrl = window.location.origin;
-            return baseUrl + imagePath;
+        if (imagePath.startsWith('/api/')) {
+            return window.location.origin + imagePath;
         }
         
-        const baseUrl = window.location.origin;
-        const apiPath = '/api';
-        return baseUrl + apiPath + '/' + imagePath;
+        if (imagePath.startsWith('/')) {
+            return window.location.origin + imagePath;
+        }
+        
+        return '/api/' + imagePath;
     }
 
     getFileUrl(path) {
         if (!path) return null;
         if (path.startsWith('http://') || path.startsWith('https://')) return path;
+        if (path.startsWith('/api/')) return window.location.origin + path;
         if (path.startsWith('/')) return window.location.origin + path;
-        return window.location.origin + '/api/' + path;
+        return '/api/' + path;
     }
 
     getBannerImages(sermon) {

@@ -9,6 +9,7 @@ require_once __DIR__ . '/../core/UploadCore.php';
  * @return array - Array containing uploaded image paths
  */
 function uploadSermonImages($files) {
+    
     $uploadDir = __DIR__ . '/../uploads/sermons/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
@@ -18,6 +19,7 @@ function uploadSermonImages($files) {
     $maxFiles = 20;
     $uploadedImages = [];
     $fileArray = [];
+    $processedFiles = []; // Track processed files to prevent duplicates
     if (isset($files['name']) && is_array($files['name'])) {
         for ($i = 0; $i < count($files['name']); $i++) {
             if ($files['error'][$i] === UPLOAD_ERR_OK) {
@@ -35,10 +37,18 @@ function uploadSermonImages($files) {
             $fileArray[] = $files;
         }
     }
+    
     if (count($fileArray) > $maxFiles) {
         throw new Exception("Too many files. Maximum {$maxFiles} images allowed per upload.");
     }
-    foreach ($fileArray as $file) {
+    foreach ($fileArray as $index => $file) {
+        // Create a unique identifier for this file to prevent duplicates
+        $fileId = md5($file['name'] . $file['size'] . $file['type']);
+        if (in_array($fileId, $processedFiles)) {
+            continue;
+        }
+        $processedFiles[] = $fileId;
+        
         if (!in_array($file['type'], $allowedTypes)) {
             throw new Exception('Invalid file type. Only JPEG, PNG, and WebP images are allowed.');
         }
@@ -68,6 +78,7 @@ function uploadSermonAudio($files) {
     $maxFiles = 10;
     $uploadedAudio = [];
     $fileArray = [];
+    $processedFiles = []; // Track processed files to prevent duplicates
     if (isset($files['name']) && is_array($files['name'])) {
         for ($i = 0; $i < count($files['name']); $i++) {
             if ($files['error'][$i] === UPLOAD_ERR_OK) {
@@ -89,8 +100,15 @@ function uploadSermonAudio($files) {
         throw new Exception("Too many files. Maximum {$maxFiles} audio files allowed per upload.");
     }
     foreach ($fileArray as $file) {
+        // Create a unique identifier for this file to prevent duplicates
+        $fileId = md5($file['name'] . $file['size'] . $file['type']);
+        if (in_array($fileId, $processedFiles)) {
+            continue;
+        }
+        $processedFiles[] = $fileId;
+        
         if (!in_array($file['type'], $allowedTypes)) {
-            throw new Exception('Invalid file type. Only MP3, WAV, OGG, AAC, FLAC audio files are allowed.');
+            throw new Exception('Invalid file type. Only MP3, WAV, OGG, AAC, FLAC audio files are allowed. Received: ' . $file['type']);
         }
         if ($file['size'] > $maxSize) {
             throw new Exception('File size too large. Maximum size is 20MB per audio file.');

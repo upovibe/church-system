@@ -142,7 +142,7 @@ class SermonSettingsModal extends HTMLElement {
                 const files = imagesFileUpload.getFiles();
                 const newFiles = files.filter(file => file instanceof File);
                 newFiles.forEach(file => {
-                    formData.append('images[]', file, file.name);
+                    formData.append('images', file, file.name);
                 });
             }
 
@@ -151,7 +151,7 @@ class SermonSettingsModal extends HTMLElement {
                 const files = audioFileUpload.getFiles();
                 const newFiles = files.filter(file => file instanceof File);
                 newFiles.forEach(file => {
-                    formData.append('audio[]', file, file.name);
+                    formData.append('audio', file, file.name);
                 });
             }
 

@@ -187,6 +187,7 @@ class SermonController {
                 $parsed = MultipartFormParser::parse($rawData, $content_type);
                 $data = $parsed['data'] ?? [];
                 $_FILES = $parsed['files'] ?? [];
+                
             } else {
                 $data = json_decode($rawData, true) ?? [];
             }
