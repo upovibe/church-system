@@ -82,8 +82,6 @@ class EventView extends App {
                 this.set('loading', false);
                 return;
             }
-
-            console.log('Fetching event data for slug:', slug);
             
             // Fetch event data by slug
             const apiUrl = `/api/events/slug/${slug}`;
@@ -91,14 +89,10 @@ class EventView extends App {
             
             if (response.ok) {
                 const data = await response.json();
-                console.log('Event API Response:', data);
                 
                 if (data.success && data.data) {
-                    console.log('Event Data:', data.data);
-                    console.log('Event Banner Image:', data.data.banner_image);
                     this.set('event', data.data);
                 } else {
-                    console.log('No event data found for slug:', slug);
                     this.set('error', 'Event not found');
                 }
             } else {
@@ -308,7 +302,7 @@ class EventView extends App {
                         </div>
 
                         <!-- Event Content -->
-                        <div class="bg-white rounded-xl shadow-lg p-8">
+                        <div class="bg-white rounded-xl shadow-lg p-4">
                                 ${event.content ? `
                                     <content-display 
                                         content="${event.content.replace(/"/g, '&quot;')}"
