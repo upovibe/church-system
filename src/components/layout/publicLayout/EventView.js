@@ -2,6 +2,7 @@ import App from '@/core/App.js';
 import '@/components/common/PageLoader.js';
 import { fetchColorSettings } from '@/utils/colorSettings.js';
 import Toast from '@/components/ui/Toast.js';
+import '@/components/ui/ContentDisplay.js';
 
 /**
  * Event View Component
@@ -296,7 +297,7 @@ class EventView extends App {
                         <!-- Title with Share/Copy buttons -->
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
-                                <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-2">Event Details</h2>
+                                <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-2">${event.description || 'Event Description'}</h2>
                             </div>
                             <div class="flex gap-3 ml-4">
                                 <i onclick="navigator.share ? navigator.share({title: '${event.title}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
@@ -306,12 +307,21 @@ class EventView extends App {
                             </div>
                         </div>
 
-                        <!-- Event Description -->
-                        <div class="rounded-lg shadow-md p-4 bg-white/80 backdrop-blur-sm border border-gray-200">
-                            <div class="prose max-w-none">
-                                <p class="leading-relaxed">${event.description || 'No description available'}</p>
-                            </div>
-                        </div>
+                        <!-- Event Content -->
+                        <div class="bg-white rounded-xl shadow-lg p-8">
+                                ${event.content ? `
+                                    <content-display 
+                                        content="${event.content.replace(/"/g, '&quot;')}"
+                                        no-styles>
+                                    </content-display>
+                                ` : `
+                                    <div class="text-center py-8 text-gray-500">
+                                        <i class="fas fa-file-alt text-4xl mb-4"></i>
+                                        <p>No content available for this event.</p>
+                                    </div>
+                                `}
+</div>
+
                     </div>
             </div>
         `;
