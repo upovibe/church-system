@@ -112,9 +112,18 @@ class ServiceEventsSection extends App {
         const bannerImages = this.getBannerImages(pageData) || [];
         const showImages = bannerImages.length > 0;
 
-        // Get title and subtitle from page data (same as HeroSection)
-        const heroTitle = (pageData && pageData.title) ? pageData.title : 'Service Events';
-        const heroSubtitle = (pageData && pageData.subtitle) ? pageData.subtitle : 'Welcome to our service events page';
+        // Get title and subtitle based on active tab
+        const activeTab = this.get('activeTab');
+        let heroTitle, heroSubtitle;
+        
+        if (activeTab === 'sermons') {
+            heroTitle = 'Sermons';
+            heroSubtitle = 'Listen to inspiring messages and teachings from our church';
+        } else {
+            // Default to events
+            heroTitle = (pageData && pageData.title) ? pageData.title : 'Service Events';
+            heroSubtitle = (pageData && pageData.subtitle) ? pageData.subtitle : 'Welcome to our service events page';
+        }
 
         // Get colors from state (same as HeroSection)
         const primaryColor = this.get('primary_color');
