@@ -67,9 +67,8 @@ class ServiceEventsSection extends App {
             bannerImages = [bannerImages];
         }
 
-        // Filter out empty/null values and return only the first image
-        const filteredImages = bannerImages.filter(img => img && img.trim() !== '');
-        return filteredImages.length > 0 ? [filteredImages[0]] : [];
+        // Filter out empty/null values and return all images
+        return bannerImages.filter(img => img && img.trim() !== '');
     }
 
     loadDataFromProps() {
@@ -96,24 +95,42 @@ class ServiceEventsSection extends App {
         }
 
         // Render immediately with the data
-        this.render();
+        this.innerHTML = this.render();
     }
 
     switchTab(tab) {
         this.set('activeTab', tab);
-        this.render();
+        
+        // Force complete re-render
+        const newContent = this.render();
+        this.innerHTML = newContent;
+        
+        // Also try to trigger a re-render of child components
+        const eventList = this.querySelector('event-list');
+        const sermonList = this.querySelector('sermon-list');
+        if (eventList && eventList.render) eventList.render();
+        if (sermonList && sermonList.render) sermonList.render();
     }
 
     render() {
         // Get page data from state
         const pageData = this.get('pageData') || {};
         
-        // Get banner images using the same logic as HeroSection
-        const bannerImages = this.getBannerImages(pageData) || [];
-        const showImages = bannerImages.length > 0;
-
-        // Get title and subtitle based on active tab
+        // Get active tab first
         const activeTab = this.get('activeTab');
+        
+        // Get banner images based on active tab
+        let bannerImages = [];
+        if (activeTab === 'sermons') {
+            // For sermons tab, we could use a different image or keep the same
+            // For now, let's use the same page data images
+            bannerImages = this.getBannerImages(pageData) || [];
+        } else {
+            // For events tab, use page data images
+            bannerImages = this.getBannerImages(pageData) || [];
+        }
+        
+        const showImages = bannerImages.length > 0;
         let heroTitle, heroSubtitle;
         
         if (activeTab === 'sermons') {
@@ -135,11 +152,7 @@ class ServiceEventsSection extends App {
         const hoverSecondary = this.get('hover_secondary');
         const hoverAccent = this.get('hover_accent');
 
-        return `
-        <!-- Service Events Banner Section with Background -->
-        <div class="">
-            <div class="relative w-full h-[500px] lg:h-[45vh] overflow-hidden">
-                ${showImages ? bannerImages.map((img, idx) => `
+        const bannerHtml = showImages ? bannerImages.map((img, idx) => `
                     <div
                          class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
                          style="background-image: url('${this.getImageUrl(img)}'); transition-property: opacity;">
@@ -153,7 +166,13 @@ class ServiceEventsSection extends App {
                             <p class="text-lg opacity-75">${heroSubtitle}</p>
                         </div>
                     </div>
-                `}
+                `;
+        
+        return `
+        <!-- Service Events Banner Section with Background -->
+        <div class="">
+            <div class="relative w-full h-[500px] lg:h-[45vh] overflow-hidden">
+                ${bannerHtml}
                 <!-- Dark gradient overlay from bottom to top -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20"></div>
                 <!-- Content Overlay -->
