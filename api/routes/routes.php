@@ -64,9 +64,6 @@ Router::get('/settings/{id}', 'SettingController@show');
 Router::put('/settings/{id}', 'SettingController@update');
 Router::delete('/settings/{id}', 'SettingController@destroy');
 
-// Static file serving route (public)
-Router::get('/uploads/*', 'StaticFileController@serve');
-
 // Event Management Routes (admin only for create/update/delete, public for view)
 Router::get('/events', 'EventController@index');
 Router::post('/events', 'EventController@store');
