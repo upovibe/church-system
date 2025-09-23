@@ -227,7 +227,7 @@ class MinistryList extends App {
                          <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
                              <div class="flex flex-col md:flex-row">
                                  <!-- Image Skeleton -->
-                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl"></div>
+                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl flex-shrink-0" style="height: 12rem; min-height: 12rem; max-height: 12rem;"></div>
                                  <!-- Content Skeleton -->
                                  <div class="md:w-2/3 p-6 flex flex-col justify-between">
                                      <div>
@@ -247,7 +247,7 @@ class MinistryList extends App {
                          <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
                              <div class="flex flex-col md:flex-row">
                                  <!-- Image Skeleton -->
-                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl"></div>
+                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl flex-shrink-0" style="height: 12rem; min-height: 12rem; max-height: 12rem;"></div>
                                  <!-- Content Skeleton -->
                                  <div class="md:w-2/3 p-6 flex flex-col justify-between">
                                      <div>
@@ -267,7 +267,7 @@ class MinistryList extends App {
                          <div class="bg-slate-700 rounded-xl shadow-lg overflow-hidden p-5 animate-pulse">
                              <div class="flex flex-col md:flex-row">
                                  <!-- Image Skeleton -->
-                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl"></div>
+                                 <div class="md:w-1/3 h-48 md:h-52 bg-gray-600 rounded-xl flex-shrink-0" style="height: 12rem; min-height: 12rem; max-height: 12rem;"></div>
                                  <!-- Content Skeleton -->
                                  <div class="md:w-2/3 p-6 flex flex-col justify-between">
                                      <div>
@@ -310,15 +310,16 @@ class MinistryList extends App {
                             
                             <div class="flex flex-col md:flex-row">
                                 <!-- Image Section -->
-                                <div class="md:w-1/3 h-48 md:h-52 relative rounded-xl overflow-hidden">
+                                <div class="md:w-1/3 h-48 md:h-52 relative rounded-xl overflow-hidden flex-shrink-0">
                                     ${bannerImage ? `
                                         <img src="${this.getImageUrl(bannerImage)}" 
                                              alt="${ministry.title || 'Ministry Image'}" 
                                              class="w-full h-full object-cover rounded-xl"
+                                             style="height: 12rem; min-height: 12rem; max-height: 12rem;"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     ` : ''}
                                     <!-- Fallback placeholder -->
-                                    <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center rounded-xl ${bannerImage ? 'hidden' : ''}">
+                                    <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center rounded-xl ${bannerImage ? 'hidden' : ''}" style="height: 12rem; min-height: 12rem; max-height: 12rem;">
                                         <div class="text-center text-white">
                                             <i class="fas fa-church text-4xl mb-2 opacity-50"></i>
                                             <p class="text-sm opacity-75">No Image</p>
