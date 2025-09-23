@@ -117,7 +117,7 @@ class RootPage extends App {
             const settingsKeys = [
                 'application_logo', 'contact_email', 'contact_phone',
                 'facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url', 'youtube_url',
-                'service_times'
+                'service_times', 'quote_of_the_day'
             ];
 
             const settingsPromises = settingsKeys.map(async (key) => {
@@ -180,7 +180,8 @@ class RootPage extends App {
                 <!-- Hero Section Component -->
                 <hero-section 
                     colors='${colorsData}'
-                    page-data='${escapeJsonForAttribute(allData.pages.home)}'>
+                    page-data='${escapeJsonForAttribute(allData.pages.home)}'
+                    settings='${escapeJsonForAttribute(allData.settings)}'>
                 </hero-section>
                 
                 <!-- Home Section Component -->
