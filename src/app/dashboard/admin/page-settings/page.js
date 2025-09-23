@@ -245,7 +245,7 @@ class PageSettingsPage extends App {
         // Find the table component and update its data
         const tableComponent = this.querySelector('ui-table');
         if (tableComponent) {
-            tableComponent.setAttribute('data', JSON.stringify(tableData));
+            tableComponent.setAttribute('data', JSON.stringify(tableData).replace(/"/g, '&quot;'));
         }
     }
 
@@ -400,8 +400,8 @@ class PageSettingsPage extends App {
                     <div class="mb-8">
                         <ui-table 
                             title="Pages Database"
-                            data='${JSON.stringify(tableData)}'
-                            columns='${JSON.stringify(tableColumns)}'
+                            data="${JSON.stringify(tableData).replace(/"/g, '&quot;')}"
+                            columns="${JSON.stringify(tableColumns).replace(/"/g, '&quot;')}"
                             sortable
                             searchable
                             search-placeholder="Search pages..."
