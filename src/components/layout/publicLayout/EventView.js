@@ -286,36 +286,39 @@ class EventView extends App {
                 </div>
 
                 <!-- Event Details Section -->
-                <div class="container mx-auto p-4 py-8 space-y-4">
-                        <!-- Title with Share/Copy buttons -->
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-2">${event.description || 'Event Description'}</h2>
-                            </div>
-                            <div class="flex gap-3 ml-4">
-                                <i onclick="navigator.share ? navigator.share({title: '${event.title}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
-                                   class="fas fa-share size-8 text-gray-600 hover:text-[${primaryColor}] cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
-                                <i onclick="this.closest('event-view').copyEventUrl()" 
-                                   class="fas fa-copy size-8 text-gray-600 hover:text-gray-800 cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
+                <div class="container mx-auto px-4 py-8">
+                    <!-- Title with Share/Copy buttons -->
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex-1">
+                            <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-2">${event.description || 'Event Description'}</h2>
+                        </div>
+                        <div class="flex gap-3 ml-4">
+                            <i onclick="navigator.share ? navigator.share({title: '${event.title}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)" 
+                               class="fas fa-share size-8 text-gray-600 hover:text-[${primaryColor}] cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
+                            <i onclick="this.closest('event-view').copyEventUrl()" 
+                               class="fas fa-copy size-8 text-gray-600 hover:text-gray-800 cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
+                        </div>
+                    </div>
+
+                    <!-- Event Content -->
+                    ${event.content ? `
+                        <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-20">
+                            <div class="p-5 lg:p-12">
+                                <content-display 
+                                    content="${event.content.replace(/"/g, '&quot;')}"
+                                    no-styles>
+                                </content-display>
                             </div>
                         </div>
-
-                        <!-- Event Content -->
+                    ` : `
                         <div class="bg-white rounded-xl shadow-lg p-4">
-                                ${event.content ? `
-                                    <content-display 
-                                        content="${event.content.replace(/"/g, '&quot;')}"
-                                        no-styles>
-                                    </content-display>
-                                ` : `
-                                    <div class="text-center py-8 text-gray-500">
-                                        <i class="fas fa-file-alt text-4xl mb-4"></i>
-                                        <p>No content available for this event.</p>
-                                    </div>
-                                `}
-</div>
-
-                    </div>
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-file-alt text-4xl mb-4"></i>
+                                <p>No content available for this event.</p>
+                            </div>
+                        </div>
+                    `}
+                </div>
             </div>
         `;
     }

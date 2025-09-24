@@ -351,35 +351,29 @@ class SermonView extends App {
             </div>
 
             <!-- Content Section -->
-            <div class="container mx-auto p-4 py-8 space-y-4">
-                <!-- Share/Copy buttons -->
-                <div class="flex items-center justify-end">
-                    <div class="flex gap-2">
-                        <button onclick="this.closest('sermon-view').shareSermon()" 
-                                class="p-2 bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm rounded-lg hover:bg-white transition-colors">
-                            <i class="fas fa-share-alt text-gray-600"></i>
-                        </button>
-                        <button onclick="this.closest('sermon-view').copySermonUrl()" 
-                                class="p-2 bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm rounded-lg hover:bg-white transition-colors">
-                            <i class="fas fa-copy text-gray-600"></i>
-                        </button>
+            <div class="container mx-auto px-4 py-8">
+                <!-- Description with Share/Copy buttons -->
+                <div class="flex items-start justify-between mb-6">
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-bold text-[${secondaryColor}] mb-2">${sermon.description || 'Sermon Description'}</h2>
                     </div>
-                </div>
-
-                <!-- Sermon Description -->
-                <div class="rounded-lg shadow-md p-4 bg-white/80 backdrop-blur-sm border border-gray-200">
-                    <div class="prose max-w-none">
-                        <p class="leading-relaxed">${sermon.description || 'No description available'}</p>
+                    <div class="flex gap-3 ml-4">
+                        <i onclick="this.closest('sermon-view').shareSermon()" 
+                           class="fas fa-share size-8 text-gray-600 hover:text-[${primaryColor}] cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
+                        <i onclick="this.closest('sermon-view').copySermonUrl()" 
+                           class="fas fa-copy size-8 text-gray-600 hover:text-gray-800 cursor-pointer transition-colors bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1.5 shadow-sm"></i>
                     </div>
                 </div>
 
                 <!-- Sermon Content -->
                 ${sermon.content ? `
-                    <div class="rounded-lg shadow-md p-4 bg-white/80 backdrop-blur-sm border border-gray-200">
-                        <content-display 
-                            content="${sermon.content.replace(/"/g, '&quot;')}"
-                            no-styles>
-                        </content-display>
+                    <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-20">
+                        <div class="p-5 lg:p-12">
+                            <content-display 
+                                content="${sermon.content.replace(/"/g, '&quot;')}"
+                                no-styles>
+                            </content-display>
+                        </div>
                     </div>
                 ` : ''}
 
@@ -539,6 +533,7 @@ class SermonView extends App {
                         </div>
                     </div>
                 ` : ''}
+                </div>
             </div>
         `;
     }

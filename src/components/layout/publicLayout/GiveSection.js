@@ -158,6 +158,7 @@ class GiveSection extends App {
         
         <!-- Give Content Section -->
         <div id="give-list-section" class="container mx-auto px-4 py-12 mb-20">
+            <div class="max-w-6xl mx-auto">
             <!-- Content Display -->
             ${pageData.content ? `
                 <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-20">
@@ -172,6 +173,7 @@ class GiveSection extends App {
             
             <!-- Give List Component -->
             <give-list></give-list>
+            </div>
         </div>
         `;
     }

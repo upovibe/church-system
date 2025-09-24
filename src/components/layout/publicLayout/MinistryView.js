@@ -262,12 +262,6 @@
                                         <i class="fas fa-church mr-2"></i>
                                         Ministry
                                     </span>
-                                    ${ministry.created_at ? `
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm">
-                                            <i class="fas fa-calendar mr-2"></i>
-                                            ${this.formatDate(ministry.created_at)}
-                                        </span>
-                                    ` : ''}
                                 </div>
                             </div>
                         </div>
@@ -289,22 +283,23 @@
 
                                     <!-- Content Section -->
                 <div class="container mx-auto px-4 py-12">
-                    <div class="max-w-4xl mx-auto">
-                        <div class="bg-white rounded-xl shadow-lg p-8">
-                                ${ministry.content ? `
-                                    <content-display 
-                                        content="${ministry.content.replace(/"/g, '&quot;')}"
-                                        no-styles>
-                                    </content-display>
-                                ` : `
-                                    <div class="text-center py-8 text-gray-500">
-                                        <i class="fas fa-file-alt text-4xl mb-4"></i>
-                                        <p>No content available for this ministry.</p>
-                                    </div>
-                                `}
+                    ${ministry.content ? `
+                        <div class="bg-[#D9C97B]/90 rounded-3xl shadow-lg overflow-hidden mb-20">
+                            <div class="p-5 lg:p-12">
+                                <content-display 
+                                    content="${ministry.content.replace(/"/g, '&quot;')}"
+                                    no-styles>
+                                </content-display>
                             </div>
                         </div>
-                    </div>
+                    ` : `
+                        <div class="bg-white rounded-xl shadow-lg p-8">
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-file-alt text-4xl mb-4"></i>
+                                <p>No content available for this ministry.</p>
+                            </div>
+                        </div>
+                    `}
                 </div>
             `;
         }
