@@ -406,7 +406,7 @@ class EventsPage extends App {
                     <!-- Gallery Table Section -->
                     <div class="mb-8">
                         <ui-table 
-                            title="Gallery Management"
+                            title="Event Management"
                             data="${safeTableData}"
                             columns="${safeTableColumns}"
                             sortable
