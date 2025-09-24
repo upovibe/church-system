@@ -158,9 +158,9 @@ class LeadershipSection extends App {
                 ${
                   teamMembers.length > 0
                     ? `
-                    <div class="mt-16">
-                        <div class="text-center mb-12">
-                            <h3 class="text-2xl lg:text-3xl font-bold text-[${secondaryColor}] mb-4">Leadership</h3>
+                    <div class="mt-5">
+                        <div class="text-center">
+                            <h3 class="text-4xl lg:text-4xl font-bold text-[${secondaryColor}]">Leadership</h3>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                             ${teamMembers
