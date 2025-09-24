@@ -140,6 +140,74 @@ class LifeGroupList extends App {
         }
     }
 
+    openLifeGroupDialog(lifeGroup) {
+        // Create dialog element
+        const dialog = document.createElement('div');
+        dialog.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+        dialog.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                <!-- Banner Section -->
+                <div class="relative h-64 bg-gradient-to-br from-gray-400 to-gray-600 overflow-hidden">
+                    ${lifeGroup.banner ? `
+                        <img src="${this.getImageUrl(lifeGroup.banner)}" 
+                            alt="${lifeGroup.title || 'Life Group Banner'}" 
+                            class="w-full h-full object-cover"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    ` : ''}
+                    
+                    <!-- Fallback placeholder -->
+                    <div class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center ${lifeGroup.banner ? 'hidden' : ''}">
+                        <div class="text-center text-white">
+                            <i class="fas fa-users text-6xl mb-4 opacity-50"></i>
+                            <p class="text-lg opacity-75">No Banner Image</p>
+                        </div>
+                    </div>
+
+                    <!-- Close Button -->
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="absolute top-4 right-4 size-10 flex items-center justify-center bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg hover:bg-white/30 transition-colors">
+                        <i class="fas fa-times text-white"></i>
+                    </button>
+                </div>
+
+                <!-- Content Section -->
+                <div class="p-6 max-h-[calc(90vh-16rem)] overflow-y-auto">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">${lifeGroup.title || 'Untitled Life Group'}</h2>
+                    
+                    <div class="prose max-w-none text-gray-600 leading-relaxed">
+                        ${lifeGroup.description || '<p>No description available</p>'}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end gap-4">
+                        <button onclick="this.closest('.fixed').remove()" 
+                                class="inline-flex items-center px-6 py-3 rounded-xl text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">
+                            <i class="fas fa-times mr-2"></i>
+                            Close
+                        </button>
+                        ${lifeGroup.link ? `
+                            <a href="${lifeGroup.link}" target="_blank" 
+                               class="inline-flex items-center px-6 py-3 rounded-xl text-sm font-medium bg-[${this.get('accent_color')}] text-white hover:opacity-90 transition-opacity">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                Join Life Group
+                            </a>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add to body and show
+        document.body.appendChild(dialog);
+        
+        // Add click outside to close
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                dialog.remove();
+            }
+        });
+    }
+
     // Helper method to get proper image URL
     getImageUrl(imagePath) {
         if (!imagePath || typeof imagePath !== 'string') return null;
@@ -271,8 +339,9 @@ class LifeGroupList extends App {
                     const truncatedContent = this.truncateText(contentPreview, 120);
 
                     return `
-                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 life-group-card overflow-hidden p-5" 
-                             data-title="${lifeGroup.title || 'Untitled Life Group'}">
+                        <div class="bg-slate-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 life-group-card overflow-hidden p-5 cursor-pointer" 
+                             data-title="${lifeGroup.title || 'Untitled Life Group'}"
+                             onclick="this.closest('life-group-list').openLifeGroupDialog(${JSON.stringify(lifeGroup).replace(/"/g, '&quot;')})">
                             
                             <!-- Image Section -->
                             <div class="h-48 relative overflow-hidden">
@@ -299,6 +368,7 @@ class LifeGroupList extends App {
                                     </h3>
                                     <p class="text-sm leading-relaxed text-gray-300 line-clamp-3">
                                         ${truncatedContent || 'No description available'}
+                                        ${truncatedContent && truncatedContent.length > 120 ? '<span class="text-blue-300 font-medium">... Read more</span>' : ''}
                                     </p>
                                 </div>
                                 

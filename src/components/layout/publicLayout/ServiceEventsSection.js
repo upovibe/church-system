@@ -94,8 +94,25 @@ class ServiceEventsSection extends App {
             }
         }
 
+        // Load sermon page data
+        this.loadSermonPageData();
+
         // Render immediately with the data
         this.innerHTML = this.render();
+    }
+
+    async loadSermonPageData() {
+        try {
+            const response = await fetch('/api/pages/slug/sermons');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.data) {
+                    this.set('sermonPageData', data.data);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading sermon page data:', error);
+        }
     }
 
     switchTab(tab) {
@@ -115,6 +132,7 @@ class ServiceEventsSection extends App {
     render() {
         // Get page data from state
         const pageData = this.get('pageData') || {};
+        const sermonPageData = this.get('sermonPageData') || {};
         
         // Get active tab first
         const activeTab = this.get('activeTab');
@@ -122,9 +140,8 @@ class ServiceEventsSection extends App {
         // Get banner images based on active tab
         let bannerImages = [];
         if (activeTab === 'sermons') {
-            // For sermons tab, we could use a different image or keep the same
-            // For now, let's use the same page data images
-            bannerImages = this.getBannerImages(pageData) || [];
+            // For sermons tab, use sermon page data images
+            bannerImages = this.getBannerImages(sermonPageData) || [];
         } else {
             // For events tab, use page data images
             bannerImages = this.getBannerImages(pageData) || [];
@@ -134,8 +151,8 @@ class ServiceEventsSection extends App {
         let heroTitle, heroSubtitle;
         
         if (activeTab === 'sermons') {
-            heroTitle = 'Sermons';
-            heroSubtitle = 'Listen to inspiring messages and teachings from our church';
+            heroTitle = (sermonPageData && sermonPageData.title) ? sermonPageData.title : 'Sermons';
+            heroSubtitle = (sermonPageData && sermonPageData.subtitle) ? sermonPageData.subtitle : 'Listen to inspiring messages and teachings from our church';
         } else {
             // Default to events
             heroTitle = (pageData && pageData.title) ? pageData.title : 'Service Events';
