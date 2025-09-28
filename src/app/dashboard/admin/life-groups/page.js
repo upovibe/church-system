@@ -213,44 +213,20 @@ class LifeGroupsPage extends App {
     updateTableData() {
         const lifeGroups = this.get('lifeGroups');
         if (!lifeGroups) return;
-        
-        const tableData = lifeGroups.map((lg, index) => {
-            // Clean and escape the description to prevent JSON issues
-            let cleanDescription = lg.description || 'No description';
-            if (cleanDescription) {
-                cleanDescription = cleanDescription
-                    .replace(/<[^>]*>/g, '') // Remove HTML tags
-                    .replace(/"/g, '&quot;') // Escape quotes
-                    .replace(/'/g, '&#39;') // Escape single quotes
-                    .replace(/\n/g, ' ') // Replace newlines with spaces
-                    .trim();
-                
-                // Truncate if too long
-                if (cleanDescription.length > 100) {
-                    cleanDescription = cleanDescription.substring(0, 100) + '...';
-                }
-            }
-            
-            return {
-                id: lg.id || 0,
-                index: index + 1,
-                title: (lg.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, '&#39;'),
-                slug: lg.slug || 'no-slug',
-                description: cleanDescription,
-                link: lg.link || 'N/A',
-                status: lg.is_active ? 'Active' : 'Inactive',
-                created: lg.created_at ? new Date(lg.created_at).toLocaleString() : 'N/A',
-                updated: lg.updated_at ? new Date(lg.updated_at).toLocaleString() : 'N/A',
-            };
-        });
-        
+
+        const tableData = lifeGroups.map((lg, index) => ({
+            id: lg.id,
+            index: index + 1,
+            title: lg.title,
+            slug: lg.slug,
+            status: lg.is_active ? 'Active' : 'Inactive',
+            created: new Date(lg.created_at).toLocaleString(),
+            updated: new Date(lg.updated_at).toLocaleString(),
+        }));
+
         const tableComponent = this.querySelector('ui-table');
         if (tableComponent) {
-            try {
-                tableComponent.setAttribute('data', JSON.stringify(tableData));
-            } catch (error) {
-                console.error('❌ Error updating table data:', error);
-            }
+            tableComponent.setAttribute('data', JSON.stringify(tableData).replace(/"/g, '&quot;'));
         }
     }
 
@@ -362,44 +338,19 @@ class LifeGroupsPage extends App {
         
 
 
-        const tableData = lifeGroups ? lifeGroups.map((lg, index) => {
-            
-            // Clean and escape the description to prevent JSON issues
-            let cleanDescription = lg.description || 'No description';
-            if (cleanDescription) {
-                // Remove any HTML tags and escape special characters
-                cleanDescription = cleanDescription
-                    .replace(/<[^>]*>/g, '') // Remove HTML tags
-                    .replace(/"/g, '&quot;') // Escape quotes
-                    .replace(/'/g, '&#39;') // Escape single quotes
-                    .replace(/\n/g, ' ') // Replace newlines with spaces
-                    .trim();
-                
-                // Truncate if too long
-                if (cleanDescription.length > 100) {
-                    cleanDescription = cleanDescription.substring(0, 100) + '...';
-                }
-            }
-            
-            return {
-                id: lg.id || 0,
-                index: index + 1,
-                title: (lg.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, '&#39;'),
-                slug: lg.slug || 'no-slug',
-                description: cleanDescription,
-                link: lg.link || 'N/A',
-                status: lg.is_active ? 'Active' : 'Inactive',
-                created: lg.created_at ? new Date(lg.created_at).toLocaleString() : 'N/A',
-                updated: lg.updated_at ? new Date(lg.updated_at).toLocaleString() : 'N/A',
-            };
-        }) : [];
+        const tableData = lifeGroups ? lifeGroups.map((lg, index) => ({
+            id: lg.id,
+            index: index + 1,
+            title: lg.title,
+            slug: lg.slug,
+            status: lg.is_active ? 'Active' : 'Inactive',
+            created: new Date(lg.created_at).toLocaleString(),
+            updated: new Date(lg.updated_at).toLocaleString(),
+        })) : [];
 
         const tableColumns = [
-            { key: 'index', label: 'No.', html: false },
+            { key: 'index', label: 'No.' },
             { key: 'title', label: 'Title' },
-            // { key: 'slug', label: 'Slug' },
-            { key: 'description', label: 'Description' },
-            { key: 'link', label: 'Link' },
             { key: 'status', label: 'Status' },
             { key: 'updated', label: 'Updated' }
         ];
@@ -418,8 +369,8 @@ class LifeGroupsPage extends App {
                     <div class="mb-8">
                         <ui-table 
                             title="Life Groups"
-                            data='${JSON.stringify(tableData)}'
-                            columns='${JSON.stringify(tableColumns)}'
+                            data="${JSON.stringify(tableData).replace(/"/g, '&quot;')}"
+                            columns="${JSON.stringify(tableColumns).replace(/"/g, '&quot;')}"
                             sortable
                             searchable
                             search-placeholder="Search life groups..."
