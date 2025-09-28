@@ -77,6 +77,7 @@ class VideoGallerySettingsModal extends HTMLElement {
         this._syncVideoLinksFromDOM(); // Save current values before adding a new one
         this.videoLinks.push('');
         this.render();
+        this.setupEventListeners(); // Re-attach listeners after render
     }
 
     removeVideoLink(index) {
@@ -84,6 +85,7 @@ class VideoGallerySettingsModal extends HTMLElement {
         if (this.videoLinks.length > 1) {
             this.videoLinks.splice(index, 1);
             this.render();
+            this.setupEventListeners(); // Re-attach listeners after render
         }
     }
 
