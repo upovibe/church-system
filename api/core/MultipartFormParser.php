@@ -61,7 +61,19 @@ class MultipartFormParser {
                     $files[$fieldName] = $parsedPart['fileData'];
                 }
             } else {
-                $data[$parsedPart['fieldName']] = $parsedPart['value'];
+                $fieldName = $parsedPart['fieldName'];
+                $value = $parsedPart['value'];
+                
+                // Handle array fields (e.g., video_links[])
+                if (preg_match('/^(.+)\[\]$/', $fieldName, $matches)) {
+                    $arrayFieldName = $matches[1];
+                    if (!isset($data[$arrayFieldName])) {
+                        $data[$arrayFieldName] = [];
+                    }
+                    $data[$arrayFieldName][] = $value;
+                } else {
+                    $data[$fieldName] = $value;
+                }
             }
         }
         

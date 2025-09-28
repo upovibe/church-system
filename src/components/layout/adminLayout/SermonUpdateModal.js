@@ -109,13 +109,15 @@ class SermonUpdateModal extends HTMLElement {
         }
         this.isSubmitting = true;
         
-        this._syncVideoLinksFromDOM();
         if (!this.sermonData || !this.sermonData.id) {
             Toast.show({ title: 'Error', message: 'Sermon data not found', variant: 'error' });
             this.isSubmitting = false;
             return;
         }
         try {
+            // Sync video links from DOM right before creating sermon data
+            this._syncVideoLinksFromDOM();
+            
             const titleInput = this.querySelector('ui-input[data-field="title"]');
             const speakerInput = this.querySelector('ui-input[data-field="speaker"]');
             const dateInput = this.querySelector('ui-input[data-field="date_preached"]');
