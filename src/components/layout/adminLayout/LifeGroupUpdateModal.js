@@ -67,6 +67,7 @@ class LifeGroupUpdateModal extends HTMLElement {
         }, 0); // Increased timeout to ensure DOM is ready
     }
 
+
     // Update the life group
     async updateLifeGroup() {
         try {
@@ -240,11 +241,6 @@ class LifeGroupUpdateModal extends HTMLElement {
                             multiple="false"
                             placeholder="Upload banner image">
                         </ui-file-upload>
-                        ${this.lifeGroupData.banner ? `
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500">Current banner: ${this.lifeGroupData.banner}</p>
-                            </div>
-                        ` : ''}
                     </div>
 
                     <!-- Active Status -->
