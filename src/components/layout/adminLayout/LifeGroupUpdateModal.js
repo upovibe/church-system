@@ -239,6 +239,7 @@ class LifeGroupUpdateModal extends HTMLElement {
                             data-field="banner"
                             accept="image/*"
                             multiple="false"
+                            value="${this.lifeGroupData?.banner || ''}"
                             placeholder="Upload banner image">
                         </ui-file-upload>
                     </div>

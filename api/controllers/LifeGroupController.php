@@ -263,9 +263,19 @@ class LifeGroupController {
             }
             
             // Handle banner upload if present
+            $bannerData = null;
             if (!empty($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
-                $bannerData = uploadLifeGroupBanner($_FILES['banner']);
-                $data['banner'] = $bannerData['original'];
+                try {
+                    $bannerData = uploadLifeGroupBanner($_FILES['banner']);
+                    $data['banner'] = $bannerData['original'];
+                } catch (Exception $e) {
+                    // Log the error and continue without banner update
+                    error_log('Error uploading life group banner: ' . $e->getMessage());
+                    // Don't fail the entire update if banner upload fails
+                }
+            } else {
+                // Preserve existing banner if no new banner is uploaded
+                $data['banner'] = $existingLifeGroup['banner'];
             }
             
             // Ensure all fields are included in the update (even null values)
