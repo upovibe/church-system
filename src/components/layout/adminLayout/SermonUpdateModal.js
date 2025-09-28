@@ -37,19 +37,26 @@ class SermonUpdateModal extends HTMLElement {
     }
 
     setupEventListeners() {
+        // Remove existing listeners to prevent duplicates
+        this.removeEventListener('confirm', this.updateSermon);
+        this.removeEventListener('cancel', this.close);
+        this.removeEventListener('click', this.handleClick);
+        
         this.addEventListener('confirm', () => this.updateSermon());
         this.addEventListener('cancel', () => this.close());
-        this.addEventListener('click', (e) => {
-            if (e.target.closest('[data-action="add-video-link"]')) {
-                e.preventDefault();
-                this.addVideoLink();
-            }
-            if (e.target.closest('[data-action="remove-video-link"]')) {
-                e.preventDefault();
-                const index = parseInt(e.target.closest('[data-action="remove-video-link"]').dataset.index, 10);
-                this.removeVideoLink(index);
-            }
-        });
+        this.addEventListener('click', this.handleClick);
+    }
+
+    handleClick = (e) => {
+        if (e.target.closest('[data-action="add-video-link"]')) {
+            e.preventDefault();
+            this.addVideoLink();
+        }
+        if (e.target.closest('[data-action="remove-video-link"]')) {
+            e.preventDefault();
+            const index = parseInt(e.target.closest('[data-action="remove-video-link"]').dataset.index, 10);
+            this.removeVideoLink(index);
+        }
     }
 
     setSermonData(sermonData) {
@@ -86,7 +93,6 @@ class SermonUpdateModal extends HTMLElement {
         this._syncVideoLinksFromDOM();
         this.videoLinks.push('');
         this.render();
-        this.setupEventListeners(); // Re-attach listeners after render
     }
 
     removeVideoLink(index) {
@@ -94,7 +100,6 @@ class SermonUpdateModal extends HTMLElement {
         if (this.videoLinks.length > 1) {
             this.videoLinks.splice(index, 1);
             this.render();
-            this.setupEventListeners(); // Re-attach listeners after render
         }
     }
 
