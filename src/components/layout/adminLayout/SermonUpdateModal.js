@@ -345,7 +345,7 @@ class SermonUpdateModal extends HTMLElement {
                 </form>
             </ui-modal>
         `;
-        this.setupEventListeners();
+        // Don't re-attach listeners here as they're already attached in connectedCallback
     }
 }
 
