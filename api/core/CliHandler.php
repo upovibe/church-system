@@ -69,6 +69,18 @@ class CliHandler
                 Seeder::run();
                 exit();
 
+            case '--seed:admin':
+                self::seedAdmin();
+                exit();
+
+            case '--seed:essential':
+                self::seedEssential();
+                exit();
+
+            case '--clear:data':
+                self::clearData();
+                exit();
+
             case '--clear':
                 self::clearDatabase();
                 exit();
@@ -89,6 +101,108 @@ class CliHandler
                 require_once __DIR__ . '/../helpers/HelpSystem.php';
                 HelpSystem::showError("Unknown command: {$argv[1]}");
                 exit(1);
+        }
+    }
+
+    public static function seedAdmin()
+    {
+        global $pdo;
+        require_once __DIR__ . '/../helpers/HelpSystem.php';
+
+        HelpSystem::showSuccess("Seeding admin user only...");
+
+        try {
+            // Run only role and user seeders
+            require_once __DIR__ . '/../database/seeders/role_seeder.php';
+            require_once __DIR__ . '/../database/seeders/user_seeder.php';
+            
+            $roleSeeder = new RoleSeeder($pdo);
+            $roleSeeder->run();
+            
+            $userSeeder = new UserSeeder($pdo);
+            $userSeeder->run();
+            
+            HelpSystem::showSuccess("Admin user seeded successfully!");
+            echo "\n📋 Admin Login Credentials:\n";
+            echo "📧 Email: admin@church.com\n";
+            echo "🔑 Password: admin123\n";
+            
+        } catch (Exception $e) {
+            HelpSystem::showError("Error seeding admin: " . $e->getMessage());
+        }
+    }
+
+    public static function seedEssential()
+    {
+        global $pdo;
+        require_once __DIR__ . '/../helpers/HelpSystem.php';
+
+        HelpSystem::showSuccess("Seeding essential system components...");
+
+        try {
+            require_once __DIR__ . '/../database/seeders/essential_seeder.php';
+            
+            $essentialSeeder = new EssentialSeeder($pdo);
+            $essentialSeeder->run();
+            
+            HelpSystem::showSuccess("Essential system components seeded successfully!");
+            echo "\n📋 Admin Login Credentials:\n";
+            echo "📧 Email: admin@church.com\n";
+            echo "🔑 Password: admin123\n";
+            
+        } catch (Exception $e) {
+            HelpSystem::showError("Error seeding essential: " . $e->getMessage());
+        }
+    }
+
+    public static function clearData()
+    {
+        global $pdo;
+        require_once __DIR__ . '/../helpers/HelpSystem.php';
+
+        HelpSystem::showWarning("Clearing all data from database tables...");
+        echo "⚠️  This will delete ALL records but keep table structure!\n";
+
+        try {
+            // Get all table names
+            $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
+            
+            if (empty($tables)) {
+                HelpSystem::showError("No tables found in database");
+                return;
+            }
+
+            // Disable foreign key checks temporarily
+            $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+
+            $clearedCount = 0;
+            foreach ($tables as $table) {
+                try {
+                    $stmt = $pdo->prepare("TRUNCATE TABLE `$table`");
+                    $stmt->execute();
+                    echo "✅ Cleared table: $table\n";
+                    $clearedCount++;
+                } catch (Exception $e) {
+                    try {
+                        $stmt = $pdo->prepare("DELETE FROM `$table`");
+                        $stmt->execute();
+                        echo "✅ Cleared table: $table (using DELETE)\n";
+                        $clearedCount++;
+                    } catch (Exception $e2) {
+                        echo "❌ Failed to clear table: $table\n";
+                    }
+                }
+            }
+
+            // Re-enable foreign key checks
+            $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+
+            HelpSystem::showSuccess("Data clearing completed!");
+            echo "📊 Cleared $clearedCount out of " . count($tables) . " tables\n";
+
+        } catch (Exception $e) {
+            $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+            HelpSystem::showError("Error clearing data: " . $e->getMessage());
         }
     }
 

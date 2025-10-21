@@ -31,4 +31,10 @@ return [
 
 // cd church-system; php api/index.php --seed       # Add default data
 
+// cd church-system; php api/index.php --seed:admin   # Create only the admin user account
+
+// cd church-system; php api/index.php --seed:essential   # Create essential system components
+
+// cd church-system; php api/index.php --clear:data   # Remove all data from tables
+
 // cd church-system; php api/index.php --email:test@example.com   # Test email
