@@ -109,7 +109,7 @@ class Table extends HTMLElement {
                 return JSON.parse(cleanedValue);
             } catch (e2) {
                 console.error(`Failed to parse ${attrName} attribute even after cleaning:`, e2);
-                console.log(`🔍 Final cleaned value:`, cleanedValue);
+                console.log(`🔍 Final cleaned value:`, this.cleanJSONString(value));
                 return defaultValue;
             }
         }
@@ -123,7 +123,7 @@ class Table extends HTMLElement {
     cleanJSONString(jsonString) {
         if (typeof jsonString !== 'string') return jsonString;
         
-        return jsonString
+        let cleaned = jsonString
             // Fix common HTML entity issues
             .replace(/&quot;/g, '"')
             .replace(/&#39;/g, "'")
@@ -136,6 +136,31 @@ class Table extends HTMLElement {
             .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
             .replace(/([{\[])\s*,/g, '$1') // Remove leading commas
             .trim();
+        
+        // Handle unterminated strings by finding the last complete object/array
+        if (cleaned.includes('[') && !cleaned.endsWith(']')) {
+            // Find the last complete array element
+            const lastCompleteBracket = cleaned.lastIndexOf(']');
+            if (lastCompleteBracket > 0) {
+                cleaned = cleaned.substring(0, lastCompleteBracket + 1);
+            } else {
+                // If no complete array found, try to close it
+                cleaned = cleaned + ']';
+            }
+        }
+        
+        if (cleaned.includes('{') && !cleaned.endsWith('}')) {
+            // Find the last complete object
+            const lastCompleteBrace = cleaned.lastIndexOf('}');
+            if (lastCompleteBrace > 0) {
+                cleaned = cleaned.substring(0, lastCompleteBrace + 1);
+            } else {
+                // If no complete object found, try to close it
+                cleaned = cleaned + '}';
+            }
+        }
+        
+        return cleaned;
     }
 
     /**
